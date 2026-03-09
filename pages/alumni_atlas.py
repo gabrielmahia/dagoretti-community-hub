@@ -119,29 +119,23 @@ def render():
 
     if not fdf.empty:
         for _, row in fdf.iterrows():
-            mentor_badge  = '<span class="badge-gold">🤝 Mentoring</span>' if row.get("mentoring") == "Yes" else ""
-            linkedin_link = (
-                f'<a href="{row["linkedin"]}" target="_blank" style="color:var(--green-mid);">LinkedIn →</a>'
-                if pd.notna(row.get("linkedin")) and str(row.get("linkedin", "")).startswith("http") else ""
+            mentor_badge = '<span class="badge-gold">🤝 Mentoring</span>' if row.get("mentoring") == "Yes" else ""
+            li_url = str(row.get("linkedin", "") or "")
+            linkedin_html = (
+                f'<a href="{li_url}" target="_blank" style="color:var(--green-mid); font-size:0.8rem; display:inline-block; margin-top:0.3rem;">LinkedIn &#8594;</a>'
+                if li_url.startswith("http") else ""
             )
-            bio = f'<p style="margin:0.3rem 0 0; font-size:0.85rem; color:var(--text-muted);">{row["bio_short"]}</p>' \
-                  if pd.notna(row.get("bio_short")) and row["bio_short"] else ""
-            st.markdown(f"""
-            <div class="alumni-card">
-              <h4>{row['name']}
-                <span style='font-weight:400; color:var(--text-muted); font-size:0.85rem;'>
-                  · Class of {int(row['year'])}
-                </span>
-              </h4>
-              <p>{row['role']} · {row['city']}, {row['country']}</p>
-              <div style='margin-top:0.35rem;'>
-                <span class="badge">{row['industry']}</span>
-                {mentor_badge}
-                {linkedin_link}
-              </div>
-              {bio}
-            </div>
-            """, unsafe_allow_html=True)
+            bio_val = str(row.get("bio_short", "") or "").strip()
+            bio_html = f'<p style="margin:0.3rem 0 0; font-size:0.85rem; color:var(--text-muted);">{bio_val}</p>' if bio_val else ""
+            card = (
+                '<div class="alumni-card">'
+                f'<h4>{row["name"]} <span style="font-weight:400; color:var(--text-muted); font-size:0.85rem;">· Class of {int(row["year"])}</span></h4>'
+                f'<p>{row["role"]} · {row["city"]}, {row["country"]}</p>'
+                f'<span class="badge">{row["industry"]}</span> {mentor_badge}'
+                f'{linkedin_html}{bio_html}'
+                '</div>'
+            )
+            st.markdown(card, unsafe_allow_html=True)
     else:
         st.info("No alumni match the current filters.")
 

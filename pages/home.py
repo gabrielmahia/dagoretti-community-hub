@@ -31,9 +31,9 @@ def render():
     """, unsafe_allow_html=True)
 
     # ── Stats row ────────────────────────────────────────────────────────────
-    n_alumni   = len(df) if not df.empty else 50
-    n_countries= df["country"].nunique() if not df.empty else 15
-    n_mentors  = (df["mentoring"] == "Yes").sum() if not df.empty else 28
+    n_alumni    = len(df) if not df.empty else 0
+    n_countries = df["country"].nunique() if not df.empty else 0
+    n_mentors   = int((df["mentoring"] == "Yes").sum()) if not df.empty else 0
     years_range= "1995–2024"
 
     c1, c2, c3, c4 = st.columns(4)
@@ -134,28 +134,42 @@ def render():
         </div>
         """, unsafe_allow_html=True)
 
+        # Spotlight only shows alumni who have self-registered via Submit Data.
+        # No fabricated records are ever displayed here.
         if not df.empty:
-            spotlight = df[df["year"] == 2001].head(6)
+            spotlight = df[df["year"] == 2001]
             if spotlight.empty:
-                spotlight = df.head(6)
+                spotlight = df
+            spotlight = spotlight.head(6)
 
             for _, row in spotlight.iterrows():
                 mentor_badge = '<span class="badge-gold">Mentoring ✓</span>' if row.get("mentoring") == "Yes" else ""
-                linkedin_link = f'<a href="{row["linkedin"]}" target="_blank" style="color:var(--green-mid); font-size:0.8rem;">LinkedIn →</a>' if pd.notna(row.get("linkedin")) and row.get("linkedin") else ""
-                st.markdown(f"""
-                <div class="alumni-card">
-                  <h4>{row['name']} <span style='font-weight:400; font-size:0.85rem; color:var(--text-muted);'>({int(row['year'])})</span></h4>
-                  <p>{row['role']} · {row['city']}, {row['country']}</p>
-                  <div style='margin-top:0.4rem;'>
-                    <span class="badge">{row['industry']}</span>
-                    {mentor_badge}
-                    {linkedin_link}
-                  </div>
-                  {f'<p style="margin-top:0.4rem; font-size:0.82rem; color:var(--text-muted);">{row["bio_short"]}</p>' if pd.notna(row.get("bio_short")) else ''}
-                </div>
-                """, unsafe_allow_html=True)
+                li_url = str(row.get("linkedin", "") or "")
+                linkedin_html = (
+                    f'<a href="{li_url}" target="_blank" style="color:var(--green-mid); font-size:0.8rem; display:inline-block; margin-top:0.3rem;">LinkedIn &#8594;</a>'
+                    if li_url.startswith("http") else ""
+                )
+                bio_val = str(row.get("bio_short", "") or "").strip()
+                bio_html = f'<p style="margin-top:0.4rem; font-size:0.82rem; color:var(--text-muted);">{bio_val}</p>' if bio_val else ""
+                card = (
+                    '<div class="alumni-card">'
+                    f'<h4>{row["name"]} <span style="font-weight:400; font-size:0.85rem; color:var(--text-muted);">({int(row["year"])})</span></h4>'
+                    f'<p>{row["role"]} · {row["city"]}, {row["country"]}</p>'
+                    f'<span class="badge">{row["industry"]}</span> {mentor_badge}'
+                    f'{linkedin_html}{bio_html}'
+                    '</div>'
+                )
+                st.markdown(card, unsafe_allow_html=True)
         else:
-            st.info("Alumni data not loaded. Check data/alumni.csv.")
+            st.markdown(
+                '<div class="alumni-card" style="text-align:center; padding:2rem 1rem;">'
+                '<p style="font-size:1.1rem; font-weight:600; color:var(--green-dark);">Be the first to appear here.</p>'
+                '<p style="font-size:0.9rem; color:var(--text-muted); margin-top:0.5rem;">'
+                'The spotlight shows alumni who register themselves.<br>'
+                'No names are placed here without your consent.'
+                '</p></div>',
+                unsafe_allow_html=True,
+            )
 
         st.markdown("""
         <div class="card-gold" style='margin-top:1rem; text-align:center;'>
