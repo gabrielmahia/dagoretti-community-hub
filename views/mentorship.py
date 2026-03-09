@@ -37,7 +37,17 @@ def render():
     df = _load()
 
     if df.empty:
-        st.info("Mentor data not available. Please check data/alumni.csv.")
+        st.markdown("""
+        <div class="card" style="text-align:center; padding:2.5rem 1.5rem;">
+          <div style="font-size:3rem; margin-bottom:1rem;">🤝</div>
+          <h3 style="color:var(--green-dark); margin:0 0 0.5rem;">No mentors listed yet.</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem; margin:0 0 1.2rem;">
+            Mentors are alumni who have explicitly opted in to being contacted.<br>
+            Register yourself on the Submit Data page and tick <strong>Open to mentoring</strong>.
+          </p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.info("👆 Use the **Submit Data → Alumni Profile** tab to register as a mentor.")
         return
 
     # ── Filters ───────────────────────────────────────────────────────────────

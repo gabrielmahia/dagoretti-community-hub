@@ -321,17 +321,16 @@ def render():
                 f'border-radius:3px; display:inline-block; margin-bottom:0.4rem;">'
                 f'{mem["tag"]}</span>'
             )
-
-        st.markdown(f"""
-        <div class="timeline-item">
-          <div class="timeline-year">{mem['year']}</div>
-          <div class="timeline-content">
-            <h4>{mem['icon']} {mem['title']}</h4>
-            {tag_html}
-            <p style='margin-top:0.35rem;'>{mem['body']}</p>
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
+        card = (
+            '<div class="timeline-item">'
+            f'<div class="timeline-year">{mem["year"]}</div>'
+            '<div class="timeline-content">'
+            f'<h4>{mem["icon"]} {mem["title"]}</h4>'
+            f'{tag_html}'
+            f'<p style="margin-top:0.35rem;">{mem["body"]}</p>'
+            '</div></div>'
+        )
+        st.markdown(card, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -359,14 +358,15 @@ def render():
     cols = st.columns(2)
     for i, alum in enumerate(NOTABLE_ALUMNI):
         with cols[i % 2]:
-            st.markdown(f"""
-            <div class="alumni-card" style='border-left:3px solid #c9a94e;'>
-              <h4 style='color:var(--green-dark);'>{alum['name']}</h4>
-              <p style='font-weight:600; font-size:0.9rem; margin:0.1rem 0;'>{alum['known_for']}</p>
-              <p style='font-size:0.82rem; margin:0.2rem 0 0;'>{alum['note']}</p>
-              <p style='font-size:0.72rem; color:#888; margin:0.3rem 0 0;'>Source: {alum['source']}</p>
-            </div>
-            """, unsafe_allow_html=True)
+            card = (
+                '<div class="alumni-card" style="border-left:3px solid #c9a94e;">'
+                f'<h4 style="color:var(--green-dark);">{alum["name"]}</h4>'
+                f'<p style="font-weight:600; font-size:0.9rem; margin:0.1rem 0;">{alum["known_for"]}</p>'
+                f'<p style="font-size:0.82rem; margin:0.2rem 0 0;">{alum["note"]}</p>'
+                f'<p style="font-size:0.72rem; color:#888; margin:0.3rem 0 0;">Source: {alum["source"]}</p>'
+                '</div>'
+            )
+            st.markdown(card, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -383,17 +383,15 @@ def render():
         for i, (_, row) in enumerate(df.iterrows()):
             with cols2[i % 2]:
                 mentor = '<span class="badge-gold">Mentoring ✓</span>' if row.get("mentoring") == "Yes" else ""
-                st.markdown(f"""
-                <div class="alumni-card">
-                  <h4>{row['name']}</h4>
-                  <p>{row['role']} · {row['city']}, {row['country']}</p>
-                  <div style='margin:0.3rem 0;'>
-                    <span class="badge">{row['industry']}</span>
-                    {mentor}
-                  </div>
-                  <p style='font-size:0.83rem; color:var(--text-muted);'>{row.get('bio_short','')}</p>
-                </div>
-                """, unsafe_allow_html=True)
+                card2 = (
+                    '<div class="alumni-card">'
+                    f'<h4>{row["name"]}</h4>'
+                    f'<p>{row["role"]} · {row["city"]}, {row["country"]}</p>'
+                    f'<div style="margin:0.3rem 0;"><span class="badge">{row["industry"]}</span> {mentor}</div>'
+                    f'<p style="font-size:0.83rem; color:var(--text-muted);">{row.get("bio_short","")}</p>'
+                    '</div>'
+                )
+                st.markdown(card2, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -443,7 +441,7 @@ def render():
     st.markdown("""
     <div class="footer">
       Memory Wall · Class of 2001 · 25th Reunion 2025 ·
-      <a href='mailto:alumni@dagoretti.ac.ke'>Contact the alumni team</a><br>
+      <a href='mailto:contact@aikungfu.dev'>Contact the alumni team</a><br>
       <span style='font-size:0.75rem; color:#aaa;'>
         Co-curricular facts: Wikipedia, The Standard (Nov 2011), Kenya Rugby Union,
         Kenya Music Festival records. Class memories are illustrative unless tagged [Confirmed].

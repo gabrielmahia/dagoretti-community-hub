@@ -50,7 +50,7 @@ def append_row(tab_name: str, row_data: dict) -> bool:
     except Exception as e:
         st.error(
             f"Submission could not be saved ({e}). "
-            "Please email [alumni@dagoretti.ac.ke](mailto:alumni@dagoretti.ac.ke) directly."
+            "Please email [contact@aikungfu.dev](mailto:contact@aikungfu.dev) directly."
         )
         return False
 
@@ -61,7 +61,7 @@ def not_configured_banner():
         "The Google Sheets backend has not been configured for this deployment. "
         "Your entry will **not** be saved. "
         "To contribute now, email "
-        "[alumni@dagoretti.ac.ke](mailto:alumni@dagoretti.ac.ke) directly.",
+        "[contact@aikungfu.dev](mailto:contact@aikungfu.dev) directly.",
         icon="⚠️",
     )
 
@@ -93,4 +93,4 @@ def suggest_correction_button(page: str, field: str, current_value: str, key: st
                 if ok:
                     st.success("Correction submitted — reviewed within 48 hours.")
                 elif not is_configured():
-                    st.info(f"Email correction to alumni@dagoretti.ac.ke — Page: {page}, Field: {field}")
+                    st.info(f"Email correction to contact@aikungfu.dev — Page: {page}, Field: {field}")

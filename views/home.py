@@ -182,7 +182,7 @@ def render():
     st.markdown("""
     <div class="footer">
       🦁 Dagoretti High School Community Hub · Open source · Built by alumni for the community ·
-      <a href='https://github.com/dagoretti-community/hub'>GitHub</a> ·
-      <a href='mailto:alumni@dagoretti.ac.ke'>alumni@dagoretti.ac.ke</a>
+      <a href='https://github.com/gabrielmahia/dagoretti-community-hub'>GitHub</a> ·
+      <a href='mailto:contact@aikungfu.dev'>contact@aikungfu.dev</a>
     </div>
     """, unsafe_allow_html=True)

@@ -32,7 +32,17 @@ def render():
 
     df = _load()
     if df.empty:
-        st.error("Alumni data not found. Please check data/alumni.csv.")
+        st.markdown("""
+        <div class="card" style="text-align:center; padding:2.5rem 1.5rem;">
+          <div style="font-size:3rem; margin-bottom:1rem;">🌍</div>
+          <h3 style="color:var(--green-dark); margin:0 0 0.5rem;">No alumni on the map yet.</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem; margin:0 0 1.2rem;">
+            The Atlas grows as alumni register themselves.<br>
+            Every verified profile becomes a pin.
+          </p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.info("👆 Use the **Submit Data → Alumni Profile** tab to add yourself.")
         return
 
     # ── Filters ──────────────────────────────────────────────────────────────

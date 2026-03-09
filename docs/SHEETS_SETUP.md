@@ -99,6 +99,7 @@ webhook_url = "https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec"
 | `alumni_submissions` | Alumni profile forms |
 | `memory_submissions` | Memory Wall submissions |
 | `event_proposals` | Event proposals |
+| `event_proposals` | Event proposals from Submit form |
 | `corrections` | Data correction requests |
 | `feedback` | General feedback |
 
