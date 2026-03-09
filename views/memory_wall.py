@@ -385,7 +385,7 @@ def render():
     st.markdown("""
     <div class="section-header">
       <h2>🏠 The Dorms — Where You Slept Decided Who You Were</h2>
-      <p>First-hand account · Class of 2001 era</p>
+      <p>Alumni Memory · Class of 2001 era · Oral history — not in any formal record</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -407,14 +407,11 @@ def render():
             "who": "Mainly Form 2s",
             "body": (
                 "Short for 'construction' — because it was never finished. "
-                "Rumour had it the building had been incomplete since the 1980s, "
-                "and that the long-serving principal at the time had a creative relationship "
-                "with construction budgets. The students named it accordingly. "
-                "That long-standing principal was replaced in 2000 by Mr. R.M. Murengi — "
-                "who ran things firmly and is remembered for discipline. "
-                "Who the predecessor was is a gap only the older alumni can fill. "
-                "Constra itself stayed unfinished for decades, finally completed "
-                "during KJ's tenure as MP for Dagoretti South."
+                "Alumni recall the building had been incomplete since the 1980s. "
+                "The students named it accordingly — a name that stuck for decades. "
+                "Mr. R.M. Murengi arrived as principal around 2000, succeeding a long-serving "
+                "predecessor whose name alumni records haven't yet confirmed. "
+                "Constra was finally completed during KJ's tenure as MP for Dagoretti South."
             ),
         },
         {
