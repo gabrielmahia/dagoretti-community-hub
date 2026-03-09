@@ -54,7 +54,7 @@ def test_data_kenya_then_now_loads():
 
 
 def test_career_pathways_grade_logic():
-    from pages.career_pathways import grade_meets_minimum, GRADE_ORDER, CLUSTERS
+    from views.career_pathways import grade_meets_minimum, GRADE_ORDER, CLUSTERS
     assert grade_meets_minimum("A", "B+") is True
     assert grade_meets_minimum("C", "B+") is False
     assert grade_meets_minimum("B+", "B+") is True
@@ -63,16 +63,16 @@ def test_career_pathways_grade_logic():
 
 def test_all_page_modules_importable():
     page_modules = [
-        "pages.home",
-        "pages.alumni_atlas",
-        "pages.kcse_tracker",
-        "pages.career_pathways",
-        "pages.memory_wall",
-        "pages.then_now",
-        "pages.mentorship",
-        "pages.scholarships",
-        "pages.submit",
-        "pages.events",
+        "views.home",
+        "views.alumni_atlas",
+        "views.kcse_tracker",
+        "views.career_pathways",
+        "views.memory_wall",
+        "views.then_now",
+        "views.mentorship",
+        "views.scholarships",
+        "views.submit",
+        "views.events",
     ]
     for mod_name in page_modules:
         mod = importlib.import_module(mod_name)

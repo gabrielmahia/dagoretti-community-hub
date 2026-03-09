@@ -254,22 +254,22 @@ page = pages[page_key]
 
 # ── ROUTING ──────────────────────────────────────────────────────────────────
 if page == "home":
-    from pages import home as p; p.render()
+    from views import home as p; p.render()
 elif page == "events":
-    from pages import events as p; p.render()
+    from views import events as p; p.render()
 elif page == "alumni_atlas":
-    from pages import alumni_atlas as p; p.render()
+    from views import alumni_atlas as p; p.render()
 elif page == "kcse_tracker":
-    from pages import kcse_tracker as p; p.render()
+    from views import kcse_tracker as p; p.render()
 elif page == "career_pathways":
-    from pages import career_pathways as p; p.render()
+    from views import career_pathways as p; p.render()
 elif page == "memory_wall":
-    from pages import memory_wall as p; p.render()
+    from views import memory_wall as p; p.render()
 elif page == "then_now":
-    from pages import then_now as p; p.render()
+    from views import then_now as p; p.render()
 elif page == "mentorship":
-    from pages import mentorship as p; p.render()
+    from views import mentorship as p; p.render()
 elif page == "scholarships":
-    from pages import scholarships as p; p.render()
+    from views import scholarships as p; p.render()
 elif page == "submit":
-    from pages import submit as p; p.render()
+    from views import submit as p; p.render()

@@ -8,3 +8,7 @@ backgroundColor = '#fdf8f0'
 secondaryBackgroundColor = '#e8f5e9'
 textColor = '#0d1a0f'
 font = 'sans serif'
+
+[ui]
+# Disable Streamlit's automatic multi-page navigation — app.py manages routing
+hideTopBar = false
