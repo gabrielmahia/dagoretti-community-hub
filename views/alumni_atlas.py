@@ -7,6 +7,30 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os
+import time
+import urllib.request
+import urllib.parse
+import json
+
+
+@st.cache_data(ttl=3600)
+def _geocode(city: str, country: str):
+    """Geocode city+country using OSM Nominatim. Returns (lat, lon) or (None, None)."""
+    query = f"{city}, {country}".strip(", ")
+    if not query:
+        return None, None
+    try:
+        url = "https://nominatim.openstreetmap.org/search?" + urllib.parse.urlencode({
+            "q": query, "format": "json", "limit": 1,
+        })
+        req = urllib.request.Request(url, headers={"User-Agent": "DagorettiCommunityHub/1.0"})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            results = json.loads(resp.read())
+        if results:
+            return float(results[0]["lat"]), float(results[0]["lon"])
+    except Exception:
+        pass
+    return None, None
 
 
 @st.cache_data
@@ -17,6 +41,25 @@ def _load():
         df["year"] = pd.to_numeric(df["year"], errors="coerce").fillna(0).astype(int)
         df["lat"]  = pd.to_numeric(df["lat"], errors="coerce")
         df["lon"]  = pd.to_numeric(df["lon"], errors="coerce")
+
+        # Auto-geocode any rows missing lat/lon
+        needs_geocode = df["lat"].isna() | df["lon"].isna()
+        if needs_geocode.any():
+            for idx in df[needs_geocode].index:
+                city    = str(df.at[idx, "city"]    or "").strip()
+                country = str(df.at[idx, "country"] or "").strip()
+                lat, lon = _geocode(city, country)
+                if lat is not None:
+                    df.at[idx, "lat"] = lat
+                    df.at[idx, "lon"] = lon
+                time.sleep(0.5)  # Nominatim rate limit: 1 req/sec
+
+            # Persist geocoded values back to CSV so next load is instant
+            try:
+                df.to_csv(path, index=False)
+            except Exception:
+                pass
+
         return df.dropna(subset=["lat", "lon"])
     except FileNotFoundError:
         return pd.DataFrame()
