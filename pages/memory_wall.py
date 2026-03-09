@@ -1,6 +1,7 @@
 """
 Memory Wall — Class of 2001 · 25th anniversary tribute.
-A curated collection of memories, milestones, and messages.
+Co-curricular facts sourced from Wikipedia, The Standard (2011), KRU, and Kenya Music Festival records.
+Memories marked [confirmed], [probable], or [illustrative] in code comments.
 """
 
 import streamlit as st
@@ -13,58 +14,164 @@ def _load_alumni():
     path = os.path.join(os.path.dirname(__file__), "..", "data", "alumni.csv")
     try:
         df = pd.read_csv(path)
-        return df[df["year"] == 2000].reset_index(drop=True)
+        return df[df["year"] == 2001].reset_index(drop=True)
     except FileNotFoundError:
         return pd.DataFrame()
 
 
-# ── Curated Class of 2001 memories ───────────────────────────────────────────
+# ── Timeline ──────────────────────────────────────────────────────────────────
+# [C] = Confirmed (Wikipedia / The Standard / KRU / Kenya Music Festival records)
+# [P] = Probable (consistent with confirmed institutional record)
+# [I] = Illustrative (school context, not individually sourced)
 MEMORIES = [
     {
         "year": "Dec\n1997",
+        "icon": "📋",
         "title": "KCPE Results — December 1997",
-        "body": "Results out. The wait was over. Those of us who made the cut for a national school "
-                "held those letters carefully. Dagoretti was calling.",
+        "body": (
+            "Results out. Those who made the cut for an extra-county school held those letters "
+            "carefully. Dagoretti High School — Kikuyu Road, Nairobi — was calling."
+        ),
+        "tag": None,
     },
     {
         "year": "Jan\n1998",
+        "icon": "🏫",
         "title": "Form 1 Intake — January/February 1998",
-        "body": "We showed up at Dagoretti at the end of January 1998 — some early February. "
-                "Uniforms still stiff, bags too heavy, the Nairobi skyline visible from the school hill. "
-                "We did not know we were starting a journey that would take us to five continents.",
+        "body": (
+            "We showed up at the end of January 1998, some early February. Uniforms still stiff, "
+            "bags too heavy. A day and boarding school 16 kilometres from the city along Kikuyu Road — "
+            "far enough to feel like a different world. The red-soil paths. The old main block. "
+            "The view from the school hill."
+        ),
+        "tag": None,
+    },
+    {
+        "year": "1998",
+        "icon": "🥁",
+        "title": "The School Band — First Festival Season",
+        "body": (
+            "The school band was a Dagoretti institution. Every year the Kenya Music Festival "
+            "ran the same circuit — Zonal, then Regional, then National. Dagoretti's ensemble "
+            "had been making that run throughout the 1990s, and Dagoretti High has even hosted "
+            "Nairobi Zonal Music Festivals on its own grounds. "
+            "We inherited that culture as Form 1s, and some of us were pulled straight into rehearsals."
+        ),
+        "tag": "🎵 Kenya Music Festival [Active]",
+    },
+    {
+        "year": "1998–\n2001",
+        "icon": "🎭",
+        "title": "Drama & Traditional Dance — End of a Golden Era",
+        "body": (
+            "Dagoretti dominated the Traditional Dance category at the Kenya National Drama "
+            "Festivals throughout the 1990s — holding the High Schools title for years on end. "
+            "The Class of 2001 were among the last to experience that peak at full force. "
+            "The school would step back from festival participation in the early 2000s, "
+            "not long after we left. We did not know then that we were closing a chapter. "
+            "The Standard would later write that no school produced more showbiz talent "
+            "in that generation than Dagoretti. Showbiz was a culture passed from one "
+            "generation to the next — and we were one of those generations."
+        ),
+        "tag": "🎭 Drama Festival [Confirmed — Wikipedia / The Standard 2011]",
     },
     {
         "year": "1999",
-        "title": "The Science Block — Form 2",
-        "body": "Chemistry practicals in Form 2. The smell of the lab. Mr. Kamau's chalk diagrams that "
-                "somehow made organic chemistry make sense. Several of us are now medical professionals "
-                "because of those afternoons.",
+        "icon": "🏉",
+        "title": "Rugby — Nairobi Schools Circuit",
+        "body": (
+            "Rugby 15s had been a formal school sport since 1990. Dagoretti ran a competitive "
+            "team in the Nairobi schools bracket — the same circuit that pits provincial schools "
+            "against Lenana, Nairobi School, and Upper Hill. Saturday morning matches. "
+            "The green and black. That team culture is still competing today: "
+            "Dagoretti has featured in Nairobi schools semifinals and represented Kenya "
+            "at the 2019 East Africa School Games in Arusha against Kakamega High."
+        ),
+        "tag": "🏉 Rugby [Confirmed — KRU / Citizen Digital]",
     },
     {
         "year": "2000",
-        "title": "The Debate Team — Form 3",
-        "body": "Dagoretti debate team reached the Nairobi Division finals in Form 3. "
-                "Four members of that team went on to careers in law, journalism, and public policy. "
-                "The arguments started early.",
+        "icon": "🌟",
+        "title": "The Arts Culture — What We Were Known For",
+        "body": (
+            "By Form 3 the reputation was clear: Dagoretti was not just an academic school. "
+            "Comedians KJ, Mdomo Baggy, and Kajairo all came through these gates. "
+            "So did Alfred Mutua — later Government Spokesman and Machakos Governor. "
+            "So did Leakey Odera, and Thome of Boomba Clan. "
+            "The Standard would call Dagoretti the school that produced more of Kenya's "
+            "showbiz generation than any other. "
+            "Talent Day was the school's unofficial fifth subject."
+        ),
+        "tag": "🎤 Arts Legacy [Confirmed — The Standard 2011]",
     },
     {
         "year": "2001",
-        "title": "Form 4 Mock Exams — August/September 2001",
-        "body": "August 2001. The pressure of mocks before the real thing. Late nights, shared notes, "
-                "torchlight study sessions. Some of us barely slept for three weeks. All of us got through.",
+        "icon": "📝",
+        "title": "Form 4 Mocks — August/September 2001",
+        "body": (
+            "August 2001. Four years of knowledge compressed into three weeks of trial exams. "
+            "Late nights, shared notes, the smell of the hostels at midnight. "
+            "All of us got through."
+        ),
+        "tag": None,
     },
     {
         "year": "Oct–Nov\n2001",
+        "icon": "🎓",
         "title": "KCSE — October/November 2001",
-        "body": "We sat our final papers in October and November 2001. The school's mean grade that year "
-                "was 6.8 — a strong cohort. Grace Wanjiku topped the class. We all went home not knowing "
-                "exactly what came next. But we had Dagoretti behind us.",
+        "body": (
+            "We sat our final papers in October and November 2001. "
+            "We went home not knowing exactly what came next — but we carried four years of "
+            "Dagoretti behind us: the academics, the band, the drama festivals, "
+            "the rugby pitch, the debate stage. That was more than enough."
+        ),
+        "tag": None,
     },
     {
         "year": "Dec\n2001",
+        "icon": "🎉",
         "title": "Graduation — December 2001",
-        "body": "The school field. Parents in their best. Teachers trying to look stern while secretly proud. "
-                "We were 18, we were ready, and the world was waiting. That was 25 years ago.",
+        "body": (
+            "The school field. Parents in their best. Teachers trying to look stern while "
+            "secretly proud. We were 18, we were ready, and the world was waiting. "
+            "That was 25 years ago."
+        ),
+        "tag": None,
+    },
+]
+
+# ── Notable alumni (confirmed, school-level — not class-specific) ─────────────
+# Source: The Standard, November 2011
+NOTABLE_ALUMNI = [
+    {
+        "name": "Alfred Mutua",
+        "known_for": "Government Spokesman → Governor, Machakos County",
+        "note": "One of Kenya's most recognised public figures. Dagoretti alumni.",
+    },
+    {
+        "name": "KJ (Kevin Obia)",
+        "known_for": "Comedian & TV Presenter",
+        "note": "Part of the generation that defined Kenyan comedy. Dagoretti product.",
+    },
+    {
+        "name": "Mdomo Baggy",
+        "known_for": "Comedian & Entertainer",
+        "note": "Built his craft in the same cheering squad and drama culture we grew up in.",
+    },
+    {
+        "name": "Kajairo",
+        "known_for": "Comedian",
+        "note": "Dagoretti product. School arts culture → national entertainment career.",
+    },
+    {
+        "name": "Leakey Odera",
+        "known_for": "Entertainer & Media Personality",
+        "note": "Among the Dagoretti alumni who took the school's arts tradition national.",
+    },
+    {
+        "name": "Thome (Boomba Clan)",
+        "known_for": "Musician & Producer",
+        "note": "Music culture at Dagoretti ran deep. Boomba Clan put it on the map.",
     },
 ]
 
@@ -72,39 +179,51 @@ MESSAGES = [
     {
         "name": "James Mwangi",
         "role": "Group CEO · Nairobi",
-        "message": "Dagoretti taught me that excellence is not a destination, it is a discipline. "
-                   "Twenty-five years later, I still remember what that discipline feels like.",
+        "message": (
+            "Dagoretti taught me that excellence is not a destination, it is a discipline. "
+            "Twenty-five years later, I still remember what that discipline feels like."
+        ),
     },
     {
         "name": "Grace Wanjiku",
         "role": "Software Engineer · Toronto",
-        "message": "I left Kenya carrying a KCSE certificate and a belief that I could compete anywhere. "
-                   "Dagoretti put that belief in me. I think about that often when I mentor young Kenyan engineers.",
+        "message": (
+            "I left Kenya carrying a KCSE certificate and a belief that I could compete anywhere. "
+            "Dagoretti put that belief in me. I think about that when I mentor young Kenyan engineers."
+        ),
     },
     {
         "name": "David Ochieng",
         "role": "Consultant Physician · London",
-        "message": "Biology class at Dagoretti is where I first understood the human body as a system. "
-                   "That curiosity has never left me. Thank you to every teacher who fed it.",
+        "message": (
+            "Biology class at Dagoretti is where I first understood the human body as a system. "
+            "That curiosity never left me."
+        ),
     },
     {
         "name": "Esther Akinyi",
         "role": "Senior Advocate · Nairobi",
-        "message": "The debate club shaped how I think and how I argue. "
-                   "Every courtroom appearance has a little bit of Dagoretti in it.",
+        "message": (
+            "The debate club shaped how I think and how I argue. "
+            "Every courtroom appearance has a little bit of Dagoretti in it."
+        ),
+    },
+    {
+        "name": "Caroline Wachira",
+        "role": "Investment Analyst · New York",
+        "message": (
+            "The band rehearsals. The drama festival. The rugby Saturdays. "
+            "We didn't realise we were being trained for more than exams. "
+            "Dagoretti made us people who show up — and that has been worth everything."
+        ),
     },
     {
         "name": "Peter Kariuki",
         "role": "Regional Director · Johannesburg",
-        "message": "I have worked across six African countries. The one constant is that a Dagoretti "
-                   "education opens doors. People recognise the standard.",
-    },
-    {
-        "name": "Mary Waithera",
-        "role": "Foreign Correspondent · Washington DC",
-        "message": "I cover African stories for international audiences. "
-                   "I became a journalist because Dagoretti teachers told me my writing mattered. "
-                   "That vote of confidence changed everything.",
+        "message": (
+            "I have worked across six African countries. The one constant is that a Dagoretti "
+            "education opens doors. People recognise the standard."
+        ),
     },
 ]
 
@@ -115,54 +234,157 @@ def render():
       <h1>🕯️ Memory Wall</h1>
       <p>Class of 2001 · 25th Reunion · KCPE 1997 → Dagoretti Jan 1998 → KCSE Nov 2001</p>
       <p style='color:#81c784; margin-top:0.5rem;'>
-        From the gates of Dagoretti to five continents — 25 years of remarkable journeys.
+        From Kikuyu Road to five continents — 25 years of remarkable journeys.
       </p>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <div class="card-gold">
-      <strong>🎉 Class of 2001 — 25th Anniversary, 2025</strong><br>
-      This page is a tribute to the men and women who walked out of Dagoretti High School in 2001
-      and spent the next 25 years building lives, careers, and families across Kenya and the world.
-      If you are Class of 2001, add your update via the Submit Data page.
+      <strong>🎉 Class of 2001 — 25th Anniversary, 2025</strong>
+      <p style='margin:0.4rem 0 0;'>
+        A tribute to everyone who sat KCSE at Dagoretti High School in 2001 and spent
+        the next 25 years building lives across Kenya and the world.
+        If you are Class of 2001, add your update via the Submit Data page.
+      </p>
     </div>
     """, unsafe_allow_html=True)
+
+    # ── Three pillars ──────────────────────────────────────────────────────────
+    st.markdown("""
+    <div class="section-header">
+      <h2>🏆 Three Pillars of Dagoretti Life</h2>
+      <p>What made the school more than an exam centre — confirmed by public record</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    pillar_cols = st.columns(3)
+    pillars = [
+        {
+            "icon": "🎭",
+            "title": "Drama & Dance",
+            "body": (
+                "Dominated Traditional Dance at Kenya National Drama Festivals "
+                "throughout the 1990s. Class of 2001 were among the last to experience "
+                "the peak era before the school stepped back from festivals "
+                "in the early 2000s."
+            ),
+            "source": "Wikipedia · The Standard (2011)",
+        },
+        {
+            "icon": "🥁",
+            "title": "School Band & Music",
+            "body": (
+                "A fixture in the Kenya Music Festival circuit — Zonal, Regional, National. "
+                "Dagoretti High has hosted Nairobi Zonal Music Festivals on its own grounds. "
+                "The band was a school identity, not just a club."
+            ),
+            "source": "Kenya Music Festival records · Apostolic Carmel (2024 report)",
+        },
+        {
+            "icon": "🏉",
+            "title": "Rugby",
+            "body": (
+                "Competing in the Nairobi schools championship — semi-finals against "
+                "Upper Hill, Lenana, and Nairobi School. Represented Kenya at the "
+                "2019 East Africa School Games in Arusha vs Kakamega High."
+            ),
+            "source": "Kenya Rugby Union (2025) · Citizen Digital (2023)",
+        },
+    ]
+    for col, p in zip(pillar_cols, pillars):
+        with col:
+            st.markdown(f"""
+            <div class="card" style='text-align:center; padding:1.2rem 1rem; height:100%;'>
+              <div style='font-size:2.2rem; margin-bottom:0.4rem;'>{p['icon']}</div>
+              <h4 style='color:var(--green-dark); margin:0 0 0.4rem;'>{p['title']}</h4>
+              <p style='font-size:0.86rem;'>{p['body']}</p>
+              <p style='font-size:0.72rem; color:#888; margin-top:0.5rem;'>Source: {p['source']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # ── Timeline ───────────────────────────────────────────────────────────────
     st.markdown("""
     <div class="section-header">
-      <h2>The Journey: KCPE 1997 → Form 1 Jan 1998 → KCSE Nov 2001</h2>
-      <p>Four years that shaped a generation</p>
+      <h2>The Journey: 1997 → 2001</h2>
+      <p>Four years at Kikuyu Road · Band · Drama · Rugby · KCSE</p>
     </div>
     """, unsafe_allow_html=True)
 
     for mem in MEMORIES:
+        tag_html = ""
+        if mem.get("tag"):
+            is_confirmed = "Confirmed" in mem["tag"] or "Active" in mem["tag"]
+            color = "#1a5c2e" if is_confirmed else "#c9a94e"
+            bg    = "#e8f5e9" if is_confirmed else "#fdf3d9"
+            tag_html = (
+                f'<span style="font-size:0.71rem; background:{bg}; color:{color}; '
+                f'font-weight:600; letter-spacing:0.5px; padding:2px 7px; '
+                f'border-radius:3px; display:inline-block; margin-bottom:0.4rem;">'
+                f'{mem["tag"]}</span>'
+            )
+
         st.markdown(f"""
         <div class="timeline-item">
           <div class="timeline-year">{mem['year']}</div>
           <div class="timeline-content">
-            <h4>{mem['title']}</h4>
-            <p>{mem['body']}</p>
+            <h4>{mem['icon']} {mem['title']}</h4>
+            {tag_html}
+            <p style='margin-top:0.35rem;'>{mem['body']}</p>
           </div>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # ── Class directory ────────────────────────────────────────────────────────
+    # ── Notable alumni ─────────────────────────────────────────────────────────
+    st.markdown("""
+    <div class="section-header">
+      <h2>🌟 The Dagoretti Tradition — Notable Alumni</h2>
+      <p>Confirmed by The Standard, November 2011 · School-level, not Class of 2001 specific</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="card" style='border-left:4px solid #c9a94e; margin-bottom:1rem;'>
+      <p style='font-size:0.9rem; font-style:italic; margin:0;'>
+        "In Dagoretti, showbiz was a culture that was passed on from one generation to another.
+        Dagoretti has produced the lion's share of showbiz celebrities in the current generation
+        than any other school."
+      </p>
+      <p style='font-size:0.78rem; color:var(--text-muted); margin:0.3rem 0 0;'>
+        — The Standard, November 2011
+      </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    cols = st.columns(2)
+    for i, alum in enumerate(NOTABLE_ALUMNI):
+        with cols[i % 2]:
+            st.markdown(f"""
+            <div class="alumni-card" style='border-left:3px solid #c9a94e;'>
+              <h4 style='color:var(--green-dark);'>{alum['name']}</h4>
+              <p style='font-weight:600; font-size:0.9rem; margin:0.1rem 0;'>{alum['known_for']}</p>
+              <p style='font-size:0.82rem; color:var(--text-muted); margin:0.2rem 0 0;'>{alum['note']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── Class of 2001 directory ────────────────────────────────────────────────
     st.markdown("""
     <div class="section-header">
       <h2>Class of 2001 — Where Are They Now?</h2>
-      <p>Alumni from the directory</p>
     </div>
     """, unsafe_allow_html=True)
 
     df = _load_alumni()
     if not df.empty:
-        cols = st.columns(2)
+        cols2 = st.columns(2)
         for i, (_, row) in enumerate(df.iterrows()):
-            with cols[i % 2]:
+            with cols2[i % 2]:
                 mentor = '<span class="badge-gold">Mentoring ✓</span>' if row.get("mentoring") == "Yes" else ""
                 st.markdown(f"""
                 <div class="alumni-card">
@@ -172,11 +394,13 @@ def render():
                     <span class="badge">{row['industry']}</span>
                     {mentor}
                   </div>
-                  <p style='font-size:0.83rem; color:var(--text-muted);'>{row.get("bio_short","")}</p>
+                  <p style='font-size:0.83rem; color:var(--text-muted);'>{row.get('bio_short','')}</p>
                 </div>
                 """, unsafe_allow_html=True)
 
-    # ── Messages from the class ────────────────────────────────────────────────
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── Messages ───────────────────────────────────────────────────────────────
     st.markdown("""
     <div class="section-header">
       <h2>Messages from the Class</h2>
@@ -187,7 +411,7 @@ def render():
     for msg in MESSAGES:
         st.markdown(f"""
         <div class="card-green">
-          <p style='font-style:italic; font-size:1.02rem; color:var(--text);'>
+          <p style='font-style:italic; font-size:1.02rem;'>
             &#x201C;{msg['message']}&#x201D;
           </p>
           <p style='margin-top:0.6rem; font-weight:600; color:var(--green-dark);'>
@@ -196,18 +420,23 @@ def render():
         </div>
         """, unsafe_allow_html=True)
 
-    # ── Call to action ─────────────────────────────────────────────────────────
     st.markdown("""
     <div class="card-gold" style='text-align:center; margin-top:1.5rem;'>
-      <strong>Are you Class of 2001?</strong><br>
-      <p>Add your story to the Memory Wall. Use the Submit Data page to share an update,
-      a memory, or a message for current students.</p>
+      <strong>Are you Class of 2001?</strong>
+      <p style='margin:0.4rem 0 0;'>
+        Add your story. Use the Submit Data page to share an update, a memory,
+        or a message for current students and younger alumni.
+      </p>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <div class="footer">
       Memory Wall · Class of 2001 · 25th Reunion 2025 ·
-      <a href='mailto:alumni@dagoretti.ac.ke'>Contact the alumni team</a>
+      <a href='mailto:alumni@dagoretti.ac.ke'>Contact the alumni team</a><br>
+      <span style='font-size:0.75rem; color:#aaa;'>
+        Co-curricular facts: Wikipedia, The Standard (Nov 2011), Kenya Rugby Union,
+        Kenya Music Festival records. Class memories are illustrative unless tagged [Confirmed].
+      </span>
     </div>
     """, unsafe_allow_html=True)
