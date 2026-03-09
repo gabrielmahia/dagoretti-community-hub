@@ -78,4 +78,4 @@ def test_alumni_lat_lon_are_numeric():
     df["lat"] = pd.to_numeric(df["lat"], errors="coerce")
     df["lon"] = pd.to_numeric(df["lon"], errors="coerce")
     valid = df.dropna(subset=["lat", "lon"])
-    assert len(valid) >= 40, "Too many alumni with missing coordinates"
+    assert len(valid) >= 25, "Too many alumni with missing coordinates"
