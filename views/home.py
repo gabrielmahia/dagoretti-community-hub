@@ -18,6 +18,13 @@ def _load_alumni():
 
 def render():
     df = _load_alumni()
+    # Compute KCSE year count dynamically
+    try:
+        import pandas as _pd_kcse
+        _kcse_df = _pd_kcse.read_csv(os.path.join(os.path.dirname(__file__), "..", "data", "kcse_results.csv"))
+        _kcse_years = int(_kcse_df["year"].max()) - int(_kcse_df["year"].min()) + 1
+    except Exception:
+        _kcse_years = 0
 
     # ── Hero ─────────────────────────────────────────────────────────────────
     st.markdown("""
@@ -34,7 +41,7 @@ def render():
     n_alumni    = len(df) if not df.empty else 0
     n_countries = df["country"].nunique() if not df.empty else 0
     n_mentors   = int((df["mentoring"] == "Yes").sum()) if not df.empty else 0
-    years_range= "1995–2024"
+    # years_range computed dynamically below
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
@@ -58,7 +65,7 @@ def render():
     with c4:
         st.markdown(f"""
         <div class="stat-pill">
-          <span class="stat-n">30</span>
+          <span class="stat-n">{_kcse_years}</span>
           <span class="stat-lbl">Years of KCSE data</span>
         </div>""", unsafe_allow_html=True)
 
@@ -111,9 +118,9 @@ def render():
         features = [
             ("🌍", "Alumni Atlas", "See where Dagoretti graduates live and work — plotted on a world map."),
             ("📅", "Events", "Upcoming reunions, career days, networking events — and the Class of 2001 25th reunion."),
-            ("📊", "KCSE Tracker", "30 years of exam results. Track the school's academic trajectory."),
+            ("📊", "KCSE Tracker", f"{_kcse_years} years of exam results. Track the school's academic trajectory."),
             ("🧭", "Career Pathways", "Enter your KCSE subjects and grades. Explore matching careers and universities."),
-            ("🎓", "Scholarships", "25 curated scholarships — including diaspora-accessible international awards."),
+            ("🎓", "Scholarships", "Curated scholarships — including diaspora-accessible international awards."),
             ("🤝", "Mentorship", "Connect with alumni open to guiding students and early-career graduates."),
             ("🇰🇪", "Kenya: Then & Now", "25 indicators comparing Kenya in 2001 and 2025. The transformation is striking."),
         ]

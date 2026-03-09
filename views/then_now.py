@@ -54,7 +54,7 @@ def render():
 
     df = _load()
     if df.empty:
-        st.error("Data not found. Please check data/kenya_then_now.csv.")
+        st.error("Data could not be loaded. Please contact the admin team.")
         return
 
     categories = sorted(df["category"].unique().tolist())

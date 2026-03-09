@@ -57,7 +57,7 @@ def render():
 
     df = _load()
     if df.empty:
-        st.error("KCSE data not found. Please check data/kcse_results.csv.")
+        st.error("KCSE data could not be loaded. Please contact the admin team.")
         return
 
     # ── Summary metrics ───────────────────────────────────────────────────────
@@ -65,17 +65,20 @@ def render():
     earliest = df[df["year"] == df["year"].min()].iloc[0]
 
     m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Latest mean grade (2024)", f"{latest['mean_grade']:.1f}/12",
+    latest_yr = int(latest["year"])
+    m1.metric(f"Latest mean grade ({latest_yr})", f"{latest['mean_grade']:.1f}/12",
               delta=f"+{latest['mean_grade'] - earliest['mean_grade']:.1f} since 1995")
-    m2.metric("Candidates (2024)", int(latest["candidates"]),
+    m2.metric(f"Candidates ({latest_yr})", int(latest["candidates"]),
               delta=f"+{int(latest['candidates'] - earliest['candidates'])} since 1995")
     m3.metric("Grade equivalent", _grade_str(latest["mean_grade"]))
-    m4.metric("A grades (2024)", int(latest.get("a_plain", 0)))
+    m4.metric(f"A grades ({latest_yr})", int(latest.get("a_plain", 0)))
 
     st.markdown("---")
 
     # ── Trend chart ───────────────────────────────────────────────────────────
-    st.markdown("#### Mean Grade Trend · 1995–2024")
+    yr_min_val = int(df["year"].min())
+    yr_max_val = int(df["year"].max())
+    st.markdown(f"#### Mean Grade Trend · {yr_min_val}–{yr_max_val}")
 
     # Polynomial trend line
     x = df["year"].values
