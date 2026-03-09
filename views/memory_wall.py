@@ -261,35 +261,35 @@ def render():
 
     # ── School quick-facts ─────────────────────────────────────────────────────
     st.markdown("""
-    <div class="card" style="background:#1a1a2e; border:1px solid #333; padding:1rem 1.2rem;">
+    <div class="card" style="background:#1a2e1f; border:1px solid #2e5c3a; padding:1rem 1.2rem;">
       <div style="display:flex; flex-wrap:wrap; gap:1.4rem; align-items:center;">
         <div>
-          <span style="font-size:0.72rem; color:#888; text-transform:uppercase; letter-spacing:0.5px;">Motto</span><br>
+          <span style="font-size:0.72rem; color:#a5d6a7; text-transform:uppercase; letter-spacing:0.5px;">Motto</span><br>
           <strong style="color:#c9a94e;">Elimu Ni Mali</strong>
-          <span style="color:#888; font-size:0.82rem;"> (Education is Wealth)</span>
+          <span style="color:#c8e6c9; font-size:0.82rem;"> (Education is Wealth)</span>
         </div>
         <div>
-          <span style="font-size:0.72rem; color:#888; text-transform:uppercase; letter-spacing:0.5px;">Colours</span><br>
+          <span style="font-size:0.72rem; color:#a5d6a7; text-transform:uppercase; letter-spacing:0.5px;">Colours</span><br>
           <span style="display:inline-block; width:12px; height:12px; background:#800000; border-radius:2px; margin-right:3px; vertical-align:middle;"></span>
-          <span style="display:inline-block; width:12px; height:12px; background:#fff; border:1px solid #555; border-radius:2px; margin-right:3px; vertical-align:middle;"></span>
+          <span style="display:inline-block; width:12px; height:12px; background:#fff; border:1px solid #aaa; border-radius:2px; margin-right:3px; vertical-align:middle;"></span>
           <span style="display:inline-block; width:12px; height:12px; background:#2e7d32; border-radius:2px; margin-right:3px; vertical-align:middle;"></span>
           <span style="display:inline-block; width:12px; height:12px; background:#9e9e9e; border-radius:2px; margin-right:6px; vertical-align:middle;"></span>
-          <strong style="font-size:0.88rem;">Maroon · White · Green · Grey</strong>
+          <strong style="font-size:0.88rem; color:#fff;">Maroon · White · Green · Grey</strong>
         </div>
         <div>
-          <span style="font-size:0.72rem; color:#888; text-transform:uppercase; letter-spacing:0.5px;">Location</span><br>
-          <strong style="font-size:0.88rem;">16km from Nairobi · Nairobi–Kikuyu Road</strong>
+          <span style="font-size:0.72rem; color:#a5d6a7; text-transform:uppercase; letter-spacing:0.5px;">Location</span><br>
+          <strong style="font-size:0.88rem; color:#fff;">16km from Nairobi · Nairobi–Kikuyu Road</strong>
         </div>
         <div>
-          <span style="font-size:0.72rem; color:#888; text-transform:uppercase; letter-spacing:0.5px;">Founded</span><br>
-          <strong style="font-size:0.88rem;">1929 (Ruthimitu) · Reopened 1962</strong>
+          <span style="font-size:0.72rem; color:#a5d6a7; text-transform:uppercase; letter-spacing:0.5px;">Founded</span><br>
+          <strong style="font-size:0.88rem; color:#fff;">1929 (Ruthimitu) · Reopened 1962</strong>
         </div>
         <div>
-          <span style="font-size:0.72rem; color:#888; text-transform:uppercase; letter-spacing:0.5px;">KNEC Code</span><br>
-          <strong style="font-size:0.88rem;">20405001</strong>
+          <span style="font-size:0.72rem; color:#a5d6a7; text-transform:uppercase; letter-spacing:0.5px;">KNEC Code</span><br>
+          <strong style="font-size:0.88rem; color:#fff;">20405001</strong>
         </div>
       </div>
-      <p style="font-size:0.68rem; color:#888; margin:0.6rem 0 0;">Source: Wikipedia · Dagoretti High School article (updated Feb 2026)</p>
+      <p style="font-size:0.72rem; color:#a5d6a7; margin:0.6rem 0 0;">Source: Wikipedia · Dagoretti High School article (updated Feb 2026)</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -616,21 +616,21 @@ def render():
             f'{sector["sector"]}</p>',
             unsafe_allow_html=True,
         )
-        s_cols = st.columns(len(sector["names"]))
-        for col, name in zip(s_cols, sector["names"]):
+        s_html = '<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:0.6rem; margin-bottom:0.8rem;">'
+        for name in sector["names"]:
             alum = alumni_by_name.get(name)
             if not alum:
                 continue
-            with col:
-                st.markdown(
-                    f'<div class="alumni-card" style="border-left:3px solid {sector["color"]}; height:100%;">'
-                    f'<h4 style="color:var(--green-dark); font-size:0.92rem;">{alum["name"]}</h4>'
-                    f'<p style="font-weight:600; font-size:0.82rem; margin:0.1rem 0;">{alum["known_for"]}</p>'
-                    f'<p style="font-size:0.82rem; margin:0.2rem 0 0; color:#e0e0e0;">{alum["note"]}</p>'
-                    f'<p style="font-size:0.72rem; color:#999; margin:0.3rem 0 0;">Source: {alum["source"]}</p>'
-                    '</div>',
-                    unsafe_allow_html=True,
-                )
+            s_html += (
+                f'<div class="alumni-card" style="border-left:3px solid {sector["color"]};">'
+                f'<h4 style="color:var(--green-dark); font-size:0.92rem;">{alum["name"]}</h4>'
+                f'<p style="font-weight:600; font-size:0.84rem; margin:0.1rem 0; color:var(--text);">{alum["known_for"]}</p>'
+                f'<p style="font-size:0.84rem; margin:0.2rem 0 0; color:var(--text-muted);">{alum["note"]}</p>'
+                f'<p style="font-size:0.72rem; color:#777; margin:0.3rem 0 0; font-style:italic;">Source: {alum["source"]}</p>'
+                '</div>'
+            )
+        s_html += '</div>'
+        st.markdown(s_html, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 

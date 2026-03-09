@@ -122,23 +122,23 @@ def render():
     <div class="card" style="background:linear-gradient(135deg,#1a5c2e 0%,#2e7d32 100%);
          color:#fff; padding:1rem 1.5rem; margin-bottom:1rem; border-radius:8px;">
       <div style="font-size:0.78rem; letter-spacing:1px; text-transform:uppercase;
-           opacity:0.8; margin-bottom:0.5rem;">🦁 Dagoretti High · Class of 2001 Network</div>
+           color:#a5d6a7; margin-bottom:0.5rem;">🦁 Dagoretti High · Class of 2001 Network</div>
       <div style="display:flex; gap:2rem; flex-wrap:wrap; align-items:center;">
-        <div><span style="font-size:1.9rem; font-weight:700;">{n_reg}</span>
-             <span style="font-size:0.82rem; opacity:0.8;"> / {COMMUNITY_SIZE} registered</span></div>
-        <div><span style="font-size:1.4rem; font-weight:600;">{n_countries}</span>
-             <span style="font-size:0.82rem; opacity:0.8;"> countries</span></div>
-        <div><span style="font-size:1.4rem; font-weight:600;">{n_industries}</span>
-             <span style="font-size:0.82rem; opacity:0.8;"> industries</span></div>
-        <div><span style="font-size:1.4rem; font-weight:600;">{n_mentors}</span>
-             <span style="font-size:0.82rem; opacity:0.8;"> mentors</span></div>
+        <div><span style="font-size:1.9rem; font-weight:700; color:#fff;">{n_reg}</span>
+             <span style="font-size:0.85rem; color:#c8e6c9;"> / {COMMUNITY_SIZE} registered</span></div>
+        <div><span style="font-size:1.4rem; font-weight:600; color:#fff;">{n_countries}</span>
+             <span style="font-size:0.85rem; color:#c8e6c9;"> countries</span></div>
+        <div><span style="font-size:1.4rem; font-weight:600; color:#fff;">{n_industries}</span>
+             <span style="font-size:0.85rem; color:#c8e6c9;"> industries</span></div>
+        <div><span style="font-size:1.4rem; font-weight:600; color:#fff;">{n_mentors}</span>
+             <span style="font-size:0.85rem; color:#c8e6c9;"> mentors</span></div>
       </div>
-      <div style="margin-top:0.6rem; background:rgba(255,255,255,0.2);
+      <div style="margin-top:0.6rem; background:rgba(255,255,255,0.25);
            border-radius:4px; height:6px; width:100%;">
         <div style="background:#a5d6a7; height:6px; border-radius:4px;
              width:{pct}%; transition:width 0.4s;"></div>
       </div>
-      <div style="font-size:0.72rem; opacity:0.7; margin-top:0.3rem;">{pct}% of known alumni on the map</div>
+      <div style="font-size:0.76rem; color:#a5d6a7; margin-top:0.3rem;">{pct}% of known alumni on the map</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -285,65 +285,75 @@ def render():
         </div>
         """, unsafe_allow_html=True)
 
-        lb1, lb2, lb3 = st.columns(3)
+        # ── Leaderboard: single HTML block, flex-wrap, mobile-safe ──────────
+        lb_sections = []
 
-        with lb1:
-            city_counts = df["city"].value_counts().head(8)
-            if not city_counts.empty:
-                rows_html = "".join(
-                    f'<tr><td style="font-size:0.85rem; padding:0.25rem 0.5rem;">' +
-                    f'<span style="color:#888; font-size:0.78rem; margin-right:0.4rem;">{i+1}.</span>' +
-                    f'{city}</td>' +
-                    f'<td style="font-weight:700; color:var(--green-dark); text-align:right; padding:0.25rem 0.5rem;">{count}</td></tr>'
-                    for i, (city, count) in enumerate(city_counts.items())
+        city_counts = df["city"].value_counts().head(8)
+        if not city_counts.empty:
+            rows = "".join(
+                f'<tr>'
+                f'<td style="font-size:0.85rem;padding:0.3rem 0.5rem;">'
+                f'<span style="color:#777;font-size:0.8rem;margin-right:0.4rem;">{i+1}.</span>{city}</td>'
+                f'<td style="font-weight:700;color:var(--green-dark);text-align:right;padding:0.3rem 0.5rem;">{count}</td>'
+                f'</tr>'
+                for i, (city, count) in enumerate(city_counts.items())
+            )
+            lb_sections.append(
+                '<div class="card" style="flex:1 1 220px;min-width:200px;">'
+                '<strong style="font-size:0.9rem;color:var(--green-dark);">🏙️ Top Cities</strong>'
+                '<table style="width:100%;border-collapse:collapse;margin-top:0.5rem;">'
+                + rows + '</table></div>'
+            )
+
+        ind_counts = df["industry"].value_counts().head(8)
+        if not ind_counts.empty:
+            rows = "".join(
+                f'<tr>'
+                f'<td style="font-size:0.85rem;padding:0.3rem 0.5rem;">'
+                f'<span style="color:#777;font-size:0.8rem;margin-right:0.4rem;">{i+1}.</span>{ind}</td>'
+                f'<td style="font-weight:700;color:var(--green-dark);text-align:right;padding:0.3rem 0.5rem;">{count}</td>'
+                f'</tr>'
+                for i, (ind, count) in enumerate(ind_counts.items())
+            )
+            lb_sections.append(
+                '<div class="card" style="flex:1 1 220px;min-width:200px;">'
+                '<strong style="font-size:0.9rem;color:var(--green-dark);">💼 Industries</strong>'
+                '<table style="width:100%;border-collapse:collapse;margin-top:0.5rem;">'
+                + rows + '</table></div>'
+            )
+
+        if "dorm" in df.columns:
+            dorm_counts = df[df["dorm"].notna() & (df["dorm"] != "")]["dorm"].value_counts()
+            if not dorm_counts.empty:
+                rows = "".join(
+                    f'<tr>'
+                    f'<td style="font-size:0.85rem;padding:0.3rem 0.5rem;">{dorm}</td>'
+                    f'<td style="font-weight:700;color:var(--green-dark);text-align:right;padding:0.3rem 0.5rem;">{count}</td>'
+                    f'</tr>'
+                    for dorm, count in dorm_counts.items()
                 )
-                st.markdown(
-                    '<div class="card">' +
-                    '<strong style="font-size:0.9rem; color:var(--green-dark);">🏙️ Top Cities</strong>' +
-                    '<table style="width:100%; border-collapse:collapse; margin-top:0.5rem;">' +
-                    rows_html + '</table></div>',
-                    unsafe_allow_html=True)
-
-        with lb2:
-            ind_counts = df["industry"].value_counts().head(8)
-            if not ind_counts.empty:
-                rows_html = "".join(
-                    f'<tr><td style="font-size:0.85rem; padding:0.25rem 0.5rem;">' +
-                    f'<span style="color:#888; font-size:0.78rem; margin-right:0.4rem;">{i+1}.</span>' +
-                    f'{ind}</td>' +
-                    f'<td style="font-weight:700; color:var(--green-dark); text-align:right; padding:0.25rem 0.5rem;">{count}</td></tr>'
-                    for i, (ind, count) in enumerate(ind_counts.items())
+                lb_sections.append(
+                    '<div class="card" style="flex:1 1 220px;min-width:200px;">'
+                    '<strong style="font-size:0.9rem;color:var(--green-dark);">🏠 Dorm Representation</strong>'
+                    '<p style="font-size:0.78rem;color:var(--text-muted);margin:0.1rem 0 0.4rem;">Who showed up? 👀</p>'
+                    '<table style="width:100%;border-collapse:collapse;">'
+                    + rows + '</table></div>'
                 )
-                st.markdown(
-                    '<div class="card">' +
-                    '<strong style="font-size:0.9rem; color:var(--green-dark);">💼 Industries</strong>' +
-                    '<table style="width:100%; border-collapse:collapse; margin-top:0.5rem;">' +
-                    rows_html + '</table></div>',
-                    unsafe_allow_html=True)
+            else:
+                lb_sections.append(
+                    '<div class="card" style="flex:1 1 220px;min-width:200px;text-align:center;padding:1.2rem;">'
+                    '<strong style="font-size:0.9rem;color:var(--green-dark);">🏠 Dorm Rivalry</strong>'
+                    '<p style="font-size:0.88rem;color:var(--text-muted);margin-top:0.4rem;">'
+                    'Siberia vs Constra vs Senior Dorms — who registers first?</p>'
+                    '</div>'
+                )
 
-        with lb3:
-            if "dorm" in df.columns:
-                dorm_counts = df[df["dorm"].notna() & (df["dorm"] != "")]["dorm"].value_counts()
-                if not dorm_counts.empty:
-                    rows_html = "".join(
-                        f'<tr><td style="font-size:0.85rem; padding:0.25rem 0.5rem;">{dorm}</td>' +
-                        f'<td style="font-weight:700; color:var(--green-dark); text-align:right; padding:0.25rem 0.5rem;">{count}</td></tr>'
-                        for dorm, count in dorm_counts.items()
-                    )
-                    st.markdown(
-                        '<div class="card">' +
-                        '<strong style="font-size:0.9rem; color:var(--green-dark);">🏠 Dorm Representation</strong>' +
-                        '<p style="font-size:0.75rem; color:#888; margin:0.1rem 0 0.4rem;">Who showed up? 👀</p>' +
-                        '<table style="width:100%; border-collapse:collapse;">' +
-                        rows_html + '</table></div>',
-                        unsafe_allow_html=True)
-                else:
-                    st.markdown(
-                        '<div class="card" style="text-align:center; padding:1.2rem;">' +
-                        '<strong style="font-size:0.9rem; color:var(--green-dark);">🏠 Dorm Rivalry</strong>' +
-                        '<p style="font-size:0.85rem; color:#888; margin-top:0.4rem;">Siberia vs Constra vs Senior Dorms — who registers first?</p>' +
-                        '</div>',
-                        unsafe_allow_html=True)
+        if lb_sections:
+            st.markdown(
+                '<div style="display:flex;flex-wrap:wrap;gap:0.8rem;margin-top:0.5rem;">'
+                + "".join(lb_sections) + '</div>',
+                unsafe_allow_html=True,
+            )
 
     st.markdown("""
     <div class="footer">

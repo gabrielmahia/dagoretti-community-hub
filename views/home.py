@@ -49,21 +49,25 @@ def render():
     except Exception:
         n_scholarships = 22  # known baseline
 
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
-    for col, n, lbl in [
-        (c1, n_alumni,       "Alumni in directory"),
-        (c2, n_countries,    "Countries represented"),
-        (c3, n_mentors,      "Mentors available"),
-        (c4, n_classes,      "Classes registered"),
-        (c5, n_scholarships, "Scholarships listed"),
-        (c6, _kcse_years,    "Years of KCSE data"),
-    ]:
-        with col:
-            col.markdown(f"""
-            <div class="stat-pill">
-              <span class="stat-n">{n}</span>
-              <span class="stat-lbl">{lbl}</span>
-            </div>""", unsafe_allow_html=True)
+    stats = [
+        (n_alumni,       "Alumni in directory"),
+        (n_countries,    "Countries represented"),
+        (n_mentors,      "Mentors available"),
+        (n_classes,      "Classes registered"),
+        (n_scholarships, "Scholarships listed"),
+        (_kcse_years,    "Years of KCSE data"),
+    ]
+    pills = "".join(
+        f'<div class="stat-pill" style="flex:1 1 140px; min-width:120px;">' +
+        f'<span class="stat-n">{n}</span>' +
+        f'<span class="stat-lbl">{lbl}</span>' +
+        '</div>'
+        for n, lbl in stats
+    )
+    st.markdown(
+        f'<div style="display:flex; flex-wrap:wrap; gap:0.6rem; margin-bottom:1rem;">{pills}</div>',
+        unsafe_allow_html=True,
+    )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
