@@ -64,6 +64,7 @@ var ROUTING = {
       email_public: null,         // never public
       linkedin:    "linkedin_url",
       mentoring:   "mentoring",
+      dorm:        "dorm",
       bio_short:   "bio",
     },
   },

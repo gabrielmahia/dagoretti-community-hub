@@ -162,7 +162,8 @@ NOTABLE_ALUMNI = [
         "note": (
             "KCSE at Dagoretti High School, 1995. Excelled in drama, public speaking, "
             "and science. Founded the Redykyulass satire group at Kenyatta University. "
-            "Now two-term Member of Parliament for Dagoretti South Constituency."
+            "Now two-term Member of Parliament for Dagoretti South Constituency. "
+            "His MP tenure saw the long-unfinished Constra dormitory finally completed."
         ),
         "source": "Wikipedia · Daily Nation · Kenya Times",
     },
@@ -178,13 +179,23 @@ NOTABLE_ALUMNI = [
     },
     {
         "name": "Kevin Wyre",
-        "known_for": "Pop Artist",
+        "known_for": "Pop Artist · Love Child",
         "note": (
             "Listed as a Dagoretti High School alumnus on the school's Wikipedia page "
             "and in multiple school directories. Part of the generation that built "
             "Dagoretti's music culture."
         ),
         "source": "Wikipedia (Dagoretti High School article) · ShuleZote",
+    },
+    {
+        "name": "Ferdinand Waititu",
+        "known_for": "Former Governor of Kiambu County",
+        "note": (
+            "Dagoretti High School alumnus who rose to serve as Governor of Kiambu County. "
+            "Part of the generation that established Dagoretti's track record of producing "
+            "public figures across politics and public service."
+        ),
+        "source": "Wikipedia · Rejnac Daily",
     },
 ]
 
@@ -333,6 +344,77 @@ def render():
             '</div></div>'
         )
         st.markdown(card, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── Dorm lore ──────────────────────────────────────────────────────────────
+    st.markdown("""
+    <div class="section-header">
+      <h2>🏠 The Dorms — Where You Slept Decided Who You Were</h2>
+      <p>First-hand account · Class of 2001 era</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    dorm_lore = [
+        {
+            "name": "Siberia",
+            "icon": "🥶",
+            "who": "Form 1s (Monos) + some Form 2s",
+            "body": (
+                "Sheet metal roof. During Kenya's cold seasons — June, July, the deep July cold "
+                "that hits Nairobi at night — Siberia earned its name. "
+                "The Form 1s landed here first, straight from home, still figuring out "
+                "what boarding school actually meant. The name was not accidental."
+            ),
+        },
+        {
+            "name": "Constra",
+            "icon": "🏗️",
+            "who": "Mainly Form 2s",
+            "body": (
+                "Short for 'construction' — because it was never finished. "
+                "Rumour had it the building had been incomplete since the 1980s, "
+                "and that the long-serving principal at the time had a creative relationship "
+                "with construction budgets. The students named it accordingly. "
+                "It stayed incomplete for decades — and was finally finished "
+                "during KJ's tenure as MP for Dagoretti South."
+            ),
+        },
+        {
+            "name": "Senior Dorms 1–5",
+            "icon": "🏆",
+            "who": "Form 3s and Form 4s",
+            "body": (
+                "Five numbered dormitories. Getting here meant you had survived Siberia "
+                "and Constra. The seniors ran things — the pecking order was understood "
+                "by everyone from the first week of Form 1. "
+                "By Form 4, you had seen three or four cohorts of Form 1s arrive "
+                "and ask the same questions you once asked."
+            ),
+        },
+        {
+            "name": "Mara House",
+            "icon": "🦁",
+            "who": "Referenced in school records",
+            "body": (
+                "Mara House is cited in alumni records and the school's institutional history. "
+                "The school used both numbered dorms and named houses across different eras — "
+                "the naming conventions shifted over the decades."
+            ),
+        },
+    ]
+
+    dorm_cols = st.columns(2)
+    for i, dorm in enumerate(dorm_lore):
+        with dorm_cols[i % 2]:
+            st.markdown(
+                f'<div class="card" style="border-left:3px solid var(--green-mid); padding:1rem;">' +
+                f'<h4 style="color:var(--green-dark); margin:0 0 0.2rem;">{dorm["icon"]} {dorm["name"]}</h4>' +
+                f'<p style="font-size:0.78rem; font-weight:600; color:#888; margin:0 0 0.4rem; text-transform:uppercase; letter-spacing:0.5px;">{dorm["who"]}</p>' +
+                f'<p style="font-size:0.88rem; margin:0;">{dorm["body"]}</p>' +
+                '</div>',
+                unsafe_allow_html=True,
+            )
 
     st.markdown("<br>", unsafe_allow_html=True)
 

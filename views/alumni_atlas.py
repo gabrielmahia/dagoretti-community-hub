@@ -285,47 +285,65 @@ def render():
         </div>
         """, unsafe_allow_html=True)
 
-        lb1, lb2 = st.columns(2)
+        lb1, lb2, lb3 = st.columns(3)
 
         with lb1:
             city_counts = df["city"].value_counts().head(8)
             if not city_counts.empty:
                 rows_html = "".join(
-                    f'<tr><td style="font-size:0.85rem; padding:0.25rem 0.5rem;">'
-                    f'<span style="color:#888; font-size:0.78rem; margin-right:0.4rem;">{i+1}.</span>'
-                    f'{city}</td>'
-                    f'<td style="font-weight:700; color:var(--green-dark); text-align:right; '
-                    f'padding:0.25rem 0.5rem;">{count}</td></tr>'
+                    f'<tr><td style="font-size:0.85rem; padding:0.25rem 0.5rem;">' +
+                    f'<span style="color:#888; font-size:0.78rem; margin-right:0.4rem;">{i+1}.</span>' +
+                    f'{city}</td>' +
+                    f'<td style="font-weight:700; color:var(--green-dark); text-align:right; padding:0.25rem 0.5rem;">{count}</td></tr>'
                     for i, (city, count) in enumerate(city_counts.items())
                 )
-                st.markdown(f"""
-                <div class="card">
-                  <strong style="font-size:0.9rem; color:var(--green-dark);">🏙️ Top Cities</strong>
-                  <table style="width:100%; border-collapse:collapse; margin-top:0.5rem;">
-                    {rows_html}
-                  </table>
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown(
+                    '<div class="card">' +
+                    '<strong style="font-size:0.9rem; color:var(--green-dark);">🏙️ Top Cities</strong>' +
+                    '<table style="width:100%; border-collapse:collapse; margin-top:0.5rem;">' +
+                    rows_html + '</table></div>',
+                    unsafe_allow_html=True)
 
         with lb2:
             ind_counts = df["industry"].value_counts().head(8)
             if not ind_counts.empty:
                 rows_html = "".join(
-                    f'<tr><td style="font-size:0.85rem; padding:0.25rem 0.5rem;">'
-                    f'<span style="color:#888; font-size:0.78rem; margin-right:0.4rem;">{i+1}.</span>'
-                    f'{ind}</td>'
-                    f'<td style="font-weight:700; color:var(--green-dark); text-align:right; '
-                    f'padding:0.25rem 0.5rem;">{count}</td></tr>'
+                    f'<tr><td style="font-size:0.85rem; padding:0.25rem 0.5rem;">' +
+                    f'<span style="color:#888; font-size:0.78rem; margin-right:0.4rem;">{i+1}.</span>' +
+                    f'{ind}</td>' +
+                    f'<td style="font-weight:700; color:var(--green-dark); text-align:right; padding:0.25rem 0.5rem;">{count}</td></tr>'
                     for i, (ind, count) in enumerate(ind_counts.items())
                 )
-                st.markdown(f"""
-                <div class="card">
-                  <strong style="font-size:0.9rem; color:var(--green-dark);">💼 Industries</strong>
-                  <table style="width:100%; border-collapse:collapse; margin-top:0.5rem;">
-                    {rows_html}
-                  </table>
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown(
+                    '<div class="card">' +
+                    '<strong style="font-size:0.9rem; color:var(--green-dark);">💼 Industries</strong>' +
+                    '<table style="width:100%; border-collapse:collapse; margin-top:0.5rem;">' +
+                    rows_html + '</table></div>',
+                    unsafe_allow_html=True)
+
+        with lb3:
+            if "dorm" in df.columns:
+                dorm_counts = df[df["dorm"].notna() & (df["dorm"] != "")]["dorm"].value_counts()
+                if not dorm_counts.empty:
+                    rows_html = "".join(
+                        f'<tr><td style="font-size:0.85rem; padding:0.25rem 0.5rem;">{dorm}</td>' +
+                        f'<td style="font-weight:700; color:var(--green-dark); text-align:right; padding:0.25rem 0.5rem;">{count}</td></tr>'
+                        for dorm, count in dorm_counts.items()
+                    )
+                    st.markdown(
+                        '<div class="card">' +
+                        '<strong style="font-size:0.9rem; color:var(--green-dark);">🏠 Dorm Representation</strong>' +
+                        '<p style="font-size:0.75rem; color:#888; margin:0.1rem 0 0.4rem;">Who showed up? 👀</p>' +
+                        '<table style="width:100%; border-collapse:collapse;">' +
+                        rows_html + '</table></div>',
+                        unsafe_allow_html=True)
+                else:
+                    st.markdown(
+                        '<div class="card" style="text-align:center; padding:1.2rem;">' +
+                        '<strong style="font-size:0.9rem; color:var(--green-dark);">🏠 Dorm Rivalry</strong>' +
+                        '<p style="font-size:0.85rem; color:#888; margin-top:0.4rem;">Siberia vs Constra vs Senior Dorms — who registers first?</p>' +
+                        '</div>',
+                        unsafe_allow_html=True)
 
     st.markdown("""
     <div class="footer">

@@ -72,6 +72,18 @@ def render():
                 "Open to mentoring current students?",
                 ["Yes", "No"], horizontal=True, key="al_mentor",
             )
+            dorm = st.selectbox("Dorm / House (optional — Class of 2001 era)", [
+                "— not sure / prefer not to say",
+                "Siberia (Form 1s / monos)",
+                "Constra (Form 2s)",
+                "Senior Dorm 1",
+                "Senior Dorm 2",
+                "Senior Dorm 3",
+                "Senior Dorm 4",
+                "Senior Dorm 5",
+                "Mara House",
+                "Other / Day scholar",
+            ], key="al_dorm")
 
         bio = st.text_area(
             "Short bio (max 220 characters) *",
@@ -104,6 +116,7 @@ def render():
                     "industry": industry, "role": role,
                     "city": city, "country": country,
                     "linkedin_url": linkedin_url, "mentoring": mentoring,
+                    "dorm": dorm if not dorm.startswith("—") else "",
                     "bio": bio, "email_admin": email_admin,
                 })
                 if ok:
