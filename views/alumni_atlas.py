@@ -68,8 +68,8 @@ def _load():
 COMMUNITY_SIZE = 78  # known WhatsApp group size — update as community grows
 
 # School gate coordinates (Dagoretti High School, Kikuyu Road, Nairobi)
-SCHOOL_LAT = -1.2497
-SCHOOL_LON  = 36.6889
+SCHOOL_LAT = -1.275556   # Wikipedia: 1°16′32″S 36°42′49″E (corrected from -1.2497)
+SCHOOL_LON  = 36.713611  # Wikipedia: 1°16′32″S 36°42′49″E (corrected from 36.6889)
 
 
 def _render_school_pin_only():

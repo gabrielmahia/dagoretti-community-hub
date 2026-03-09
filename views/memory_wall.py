@@ -259,6 +259,40 @@ def render():
     </div>
     """, unsafe_allow_html=True)
 
+    # ── School quick-facts ─────────────────────────────────────────────────────
+    st.markdown("""
+    <div class="card" style="background:#1a1a2e; border:1px solid #333; padding:1rem 1.2rem;">
+      <div style="display:flex; flex-wrap:wrap; gap:1.4rem; align-items:center;">
+        <div>
+          <span style="font-size:0.72rem; color:#888; text-transform:uppercase; letter-spacing:0.5px;">Motto</span><br>
+          <strong style="color:#c9a94e;">Elimu Ni Mali</strong>
+          <span style="color:#888; font-size:0.82rem;"> (Education is Wealth)</span>
+        </div>
+        <div>
+          <span style="font-size:0.72rem; color:#888; text-transform:uppercase; letter-spacing:0.5px;">Colours</span><br>
+          <span style="display:inline-block; width:12px; height:12px; background:#800000; border-radius:2px; margin-right:3px; vertical-align:middle;"></span>
+          <span style="display:inline-block; width:12px; height:12px; background:#fff; border:1px solid #555; border-radius:2px; margin-right:3px; vertical-align:middle;"></span>
+          <span style="display:inline-block; width:12px; height:12px; background:#2e7d32; border-radius:2px; margin-right:3px; vertical-align:middle;"></span>
+          <span style="display:inline-block; width:12px; height:12px; background:#9e9e9e; border-radius:2px; margin-right:6px; vertical-align:middle;"></span>
+          <strong style="font-size:0.88rem;">Maroon · White · Green · Grey</strong>
+        </div>
+        <div>
+          <span style="font-size:0.72rem; color:#888; text-transform:uppercase; letter-spacing:0.5px;">Location</span><br>
+          <strong style="font-size:0.88rem;">16km from Nairobi · Nairobi–Kikuyu Road</strong>
+        </div>
+        <div>
+          <span style="font-size:0.72rem; color:#888; text-transform:uppercase; letter-spacing:0.5px;">Founded</span><br>
+          <strong style="font-size:0.88rem;">1929 (Ruthimitu) · Reopened 1962</strong>
+        </div>
+        <div>
+          <span style="font-size:0.72rem; color:#888; text-transform:uppercase; letter-spacing:0.5px;">KNEC Code</span><br>
+          <strong style="font-size:0.88rem;">20405001</strong>
+        </div>
+      </div>
+      <p style="font-size:0.68rem; color:#555; margin:0.6rem 0 0;">Source: Wikipedia · Dagoretti High School article (updated Feb 2026)</p>
+    </div>
+    """, unsafe_allow_html=True)
+
     # ── Three pillars ──────────────────────────────────────────────────────────
     st.markdown("""
     <div class="section-header">
@@ -376,7 +410,10 @@ def render():
                 "Rumour had it the building had been incomplete since the 1980s, "
                 "and that the long-serving principal at the time had a creative relationship "
                 "with construction budgets. The students named it accordingly. "
-                "It stayed incomplete for decades — and was finally finished "
+                "That long-standing principal was replaced in 2000 by Mr. R.M. Murengi — "
+                "who ran things firmly and is remembered for discipline. "
+                "Who the predecessor was is a gap only the older alumni can fill. "
+                "Constra itself stayed unfinished for decades, finally completed "
                 "during KJ's tenure as MP for Dagoretti South."
             ),
         },
@@ -418,11 +455,99 @@ def render():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
+    # ── Political lineage ───────────────────────────────────────────────────────
+    st.markdown("""
+    <div class="section-header">
+      <h2>🏛️ A School Woven Into Kenya's Political History</h2>
+      <p>From pre-independence to Parliament — confirmed by Wikipedia · Dagoretti High School article</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    POLITICAL_LINEAGE = [
+        {
+            "year": "1939",
+            "figure": "Jomo Kenyatta",
+            "role": "Future President of Kenya",
+            "event": (
+                "Personally drove the reopening of the school after its colonial-era closure. "
+                "The school reopened as Waithaka Independent School under the Kikuyu Karing'a "
+                "School Association — a direct act of African resistance to colonial education policy."
+            ),
+        },
+        {
+            "year": "c. 1942",
+            "figure": "Eliud Mathu",
+            "role": "First Principal · First African on Kenya's Legislative Council",
+            "event": (
+                "Makerere University graduate who became the school's first principal. "
+                "Mathu was simultaneously the first African ever appointed to Kenya's "
+                "Legislative Council — the school's founding leadership and Kenya's "
+                "legislative history were the same person."
+            ),
+        },
+        {
+            "year": "1959",
+            "figure": "Dr. Njoroge Magana Mungai",
+            "role": "First Member of Parliament for Dagoretti Constituency",
+            "event": (
+                "Drove the initiative to convert the school back from a Mau Mau detention camp "
+                "into an educational institution. Form 1 students were temporarily housed at "
+                "Thika High School while construction was completed. Without Mungai's push, "
+                "the school may not have reopened at all."
+            ),
+        },
+        {
+            "year": "1963",
+            "figure": "Kenneth Matiba",
+            "role": "Permanent Secretary for Education · Later pro-democracy leader",
+            "event": (
+                "Officially inaugurated Dagoretti High School on 21 September 1963 in his "
+                "capacity as PS for Education. Matiba went on to become one of Kenya's most "
+                "prominent pro-democracy figures, leading the push for multiparty politics "
+                "in the early 1990s."
+            ),
+        },
+        {
+            "year": "1995 →",
+            "figure": "John Kiarie (KJ)",
+            "role": "KCSE 1995 · Two-term MP, Dagoretti South",
+            "event": (
+                "Dagoretti alumnus who returned to represent the constituency the school sits in. "
+                "His MP tenure saw the long-unfinished Constra dormitory finally completed — "
+                "an alumnus finishing what his school started."
+            ),
+        },
+        {
+            "year": "2017–2022",
+            "figure": "Peter Orero",
+            "role": "Former Principal → MP for Kibra",
+            "event": (
+                "Ran Dagoretti High School as principal and transformed it into a basketball "
+                "powerhouse before being elected Member of Parliament for Kibra Constituency. "
+                "A principal who became a parliamentarian — the school's civic thread continued."
+            ),
+        },
+    ]
+
+    for item in POLITICAL_LINEAGE:
+        st.markdown(
+            '<div class="card" style="display:flex; gap:1rem; border-left:4px solid #8B0000; margin-bottom:0.6rem;">'
+            f'<div style="min-width:56px; font-weight:700; font-size:0.82rem; color:#8B0000; padding-top:0.1rem;">{item["year"]}</div>'
+            '<div>'
+            f'<strong style="font-size:0.95rem;">{item["figure"]}</strong> '
+            f'<span style="font-size:0.78rem; color:#888; font-style:italic;">— {item["role"]}</span><br>'
+            f'<span style="font-size:0.85rem;">{item["event"]}</span>'
+            '</div></div>',
+            unsafe_allow_html=True,
+        )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
     # ── Notable alumni ─────────────────────────────────────────────────────────
     st.markdown("""
     <div class="section-header">
       <h2>🌟 The Dagoretti Tradition — Notable Alumni</h2>
-      <p>Confirmed by The Standard, November 2011 · School-level, not Class of 2001 specific</p>
+      <p>Confirmed by Wikipedia · The Standard, November 2011 · School-level, not Class of 2001 specific</p>
     </div>
     """, unsafe_allow_html=True)
 
