@@ -264,6 +264,7 @@ function _writeToGitHub(tabName, rowObj) {
  * Called once per tab on setup, and again whenever a new row is added.
  */
 function _applyStatusValidation(sheet) {
+  if (sheet.getLastColumn() === 0) return;  // empty sheet — no columns yet
   var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   var statusColIdx = headers.indexOf(STATUS_COL_NAME);
   if (statusColIdx === -1) return;
