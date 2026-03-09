@@ -7,6 +7,9 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+from utils import sheets
 
 
 @st.cache_data
@@ -37,6 +40,15 @@ def render():
       <p style='color:#81c784; margin-top:0.4rem; font-size:0.9rem;'>
         Class of 2001 graduated into a different Kenya. Class of 2025 graduates into a different world.
       </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="card-gold">
+      <strong>Data status:</strong> Indicators are sourced from named agencies (World Bank, KNBS, WHO, etc.)
+      but most figures are <em>plausible estimates</em>, not directly linked citations.
+      Three rows are confirmed from primary sources (SGR operational status, M-Pesa users, county count).
+      If any figure looks wrong, use the <strong>✏️ Suggest correction</strong> link under each row.
     </div>
     """, unsafe_allow_html=True)
 
@@ -146,7 +158,7 @@ def render():
         </div>
         """, unsafe_allow_html=True)
 
-        for _, row in cat_df.iterrows():
+        for row_idx, (_, row) in enumerate(cat_df.iterrows()):
             try:
                 v2000 = float(str(row["value_2000"]).replace(",", ""))
                 v2025 = float(str(row["value_2025"]).replace(",", ""))
@@ -154,6 +166,12 @@ def render():
                 change = f"{direction} {abs(round(100*(v2025-v2000)/v2000, 0)):.0f}% change" if v2000 > 0 else ""
             except (ValueError, TypeError):
                 change = "🔄 Changed"
+
+            verified = str(row.get("verified", ""))
+            if verified == "confirmed":
+                v_badge = "<span style='font-size:0.72rem; color:#2e7d32; font-weight:600;'>✅ Confirmed</span>"
+            else:
+                v_badge = "<span style='font-size:0.72rem; color:#b97400;'>⚠️ Plausible estimate — verify at source</span>"
 
             st.markdown(f"""
             <div class="card">
@@ -166,8 +184,16 @@ def render():
                 <span><strong style='color:var(--green-dark);'>2025:</strong> {row['value_2025']} <em style='font-size:0.8rem; color:var(--text-muted);'>{row['unit']}</em></span>
               </div>
               <p style='margin:0.3rem 0 0; font-size:0.8rem; color:var(--text-muted);'>Source: {row['source']}</p>
+              <p style='margin:0.2rem 0 0;'>{v_badge}</p>
             </div>
             """, unsafe_allow_html=True)
+
+            sheets.suggest_correction_button(
+                page="Kenya: Then & Now",
+                field=row["indicator"],
+                current_value=f"2000: {row['value_2000']} | 2025: {row['value_2025']}",
+                key=f"tn_{cat}_{row_idx}",
+            )
 
     st.markdown("""
     <div class="footer">

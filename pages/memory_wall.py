@@ -186,58 +186,42 @@ NOTABLE_ALUMNI = [
     },
 ]
 
-MESSAGES = [
-    {
-        "name": "James Mwangi",
-        "role": "Group CEO · Nairobi",
-        "message": (
-            "Dagoretti taught me that excellence is not a destination, it is a discipline. "
-            "Twenty-five years later, I still remember what that discipline feels like."
-        ),
-    },
-    {
-        "name": "David Ochieng",
-        "role": "Consultant Physician · London",
-        "message": (
-            "Biology class at Dagoretti is where I first understood the human body as a system. "
-            "That curiosity never left me."
-        ),
-    },
-    {
-        "name": "Peter Kariuki",
-        "role": "Regional Director · Johannesburg",
-        "message": (
-            "I have worked across six African countries. The one constant is that a Dagoretti "
-            "education opens doors. People recognise the standard."
-        ),
-    },
-    {
-        "name": "Robert Ndirangu",
-        "role": "CTO · Amsterdam",
-        "message": (
-            "The debate club. The band rehearsals. The rugby Saturdays. "
-            "We did not realise we were being trained for more than exams. "
-            "Dagoretti made us men who show up — and that has been worth everything."
-        ),
-    },
-    {
-        "name": "Patrick Waweru",
-        "role": "Electrical Engineer · Nairobi",
-        "message": (
-            "I still remember the walk from the gate to the main block on the first day. "
-            "Uniform too stiff, bag too heavy. Twenty-five years later, I walk into "
-            "every room knowing Dagoretti built something in me that does not break."
-        ),
-    },
-    {
-        "name": "Samuel Kamau",
-        "role": "Civil Engineer · Dubai",
-        "message": (
-            "The school motto was not just a slogan. Every teacher, every exam, every "
-            "Saturday practice session was building something real. I carry it daily."
-        ),
-    },
-]
+
+
+
+
+# ── Messages from the class ───────────────────────────────────────────────────
+# These are read from Google Sheets (memory_submissions tab, status='approved').
+# No messages are hardcoded — every quote shown was submitted by a real person
+# and reviewed by an admin before appearing here.
+
+import sys, os as _os
+sys.path.insert(0, _os.path.dirname(_os.path.dirname(__file__)))
+from utils import sheets as _sheets
+
+@st.cache_data(ttl=300)
+def _load_approved_memories():
+    """
+    Pull approved memory submissions from Google Sheets via Apps Script.
+    The Apps Script must expose a doGet() handler that returns JSON.
+    Falls back to empty list if not configured or read fails.
+
+    NOTE: Until a doGet() endpoint is added to the Apps Script, this returns [].
+    Approved memories can also be manually appended to data/memories.csv and
+    read from there as an interim approach.
+    """
+    # Interim: read from local CSV if it exists (admin-curated approved memories)
+    import os
+    local_path = os.path.join(os.path.dirname(__file__), "..", "data", "memories.csv")
+    if os.path.exists(local_path):
+        try:
+            import pandas as pd
+            df = pd.read_csv(local_path)
+            approved = df[df["status"].str.lower() == "approved"] if "status" in df.columns else df
+            return approved.to_dict("records")
+        except Exception:
+            pass
+    return []
 
 
 def render():
@@ -413,25 +397,38 @@ def render():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # ── Messages ───────────────────────────────────────────────────────────────
+    # ── Messages from the class ────────────────────────────────────────────────
     st.markdown("""
     <div class="section-header">
       <h2>Messages from the Class</h2>
-      <p>25 years on, looking back</p>
+      <p>Submitted by alumni, reviewed before appearing here</p>
     </div>
     """, unsafe_allow_html=True)
 
-    for msg in MESSAGES:
-        st.markdown(f"""
-        <div class="card-green">
-          <p style='font-style:italic; font-size:1.02rem;'>
-            &#x201C;{msg['message']}&#x201D;
-          </p>
-          <p style='margin-top:0.6rem; font-weight:600; color:var(--green-dark);'>
-            — {msg['name']}, {msg['role']}
-          </p>
-        </div>
-        """, unsafe_allow_html=True)
+    approved = _load_approved_memories()
+    if approved:
+        for msg in approved:
+            label = f"{msg.get('name','Anonymous')}"
+            if msg.get("year_at_dagoretti"):
+                label += f", Class of {msg['year_at_dagoretti']}"
+            st.markdown(
+                '<div class="card-green">'
+                f'<p style="font-style:italic; font-size:1.02rem;">&#x201C;{msg["body"]}&#x201D;</p>'
+                f'<p style="margin-top:0.6rem; font-weight:600; color:var(--green-dark);">— {label}</p>'
+                '</div>',
+                unsafe_allow_html=True,
+            )
+    else:
+        st.markdown(
+            '<div class="card-green" style="text-align:center; padding:2rem 1rem;">'
+            '<p style="font-size:1.05rem; font-weight:600; color:var(--green-dark);">No messages yet.</p>'
+            '<p style="font-size:0.9rem; color:var(--text-muted); margin-top:0.5rem;">'
+            'Be the first. Use the <strong>Submit Data → Memory / Message</strong> tab '
+            'to share a story, a reflection, or a milestone.'
+            '</p>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
 
     st.markdown("""
     <div class="card-gold" style='text-align:center; margin-top:1.5rem;'>

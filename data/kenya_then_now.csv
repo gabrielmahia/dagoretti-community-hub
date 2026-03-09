@@ -1,26 +1,26 @@
-indicator,value_2000,value_2025,unit,source,category
-Population,30.7,57.1,Million,Kenya National Bureau of Statistics,Demographics
-GDP per capita,420,2100,USD,World Bank,Economy
-Mobile phone subscribers,0.4,64.0,Million,Communications Authority of Kenya,Technology
-Internet users,0.2,25.8,Percent of population,ITU,Technology
-Mobile money accounts,0,36.0,Million,Central Bank of Kenya,Technology
-Life expectancy at birth,52,69,Years,WHO,Health
-Under-5 mortality rate,115,36,Per 1000 live births,UNICEF,Health
-Maternal mortality ratio,680,355,Per 100000 live births,WHO,Health
-Adult literacy rate,78,82,Percent,UNESCO,Education
-Primary school net enrolment,74,95,Percent,Kenya Ministry of Education,Education
-Secondary school net enrolment,22,67,Percent,Kenya Ministry of Education,Education
-Universities and university colleges,8,74,Count,Kenya Universities and Colleges Central Placement Service,Education
-Tarmac road network,8900,17000,Kilometres,Kenya National Highways Authority,Infrastructure
-Mobile broadband subscriptions,0,37.2,Million,Communications Authority of Kenya,Technology
-Electricity access - households,15,75,Percent,Kenya Power,Infrastructure
-Nairobi light rail / metro,Not built,Under construction,Boolean,Kenya Urban Roads Authority,Infrastructure
-Standard Gauge Railway,Not built,Operational,Boolean,Kenya Railways,Infrastructure
-Ease of doing business rank,Not ranked,68,Global rank,World Bank Doing Business,Economy
-Nairobi Stock Exchange market cap,3.2,22.0,USD Billion,Nairobi Securities Exchange,Economy
-M-Pesa users,0,32.0,Million,Safaricom,Technology
-Devolution - county governments,0,47,Count,Commission on Revenue Allocation,Governance
-Women in parliament,8,24,Percent,Inter-Parliamentary Union,Governance
-Formal employment,1.8,3.4,Million,Kenya National Bureau of Statistics,Economy
-Number of billionaires (USD),0,3,Count,Forbes,Economy
-CO2 emissions per capita,0.3,0.4,Tonnes,World Bank,Economy
+indicator,value_2000,value_2025,unit,source,category,verified
+Population,30.7,57.1,Million,Kenya National Bureau of Statistics,Demographics,"plausible — source named, verify at link"
+GDP per capita,420,2100,USD,World Bank,Economy,"plausible — source named, verify at link"
+Mobile phone subscribers,0.4,64.0,Million,Communications Authority of Kenya,Technology,"plausible — source named, verify at link"
+Internet users,0.2,25.8,Percent of population,ITU,Technology,"plausible — source named, verify at link"
+Mobile money accounts,0,36.0,Million,Central Bank of Kenya,Technology,"plausible — source named, verify at link"
+Life expectancy at birth,52,69,Years,WHO,Health,"plausible — source named, verify at link"
+Under-5 mortality rate,115,36,Per 1000 live births,UNICEF,Health,"plausible — source named, verify at link"
+Maternal mortality ratio,680,355,Per 100000 live births,WHO,Health,"plausible — source named, verify at link"
+Adult literacy rate,78,82,Percent,UNESCO,Education,"plausible — source named, verify at link"
+Primary school net enrolment,74,95,Percent,Kenya Ministry of Education,Education,"plausible — source named, verify at link"
+Secondary school net enrolment,22,67,Percent,Kenya Ministry of Education,Education,"plausible — source named, verify at link"
+Universities and university colleges,8,74,Count,Kenya Universities and Colleges Central Placement Service,Education,"plausible — source named, verify at link"
+Tarmac road network,8900,17000,Kilometres,Kenya National Highways Authority,Infrastructure,"plausible — source named, verify at link"
+Mobile broadband subscriptions,0,37.2,Million,Communications Authority of Kenya,Technology,"plausible — source named, verify at link"
+Electricity access - households,15,75,Percent,Kenya Power,Infrastructure,"plausible — source named, verify at link"
+Nairobi light rail / metro,Not built,Under construction,Boolean,Kenya Urban Roads Authority,Infrastructure,"plausible — source named, verify at link"
+Standard Gauge Railway,Not built,Operational,Boolean,Kenya Railways,Infrastructure,confirmed
+Ease of doing business rank,Not ranked,68,Global rank,World Bank Doing Business,Economy,"plausible — source named, verify at link"
+Nairobi Stock Exchange market cap,3.2,22.0,USD Billion,Nairobi Securities Exchange,Economy,"plausible — source named, verify at link"
+M-Pesa users,0,32.0,Million,Safaricom,Technology,confirmed
+Devolution - county governments,0,47,Count,Commission on Revenue Allocation,Governance,confirmed
+Women in parliament,8,24,Percent,Inter-Parliamentary Union,Governance,"plausible — source named, verify at link"
+Formal employment,1.8,3.4,Million,Kenya National Bureau of Statistics,Economy,"plausible — source named, verify at link"
+Number of billionaires (USD),0,3,Count,Forbes,Economy,"plausible — source named, verify at link"
+CO2 emissions per capita,0.3,0.4,Tonnes,World Bank,Economy,"plausible — source named, verify at link"

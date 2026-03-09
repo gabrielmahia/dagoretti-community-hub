@@ -12,6 +12,9 @@ import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
 import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+from utils import sheets
 
 
 @st.cache_data
@@ -165,14 +168,37 @@ def render():
 
     # ── Full table ────────────────────────────────────────────────────────────
     with st.expander("📋 Full results table (all years)"):
-        show_df = df[["year", "mean_grade", "candidates", "top_student", "top_grade"]].sort_values("year", ascending=False)
-        show_df.columns = ["Year", "Mean Grade", "Candidates", "Top Student", "Top Grade"]
+        show_df = df[["year", "mean_grade", "candidates", "verified"]].sort_values("year", ascending=False).copy()
+        show_df.columns = ["Year", "Mean Grade", "Candidates", "Data Status"]
         st.dataframe(show_df, use_container_width=True, hide_index=True)
+        st.caption(
+            "✅ Confirmed = sourced from primary records. "
+            "⚠️ Illustrative = estimated for trend context only — not verified KNEC data."
+        )
+
+    st.markdown("""
+    <div class="card-gold">
+      <strong>Know the correct figure for any year?</strong><br>
+      <span style='font-size:0.88rem;'>
+        Illustrative years (1995–2013, 2016–2021) need verified KNEC data.
+        If you have access to school records or official KNEC transcripts,
+        use the correction form below.
+      </span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    sheets.suggest_correction_button(
+        page="KCSE Tracker",
+        field="Mean score / grade distribution for a specific year",
+        current_value="See full table above",
+        key="kcse_main",
+    )
 
     st.markdown("""
     <div class="footer">
-      Source: Estimated data (1995–2009). Verified KNEC data (2010–2024 indicative).
-      Replace with official records before public launch.
+      Confirmed data: 2014 &amp; 2015 (official school Facebook page);
+      2022–2025 (Rejnac Daily / KNEC grade distribution Jan 2026).
+      All other years are illustrative estimates — not verified KNEC records.
     </div>
     """, unsafe_allow_html=True)
 
