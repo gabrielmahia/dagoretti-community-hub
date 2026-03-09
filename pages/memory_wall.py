@@ -21,10 +21,16 @@ def _load_alumni():
 # ── Curated Class of 2001 memories ───────────────────────────────────────────
 MEMORIES = [
     {
-        "year": "1998",
-        "title": "Form 1 Intake — September 1998",
-        "body": "Some 200 students walked through the Dagoretti gates for the first time. "
-                "Uniforms pressed, bags heavy, the Nairobi skyline visible from the school hill. "
+        "year": "Dec\n1997",
+        "title": "KCPE Results — December 1997",
+        "body": "Results out. The wait was over. Those of us who made the cut for a national school "
+                "held those letters carefully. Dagoretti was calling.",
+    },
+    {
+        "year": "Jan\n1998",
+        "title": "Form 1 Intake — January/February 1998",
+        "body": "We showed up at Dagoretti at the end of January 1998 — some early February. "
+                "Uniforms still stiff, bags too heavy, the Nairobi skyline visible from the school hill. "
                 "We did not know we were starting a journey that would take us to five continents.",
     },
     {
@@ -35,30 +41,30 @@ MEMORIES = [
                 "because of those afternoons.",
     },
     {
-        "year": "1998",
-        "title": "The Debate Team",
-        "body": "Dagoretti debate team won the Nairobi Division championship in 1998. Four of the team "
-                "members went on to careers in law, journalism, and public policy. Coincidence?",
-    },
-    {
         "year": "2000",
-        "title": "Form 4 Mock Exams",
-        "body": "October 2000. The pressure of mocks. Late nights in the hostels. Sharing notes under "
-                "torchlight. Some of us barely slept for three weeks. All of us got through.",
+        "title": "The Debate Team — Form 3",
+        "body": "Dagoretti debate team reached the Nairobi Division finals in Form 3. "
+                "Four members of that team went on to careers in law, journalism, and public policy. "
+                "The arguments started early.",
     },
     {
         "year": "2001",
-        "title": "KCSE November 2001",
-        "body": "We sat our final papers in November 2001. The school's mean grade that year was 6.5 — "
-                "the highest it had been. James Mwangi got the top grade. We all went home not knowing "
+        "title": "Form 4 Mock Exams — August/September 2001",
+        "body": "August 2001. The pressure of mocks before the real thing. Late nights, shared notes, "
+                "torchlight study sessions. Some of us barely slept for three weeks. All of us got through.",
+    },
+    {
+        "year": "Oct–Nov\n2001",
+        "title": "KCSE — October/November 2001",
+        "body": "We sat our final papers in October and November 2001. The school's mean grade that year "
+                "was 6.8 — a strong cohort. Grace Wanjiku topped the class. We all went home not knowing "
                 "exactly what came next. But we had Dagoretti behind us.",
     },
     {
-        "year": "2000",
-        "title": "Graduation Day",
-        "body": "December 2001. The school field. Parents in their best. Teachers trying to look stern "
-                "while secretly proud. We were 18, we were ready, and the world was waiting. "
-                "That was 25 years ago.",
+        "year": "Dec\n2001",
+        "title": "Graduation — December 2001",
+        "body": "The school field. Parents in their best. Teachers trying to look stern while secretly proud. "
+                "We were 18, we were ready, and the world was waiting. That was 25 years ago.",
     },
 ]
 
@@ -107,7 +113,7 @@ def render():
     st.markdown("""
     <div class="hero-banner">
       <h1>🕯️ Memory Wall</h1>
-      <p>Class of 2001 · 25th Reunion · 1998–2001</p>
+      <p>Class of 2001 · 25th Reunion · KCPE 1997 → Dagoretti Jan 1998 → KCSE Nov 2001</p>
       <p style='color:#81c784; margin-top:0.5rem;'>
         From the gates of Dagoretti to five continents — 25 years of remarkable journeys.
       </p>
@@ -126,7 +132,7 @@ def render():
     # ── Timeline ───────────────────────────────────────────────────────────────
     st.markdown("""
     <div class="section-header">
-      <h2>The Journey: 1998–2001</h2>
+      <h2>The Journey: KCPE 1997 → Form 1 Jan 1998 → KCSE Nov 2001</h2>
       <p>Four years that shaped a generation</p>
     </div>
     """, unsafe_allow_html=True)
