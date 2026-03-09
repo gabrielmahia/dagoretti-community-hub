@@ -65,6 +65,7 @@ def test_all_page_modules_importable():
         "pages.mentorship",
         "pages.scholarships",
         "pages.submit",
+        "pages.events",
     ]
     for mod_name in page_modules:
         mod = importlib.import_module(mod_name)

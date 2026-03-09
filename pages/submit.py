@@ -41,7 +41,7 @@ def render():
         with c1:
             full_name    = st.text_input("Full name *")
             year_left    = st.number_input("Year you left Dagoretti (Form 4) *",
-                                           min_value=1965, max_value=datetime.date.today().year, value=2000)
+                                           min_value=1965, max_value=datetime.date.today().year, value=2001)
             industry     = st.selectbox("Industry *", [
                 "Technology", "Medicine", "Engineering", "Law", "Finance",
                 "Education", "Journalism", "Agriculture", "Health", "Business", "Other",
@@ -85,14 +85,14 @@ def render():
         st.markdown("""
         <div class="card-green">
           Share a memory, a milestone, or a message for the Memory Wall. Open to all alumni —
-          especially Class of 2000 for the 25th reunion year.
+          especially Class of 2001 for the 25th reunion year.
         </div>
         """, unsafe_allow_html=True)
 
         mem_name  = st.text_input("Your name *", key="mem_name")
         mem_year  = st.number_input("Your year at Dagoretti *",
                                     min_value=1965, max_value=datetime.date.today().year,
-                                    value=2000, key="mem_year")
+                                    value=2001, key="mem_year")
         mem_type  = st.radio("Type of submission", [
             "Memory (a story from school days)",
             "Message (a reflection for current students)",

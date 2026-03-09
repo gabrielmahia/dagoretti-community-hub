@@ -225,6 +225,7 @@ with st.sidebar:
     pages = {
         "🏠 Home":              "home",
         "🌍 Alumni Atlas":      "alumni_atlas",
+        "📅 Events":            "events",
         "📊 KCSE Tracker":      "kcse_tracker",
         "🧭 Career Pathways":   "career_pathways",
         "🕯️ Memory Wall":       "memory_wall",
@@ -254,6 +255,8 @@ page = pages[page_key]
 # ── ROUTING ──────────────────────────────────────────────────────────────────
 if page == "home":
     from pages import home as p; p.render()
+elif page == "events":
+    from pages import events as p; p.render()
 elif page == "alumni_atlas":
     from pages import alumni_atlas as p; p.render()
 elif page == "kcse_tracker":

@@ -25,7 +25,7 @@ def render():
       <h1>🦁 Dagoretti High School Community Hub</h1>
       <p>Alumni · Students · Parents · Teachers — one platform, one pride.</p>
       <p style='margin-top:0.5rem; font-size:0.9rem; color:#81c784;'>
-        Est. 1961 · Ngong Road, Nairobi · Class of 2000: 25th Reunion Year 🎉
+        Est. 1961 · Ngong Road, Nairobi · Class of 2001: 25th Reunion Year 🎉
       </p>
     </div>
     """, unsafe_allow_html=True)
@@ -86,17 +86,17 @@ def render():
 
         st.markdown("""
         <div class="section-header">
-          <h2>🎉 Class of 2000 — 25th Reunion</h2>
+          <h2>🎉 Class of 2001 — 25th Reunion</h2>
           <p>A special milestone worth celebrating</p>
         </div>
         """, unsafe_allow_html=True)
 
         st.markdown("""
         <div class="card-gold">
-          <p><strong>This year marks 25 years since the Class of 2000 left Dagoretti.</strong>
+          <p><strong>This year marks 25 years since the Class of 2001 left Dagoretti.</strong>
           From Nairobi to New York, London to Dubai — they are now doctors, engineers,
           advocates, entrepreneurs, and community builders. The Memory Wall page honours
-          their stories. If you are Class of 2000, add your update via Submit Data.</p>
+          their stories. If you are Class of 2001, add your update via Submit Data.</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -110,11 +110,12 @@ def render():
 
         features = [
             ("🌍", "Alumni Atlas", "See where Dagoretti graduates live and work — plotted on a world map."),
+            ("📅", "Events", "Upcoming reunions, career days, networking events — and the Class of 2001 25th reunion."),
             ("📊", "KCSE Tracker", "30 years of exam results. Track the school's academic trajectory."),
             ("🧭", "Career Pathways", "Enter your KCSE subjects and grades. Explore matching careers and universities."),
             ("🎓", "Scholarships", "25 curated scholarships — including diaspora-accessible international awards."),
             ("🤝", "Mentorship", "Connect with alumni open to guiding students and early-career graduates."),
-            ("🇰🇪", "Kenya: Then & Now", "25 indicators comparing Kenya in 2000 and 2025. The transformation is striking."),
+            ("🇰🇪", "Kenya: Then & Now", "25 indicators comparing Kenya in 2001 and 2025. The transformation is striking."),
         ]
 
         for emoji, title, desc in features:

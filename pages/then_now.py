@@ -35,7 +35,7 @@ def render():
       <h1>🇰🇪 Kenya: Then &amp; Now</h1>
       <p>25 indicators. 25 years. The transformation is striking.</p>
       <p style='color:#81c784; margin-top:0.4rem; font-size:0.9rem;'>
-        Class of 2000 graduated into a different Kenya. Class of 2025 graduates into a different world.
+        Class of 2001 graduated into a different Kenya. Class of 2025 graduates into a different world.
       </p>
     </div>
     """, unsafe_allow_html=True)
@@ -59,7 +59,7 @@ def render():
     st.markdown("""
     <div class="section-header">
       <h2>At a Glance</h2>
-      <p>How Kenya has changed since the Class of 2000 graduated</p>
+      <p>How Kenya has changed since the Class of 2001 graduated</p>
     </div>
     """, unsafe_allow_html=True)
 
