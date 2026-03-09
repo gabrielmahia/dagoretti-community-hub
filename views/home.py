@@ -32,7 +32,7 @@ def render():
       <h1>🦁 Dagoretti High School Community Hub</h1>
       <p>Alumni · Students · Parents · Teachers — one platform, one pride.</p>
       <p style='margin-top:0.5rem; font-size:0.9rem; color:#81c784;'>
-        Est. 1961 · Kikuyu Road, Nairobi · Class of 2001: 25th Reunion Year 🎉
+        Est. 1961 · Kikuyu Road, Nairobi · Open to all classes · Class of 2001: 25th Reunion 2026 🎉
       </p>
     </div>
     """, unsafe_allow_html=True)
@@ -41,33 +41,29 @@ def render():
     n_alumni    = len(df) if not df.empty else 0
     n_countries = df["country"].nunique() if not df.empty else 0
     n_mentors   = int((df["mentoring"] == "Yes").sum()) if not df.empty else 0
-    # years_range computed dynamically below
+    n_classes   = df["year"].nunique() if not df.empty else 0
+    try:
+        import pandas as _pds
+        _sch = _pds.read_csv(os.path.join(os.path.dirname(__file__), "..", "data", "scholarships.csv"))
+        n_scholarships = len(_sch)
+    except Exception:
+        n_scholarships = 22  # known baseline
 
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown(f"""
-        <div class="stat-pill">
-          <span class="stat-n">{n_alumni}</span>
-          <span class="stat-lbl">Alumni in directory</span>
-        </div>""", unsafe_allow_html=True)
-    with c2:
-        st.markdown(f"""
-        <div class="stat-pill">
-          <span class="stat-n">{n_countries}</span>
-          <span class="stat-lbl">Countries represented</span>
-        </div>""", unsafe_allow_html=True)
-    with c3:
-        st.markdown(f"""
-        <div class="stat-pill">
-          <span class="stat-n">{n_mentors}</span>
-          <span class="stat-lbl">Mentors available</span>
-        </div>""", unsafe_allow_html=True)
-    with c4:
-        st.markdown(f"""
-        <div class="stat-pill">
-          <span class="stat-n">{_kcse_years}</span>
-          <span class="stat-lbl">Years of KCSE data</span>
-        </div>""", unsafe_allow_html=True)
+    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    for col, n, lbl in [
+        (c1, n_alumni,       "Alumni in directory"),
+        (c2, n_countries,    "Countries represented"),
+        (c3, n_mentors,      "Mentors available"),
+        (c4, n_classes,      "Classes registered"),
+        (c5, n_scholarships, "Scholarships listed"),
+        (c6, _kcse_years,    "Years of KCSE data"),
+    ]:
+        with col:
+            col.markdown(f"""
+            <div class="stat-pill">
+              <span class="stat-n">{n}</span>
+              <span class="stat-lbl">{lbl}</span>
+            </div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 

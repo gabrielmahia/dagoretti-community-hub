@@ -241,9 +241,9 @@ def render():
     st.markdown("""
     <div class="hero-banner">
       <h1>🕯️ Memory Wall</h1>
-      <p>Class of 2001 · 25th Reunion · KCPE 1997 → Dagoretti Jan 1998 → KCSE Nov 2001</p>
+      <p>Dagoretti High School · All Classes Welcome · Est. 1961</p>
       <p style='color:#81c784; margin-top:0.5rem;'>
-        From Kikuyu Road to five continents — 25 years of remarkable journeys.
+        Class of 2001 spotlight · 25th Reunion 2026 · From Kikuyu Road to five continents.
       </p>
     </div>
     """, unsafe_allow_html=True)
@@ -293,26 +293,24 @@ def render():
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Three pillars ──────────────────────────────────────────────────────────
+    # ── Four pillars ───────────────────────────────────────────────────────────
     st.markdown("""
     <div class="section-header">
-      <h2>🏆 Three Pillars of Dagoretti Life</h2>
+      <h2>🏆 Four Pillars of Dagoretti Excellence</h2>
       <p>What made the school more than an exam centre — confirmed by public record</p>
     </div>
     """, unsafe_allow_html=True)
 
-    pillar_cols = st.columns(3)
     pillars = [
         {
             "icon": "🎭",
             "title": "Drama & Dance",
             "body": (
                 "Dominated Traditional Dance at Kenya National Drama Festivals "
-                "throughout the 1990s. Class of 2001 were among the last to experience "
-                "the peak era before the school stepped back from festivals "
-                "in the early 2000s."
+                "throughout the 1990s. Back-to-back titles in 2004 and 2005. "
+                "In Dagoretti, showbiz was a culture passed from one generation to the next."
             ),
-            "source": "Wikipedia · The Standard (2011)",
+            "source": "Wikipedia · The Standard, Nov 2011",
         },
         {
             "icon": "🥁",
@@ -322,29 +320,42 @@ def render():
                 "Dagoretti High has hosted Nairobi Zonal Music Festivals on its own grounds. "
                 "The band was a school identity, not just a club."
             ),
-            "source": "Kenya Music Festival records · Apostolic Carmel (2024 report)",
+            "source": "Kenya Music Festival records · Apostolic Carmel (2024)",
         },
         {
             "icon": "🏉",
             "title": "Rugby",
             "body": (
-                "Competing in the Nairobi schools championship — semi-finals against "
-                "Upper Hill, Lenana, and Nairobi School. Represented Kenya at the "
-                "2019 East Africa School Games in Arusha vs Kakamega High."
+                "Competing in the Nairobi schools championship against Upper Hill, "
+                "Lenana, and Nairobi School. Represented Kenya at the 2019 East Africa "
+                "School Games in Arusha."
             ),
             "source": "Kenya Rugby Union (2025) · Citizen Digital (2023)",
         },
+        {
+            "icon": "🏀",
+            "title": "Basketball",
+            "body": (
+                "Peter Orero's principal tenure transformed the school into a national "
+                "basketball powerhouse. Giants of Africa — the NBA-backed initiative — "
+                "installed a world-class court at Dagoretti, cementing it as a talent "
+                "incubator for East African basketball."
+            ),
+            "source": "Nation Africa · Giants of Africa (giantsofafrica.org)",
+        },
     ]
-    for col, p in zip(pillar_cols, pillars):
+    p_cols = st.columns(4)
+    for col, p in zip(p_cols, pillars):
         with col:
-            st.markdown(f"""
-            <div class="card" style='text-align:center; padding:1.2rem 1rem; height:100%;'>
-              <div style='font-size:2.2rem; margin-bottom:0.4rem;'>{p['icon']}</div>
-              <h4 style='color:var(--green-dark); margin:0 0 0.4rem;'>{p['title']}</h4>
-              <p style='font-size:0.86rem;'>{p['body']}</p>
-              <p style='font-size:0.72rem; color:#888; margin-top:0.5rem;'>Source: {p['source']}</p>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="card" style="text-align:center; padding:1.1rem 0.8rem; height:100%;">' +
+                f'<div style="font-size:2rem; margin-bottom:0.3rem;">{p["icon"]}</div>' +
+                f'<h4 style="color:var(--green-dark); margin:0 0 0.3rem; font-size:0.95rem;">{p["title"]}</h4>' +
+                f'<p style="font-size:0.82rem;">{p["body"]}</p>' +
+                f'<p style="font-size:0.68rem; color:#888; margin-top:0.4rem;">Source: {p["source"]}</p>' +
+                '</div>',
+                unsafe_allow_html=True,
+            )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -526,17 +537,43 @@ def render():
         },
     ]
 
-    for item in POLITICAL_LINEAGE:
-        st.markdown(
-            '<div class="card" style="display:flex; gap:1rem; border-left:4px solid #8B0000; margin-bottom:0.6rem;">'
-            f'<div style="min-width:56px; font-weight:700; font-size:0.82rem; color:#8B0000; padding-top:0.1rem;">{item["year"]}</div>'
-            '<div>'
-            f'<strong style="font-size:0.95rem;">{item["figure"]}</strong> '
-            f'<span style="font-size:0.78rem; color:#888; font-style:italic;">— {item["role"]}</span><br>'
-            f'<span style="font-size:0.85rem;">{item["event"]}</span>'
-            '</div></div>',
-            unsafe_allow_html=True,
+    # Build a single HTML timeline block — avoids per-item Streamlit calls
+    # and gives us a proper visual spine with alternating cards
+    tl_html = '<div style="position:relative; padding:0.5rem 0;">'
+    for i, item in enumerate(POLITICAL_LINEAGE):
+        is_left = (i % 2 == 0)
+        card = (
+            f'<span style="font-size:0.68rem; font-weight:700; color:#8B0000; '
+            f'text-transform:uppercase; letter-spacing:1px;">{item["year"]}</span><br>'
+            f'<strong style="font-size:0.88rem;">{item["figure"]}</strong> '
+            f'<span style="font-size:0.75rem; color:#888; font-style:italic;">— {item["role"]}</span><br>'
+            f'<span style="font-size:0.82rem; color:#ccc;">{item["event"]}</span>'
         )
+        card_style = (
+            "background:#1e1e2e; border:1px solid #8B0000; border-radius:8px; "
+            "padding:0.7rem 0.9rem; max-width:95%;"
+        )
+        if is_left:
+            left_cell  = f'<div style="width:50%;text-align:right;padding-right:1.2rem;"><div style="{card_style};display:inline-block;text-align:left;">{card}</div></div>'
+            right_cell = '<div style="width:50%;"></div>'
+        else:
+            left_cell  = '<div style="width:50%;"></div>'
+            right_cell = f'<div style="width:50%;padding-left:1.2rem;"><div style="{card_style}">{card}</div></div>'
+
+        dot = (
+            '<div style="width:2.2rem;flex-shrink:0;display:flex;flex-direction:column;align-items:center;">'
+            '<div style="width:2px;flex:1;background:#5c0000;min-height:20px;"></div>'
+            '<div style="width:11px;height:11px;border-radius:50%;background:#8B0000;border:2px solid #c9a94e;flex-shrink:0;"></div>'
+            '<div style="width:2px;flex:1;background:#5c0000;min-height:20px;"></div>'
+            '</div>'
+        )
+        tl_html += (
+            f'<div style="display:flex;align-items:stretch;margin-bottom:0.2rem;">'
+            f'{left_cell}{dot}{right_cell}'
+            f'</div>'
+        )
+    tl_html += '</div>'
+    st.markdown(tl_html, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -561,18 +598,48 @@ def render():
     </div>
     """, unsafe_allow_html=True)
 
-    cols = st.columns(2)
-    for i, alum in enumerate(NOTABLE_ALUMNI):
-        with cols[i % 2]:
-            card = (
-                '<div class="alumni-card" style="border-left:3px solid #c9a94e;">'
-                f'<h4 style="color:var(--green-dark);">{alum["name"]}</h4>'
-                f'<p style="font-weight:600; font-size:0.9rem; margin:0.1rem 0;">{alum["known_for"]}</p>'
-                f'<p style="font-size:0.82rem; margin:0.2rem 0 0;">{alum["note"]}</p>'
-                f'<p style="font-size:0.72rem; color:#888; margin:0.3rem 0 0;">Source: {alum["source"]}</p>'
-                '</div>'
-            )
-            st.markdown(card, unsafe_allow_html=True)
+    # Sector groupings — confirmed by Wikipedia sources only
+    ALUMNI_SECTORS = [
+        {
+            "sector": "🏛️ Politics & Public Service",
+            "color": "#8B0000",
+            "names": ["Dr. Alfred Mutua", "John Kiarie (KJ)", "Ferdinand Waititu"],
+        },
+        {
+            "sector": "🎵 Entertainment & Arts",
+            "color": "#c9a94e",
+            "names": ["Kevin Wyre", "Boomba Clan"],
+        },
+        {
+            "sector": "📺 Media",
+            "color": "#1565c0",
+            "names": ["Renson Michael"],
+        },
+    ]
+    alumni_by_name = {a["name"]: a for a in NOTABLE_ALUMNI}
+
+    for sector in ALUMNI_SECTORS:
+        st.markdown(
+            f'<p style="font-size:0.82rem; font-weight:700; color:{sector["color"]}; '
+            f'text-transform:uppercase; letter-spacing:0.8px; margin:0.8rem 0 0.3rem;">'
+            f'{sector["sector"]}</p>',
+            unsafe_allow_html=True,
+        )
+        s_cols = st.columns(len(sector["names"]))
+        for col, name in zip(s_cols, sector["names"]):
+            alum = alumni_by_name.get(name)
+            if not alum:
+                continue
+            with col:
+                st.markdown(
+                    f'<div class="alumni-card" style="border-left:3px solid {sector["color"]}; height:100%;">'
+                    f'<h4 style="color:var(--green-dark); font-size:0.92rem;">{alum["name"]}</h4>'
+                    f'<p style="font-weight:600; font-size:0.82rem; margin:0.1rem 0;">{alum["known_for"]}</p>'
+                    f'<p style="font-size:0.79rem; margin:0.2rem 0 0; color:#ccc;">{alum["note"]}</p>'
+                    f'<p style="font-size:0.68rem; color:#666; margin:0.3rem 0 0;">Source: {alum["source"]}</p>'
+                    '</div>',
+                    unsafe_allow_html=True,
+                )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
