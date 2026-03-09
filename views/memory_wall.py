@@ -420,8 +420,9 @@ def render():
                 "Short for 'construction' — because it was never finished. "
                 "Alumni recall the building had been incomplete since the 1980s. "
                 "The students named it accordingly — a name that stuck for decades. "
-                "Mr. R.M. Murengi arrived as principal around 2000, succeeding a long-serving "
-                "predecessor whose name alumni records haven't yet confirmed. "
+                "Mr. R.M. Murengi arrived as principal around 2000, succeeding "
+                "Mr. J.K. Mburia, who had led the school for many years before him. "
+                "Mr. Mburia passed away several years ago — alumni marked his passing on social media. "
                 "Constra was finally completed during KJ's tenure as MP for Dagoretti South."
             ),
         },
@@ -460,6 +461,98 @@ def render():
                 '</div>',
                 unsafe_allow_html=True,
             )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── Principals timeline ─────────────────────────────────────────────────────
+    st.markdown("""
+    <div class="section-header">
+      <h2>🎓 Principals of Dagoretti High School</h2>
+      <p>Known record · Alumni-verified entries marked · Gaps remain — community input welcome</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    PRINCIPALS = [
+        {
+            "era": "c. 1942",
+            "name": "Mr. Eliud Mathu",
+            "note": "First principal of the Waithaka Independent School era. Makerere University graduate. Simultaneously the first African appointed to Kenya's Legislative Council.",
+            "source": "Wikipedia · Confirmed",
+        },
+        {
+            "era": "1962",
+            "name": "Mr. N.C. Bhatt",
+            "note": "First Headmaster of the modern Dagoretti High School, which opened to its first cohort in January 1962 following the school's rebirth from a Mau Mau detention camp.",
+            "source": "Wikipedia · Confirmed",
+        },
+        {
+            "era": "1962 – c. 2000",
+            "name": "Gap in record",
+            "note": "Alumni with knowledge of principals serving between Mr. Bhatt and Mr. Mburia are encouraged to submit corrections via the Submit Data page.",
+            "source": "Gap — community input needed",
+        },
+        {
+            "era": "c. 1980s – 2000",
+            "name": "Mr. J.K. Mburia",
+            "note": "Long-serving principal who led the school through the 1980s and 1990s. Remembered fondly by alumni of that era. Mr. Mburia passed away several years ago — his passing was marked by alumni on social media.",
+            "source": "Alumni-verified · Facebook eulogy · Class of 2001 account",
+        },
+        {
+            "era": "c. 2000 – 2004",
+            "name": "Mr. R.M. Murengi",
+            "note": "Succeeded Mr. Mburia around 2000. Remembered for firm discipline and steady administration during the early 2000s, including the KCSE period for the Class of 2001.",
+            "source": "Alumni-verified · Class of 2001 account",
+        },
+        {
+            "era": "c. 2014 – 2016",
+            "name": "Mr. B.K. Ngahu",
+            "note": "Oversaw infrastructure improvements during his tenure. Later moved to Upper Hill School.",
+            "source": "Alumni records",
+        },
+        {
+            "era": "2017 – 2022",
+            "name": "Mr. Peter Orero",
+            "note": "Transformed the school into a national basketball powerhouse. Partnered with Giants of Africa for a world-class court on campus. Elected MP for Kibra Constituency in 2022.",
+            "source": "Nation Africa · Wikipedia · Confirmed",
+        },
+        {
+            "era": "c. 2023",
+            "name": "Dr. Nyakweba",
+            "note": "Chief Principal who focused on alumni relations during his tenure.",
+            "source": "Alumni records",
+        },
+        {
+            "era": "2026",
+            "name": "Mr. John Caron Dier",
+            "note": "Senior Principal as of early 2026.",
+            "source": "LinkedIn alumni homecoming article",
+        },
+    ]
+
+    for p in PRINCIPALS:
+        is_gap    = "Gap" in p["name"]
+        is_alumni = "Alumni-verified" in p["source"]
+        border    = "#555" if is_gap else ("#c9a94e" if is_alumni else "var(--green-mid)")
+        badge     = ""
+        if is_gap:
+            badge = '<span style="font-size:0.7rem;background:#333;color:#aaa;padding:2px 7px;border-radius:10px;margin-left:6px;">Gap</span>'
+        elif is_alumni:
+            badge = '<span style="font-size:0.7rem;background:#fdf3d9;color:#7a5c00;padding:2px 7px;border-radius:10px;margin-left:6px;">Alumni-verified</span>'
+        else:
+            badge = '<span style="font-size:0.7rem;background:#e8f5e9;color:#1a5c2e;padding:2px 7px;border-radius:10px;margin-left:6px;">Confirmed</span>'
+
+        st.markdown(
+            f'<div class="card" style="border-left:3px solid {border};padding:0.7rem 1rem;margin-bottom:0.5rem;">'
+            f'<div style="display:flex;align-items:baseline;gap:0.6rem;flex-wrap:wrap;">'
+            f'<span style="font-size:0.72rem;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:0.5px;">{p["era"]}</span>'
+            f'<strong style="font-size:0.95rem;{"color:#666;" if is_gap else ""}">{p["name"]}</strong>'
+            f'{badge}'
+            f'</div>'
+            f'<p style="font-size:0.84rem;color:var(--text-muted);margin:0.25rem 0 0.15rem;">{p["note"]}</p>'
+            f'<p style="font-size:0.68rem;color:#888;margin:0;font-style:italic;">Source: {p["source"]}</p>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
