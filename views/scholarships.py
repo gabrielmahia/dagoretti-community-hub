@@ -79,31 +79,37 @@ def render():
         amount_note   = str(row.get("amount_note", "Verify at provider"))
         deadline_note = str(row.get("deadline_note", "Verify at provider"))
 
-        st.markdown(f"""
-        <div class="scholarship-card">
-          <div style='display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.4rem;'>
-            <h4 style='margin:0;'>{row['name']}</h4>
-            <span style='font-size:0.82rem; font-weight:600; color:var(--green-dark);'>{amount_note}</span>
-          </div>
-          <p style='margin:0.2rem 0; color:var(--text-muted); font-size:0.9rem;'>
-            {row['provider']} · {row['destination']}
-          </p>
-          <div style='margin:0.4rem 0;'>
-            <span class="badge">{row['level']}</span>
-            <span class="badge-blue">{row['field']}</span>
-            {diaspora_badge}
-          </div>
-          <p style='margin:0.4rem 0 0; font-size:0.88rem;'>{row['description']}</p>
-          <div style='display:flex; justify-content:space-between; align-items:center; margin-top:0.6rem; flex-wrap:wrap; gap:0.3rem;'>
-            <span style='font-size:0.82rem; color:var(--text-muted);'>📅 {deadline_note}</span>
-            <a href='{row['link']}' target='_blank'
-               style='background:var(--green-dark); color:#fff; padding:0.25rem 0.8rem;
-                      border-radius:4px; font-size:0.82rem; text-decoration:none;'>
-              Official site &#8594;
-            </a>
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
+        link_url = str(row.get("link", "")).strip()
+        link_html = (
+            f'<a href="{link_url}" target="_blank" '
+            f'style="background:var(--green-dark); color:#fff; padding:0.25rem 0.8rem; '
+            f'border-radius:4px; font-size:0.82rem; text-decoration:none;">'
+            f'Official site &#8594;</a>'
+        ) if link_url.startswith("http") else ""
+
+        desc = str(row.get("description", "")).strip()
+        desc_html = f'<p style="margin:0.4rem 0 0; font-size:0.88rem;">{desc}</p>' if desc and desc != "nan" else ""
+
+        card = (
+            '<div class="scholarship-card">'
+            '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.4rem;">'
+            f'<h4 style="margin:0;">{row["name"]}</h4>'
+            f'<span style="font-size:0.82rem; font-weight:600; color:var(--green-dark);">{amount_note}</span>'
+            '</div>'
+            f'<p style="margin:0.2rem 0; color:var(--text-muted); font-size:0.9rem;">{row["provider"]} · {row["destination"]}</p>'
+            '<div style="margin:0.4rem 0;">'
+            f'<span class="badge">{row["level"]}</span> '
+            f'<span class="badge-blue">{row["field"]}</span> '
+            f'{diaspora_badge}'
+            '</div>'
+            f'{desc_html}'
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.6rem; flex-wrap:wrap; gap:0.3rem;">'
+            f'<span style="font-size:0.82rem; color:var(--text-muted);">📅 {deadline_note}</span>'
+            f'{link_html}'
+            '</div>'
+            '</div>'
+        )
+        st.markdown(card, unsafe_allow_html=True)
 
         sheets.suggest_correction_button(
             page="Scholarships",
