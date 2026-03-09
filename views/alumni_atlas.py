@@ -33,7 +33,7 @@ def _geocode(city: str, country: str):
     return None, None
 
 
-@st.cache_data
+@st.cache_data(ttl=300)
 def _load():
     path = os.path.join(os.path.dirname(__file__), "..", "data", "alumni.csv")
     try:
@@ -152,7 +152,7 @@ def render():
             ),
             legend=dict(orientation="h", y=-0.05, x=0, font=dict(size=11)),
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     else:
         st.info("No alumni match the current filters.")
 

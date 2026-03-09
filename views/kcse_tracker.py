@@ -108,7 +108,7 @@ def render():
         legend=dict(orientation="h", y=1.05),
         height=360,
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     st.markdown("---")
 
@@ -143,7 +143,7 @@ def render():
         margin=dict(l=0, r=0, t=10, b=0), height=300, showlegend=False,
         yaxis=dict(gridcolor="#e8f5e9"),
     )
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(fig2, width="stretch")
 
     total = yr_row["candidates"]
     a_count = yr_row.get("a_plain", 0)
@@ -167,7 +167,7 @@ def render():
         margin=dict(l=0, r=0, t=10, b=0), height=250,
         yaxis=dict(gridcolor="#e8f5e9"),
     )
-    st.plotly_chart(fig3, use_container_width=True)
+    st.plotly_chart(fig3, width="stretch")
 
     # ── Full table ────────────────────────────────────────────────────────────
     with st.expander("📋 Full results table (all years)"):

@@ -141,7 +141,7 @@ def render():
             coloraxis_showscale=False,
             yaxis=dict(tickfont=dict(size=11)),
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     st.markdown("---")
 
