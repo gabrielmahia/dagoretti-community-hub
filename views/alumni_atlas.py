@@ -98,7 +98,11 @@ def render():
         cty_filter = st.selectbox("Country", countries)
     with fc3:
         year_min, year_max = int(df["year"].min()), int(df["year"].max())
-        year_range = st.slider("Graduation year", year_min, year_max, (year_min, year_max))
+        if year_min < year_max:
+            year_range = st.slider("Graduation year", year_min, year_max, (year_min, year_max))
+        else:
+            st.caption(f"Graduation year: {year_min}")
+            year_range = (year_min, year_max)
 
     mentoring_only = st.checkbox("Show mentors only", value=False)
 
