@@ -289,7 +289,7 @@ def render():
           <strong style="font-size:0.88rem;">20405001</strong>
         </div>
       </div>
-      <p style="font-size:0.68rem; color:#555; margin:0.6rem 0 0;">Source: Wikipedia · Dagoretti High School article (updated Feb 2026)</p>
+      <p style="font-size:0.68rem; color:#888; margin:0.6rem 0 0;">Source: Wikipedia · Dagoretti High School article (updated Feb 2026)</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -455,7 +455,7 @@ def render():
             st.markdown(
                 f'<div class="card" style="border-left:3px solid var(--green-mid); padding:1rem;">' +
                 f'<h4 style="color:var(--green-dark); margin:0 0 0.2rem;">{dorm["icon"]} {dorm["name"]}</h4>' +
-                f'<p style="font-size:0.78rem; font-weight:600; color:#888; margin:0 0 0.4rem; text-transform:uppercase; letter-spacing:0.5px;">{dorm["who"]}</p>' +
+                f'<p style="font-size:0.78rem; font-weight:700; color:#aaa; margin:0 0 0.4rem; text-transform:uppercase; letter-spacing:0.5px;">{dorm["who"]}</p>' +
                 f'<p style="font-size:0.88rem; margin:0;">{dorm["body"]}</p>' +
                 '</div>',
                 unsafe_allow_html=True,
@@ -537,43 +537,34 @@ def render():
         },
     ]
 
-    # Build a single HTML timeline block — avoids per-item Streamlit calls
-    # and gives us a proper visual spine with alternating cards
-    tl_html = '<div style="position:relative; padding:0.5rem 0;">'
-    for i, item in enumerate(POLITICAL_LINEAGE):
-        is_left = (i % 2 == 0)
-        card = (
-            f'<span style="font-size:0.68rem; font-weight:700; color:#8B0000; '
-            f'text-transform:uppercase; letter-spacing:1px;">{item["year"]}</span><br>'
-            f'<strong style="font-size:0.88rem;">{item["figure"]}</strong> '
-            f'<span style="font-size:0.75rem; color:#888; font-style:italic;">— {item["role"]}</span><br>'
-            f'<span style="font-size:0.82rem; color:#ccc;">{item["event"]}</span>'
-        )
-        card_style = (
-            "background:#1e1e2e; border:1px solid #8B0000; border-radius:8px; "
-            "padding:0.7rem 0.9rem; max-width:95%;"
-        )
-        if is_left:
-            left_cell  = f'<div style="width:50%;text-align:right;padding-right:1.2rem;"><div style="{card_style};display:inline-block;text-align:left;">{card}</div></div>'
-            right_cell = '<div style="width:50%;"></div>'
-        else:
-            left_cell  = '<div style="width:50%;"></div>'
-            right_cell = f'<div style="width:50%;padding-left:1.2rem;"><div style="{card_style}">{card}</div></div>'
-
-        dot = (
-            '<div style="width:2.2rem;flex-shrink:0;display:flex;flex-direction:column;align-items:center;">'
-            '<div style="width:2px;flex:1;background:#5c0000;min-height:20px;"></div>'
-            '<div style="width:11px;height:11px;border-radius:50%;background:#8B0000;border:2px solid #c9a94e;flex-shrink:0;"></div>'
-            '<div style="width:2px;flex:1;background:#5c0000;min-height:20px;"></div>'
-            '</div>'
-        )
-        tl_html += (
-            f'<div style="display:flex;align-items:stretch;margin-bottom:0.2rem;">'
-            f'{left_cell}{dot}{right_cell}'
+    # Mobile-first timeline: single left spine, cards full-width.
+    # High-contrast colours — readable on phone screens outdoors.
+    tl_items = []
+    for item in POLITICAL_LINEAGE:
+        tl_items.append(
+            f'<div style="display:flex;align-items:stretch;margin-bottom:0.5rem;">'
+            # spine + dot
+            f'<div style="display:flex;flex-direction:column;align-items:center;width:2rem;flex-shrink:0;">'
+            f'<div style="width:2px;flex:1;background:#8B0000;min-height:12px;"></div>'
+            f'<div style="width:12px;height:12px;border-radius:50%;background:#8B0000;'
+            f'border:2px solid #c9a94e;flex-shrink:0;margin:2px 0;"></div>'
+            f'<div style="width:2px;flex:1;background:#8B0000;min-height:12px;"></div>'
+            f'</div>'
+            # card — white text on near-black, high contrast
+            f'<div style="flex:1;background:#111827;border:1px solid #8B0000;border-radius:8px;'
+            f'padding:0.75rem 1rem;margin-left:0.6rem;">'
+            f'<span style="font-size:0.72rem;font-weight:800;color:#e87070;'
+            f'text-transform:uppercase;letter-spacing:1px;">{item["year"]}</span><br>'
+            f'<strong style="font-size:0.95rem;color:#ffffff;">{item["figure"]}</strong> '
+            f'<span style="font-size:0.8rem;color:#aaaaaa;font-style:italic;">— {item["role"]}</span><br>'
+            f'<span style="font-size:0.85rem;color:#e0e0e0;line-height:1.4;">{item["event"]}</span>'
+            f'</div>'
             f'</div>'
         )
-    tl_html += '</div>'
-    st.markdown(tl_html, unsafe_allow_html=True)
+    st.markdown(
+        '<div style="padding:0.25rem 0;">' + "".join(tl_items) + '</div>',
+        unsafe_allow_html=True,
+    )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -635,8 +626,8 @@ def render():
                     f'<div class="alumni-card" style="border-left:3px solid {sector["color"]}; height:100%;">'
                     f'<h4 style="color:var(--green-dark); font-size:0.92rem;">{alum["name"]}</h4>'
                     f'<p style="font-weight:600; font-size:0.82rem; margin:0.1rem 0;">{alum["known_for"]}</p>'
-                    f'<p style="font-size:0.79rem; margin:0.2rem 0 0; color:#ccc;">{alum["note"]}</p>'
-                    f'<p style="font-size:0.68rem; color:#666; margin:0.3rem 0 0;">Source: {alum["source"]}</p>'
+                    f'<p style="font-size:0.82rem; margin:0.2rem 0 0; color:#e0e0e0;">{alum["note"]}</p>'
+                    f'<p style="font-size:0.72rem; color:#999; margin:0.3rem 0 0;">Source: {alum["source"]}</p>'
                     '</div>',
                     unsafe_allow_html=True,
                 )
