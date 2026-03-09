@@ -1,9 +1,9 @@
 # Google Sheets Backend Setup
 
-Enables all form submissions (alumni profiles, memories, event proposals,
-data corrections, general feedback) to persist in a Google Sheet you own.
+Enables all form submissions to land in a Google Sheet you own,
+and auto-commits approved rows to GitHub — no manual copy-paste.
 
-**Time:** ~8 minutes | **Cost:** Free | **Data ownership:** Your Google Drive
+**Time:** ~12 minutes | **Cost:** Free | **Data ownership:** Your Google Drive
 
 ---
 
@@ -11,114 +11,100 @@ data corrections, general feedback) to persist in a Google Sheet you own.
 
 1. Go to [sheets.google.com](https://sheets.google.com)
 2. Create a new spreadsheet
-3. Name it exactly: **Dagoretti Hub Submissions**
+3. Name it: **Dagoretti Hub Submissions**
 
 ---
 
 ## Step 2 — Add the Apps Script
 
 1. In the spreadsheet: **Extensions → Apps Script**
-2. Delete all existing code, paste the following:
-
-```javascript
-function doPost(e) {
-  try {
-    var data = JSON.parse(e.postData.contents);
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-
-    var tabName = data.tab || "submissions";
-    delete data.tab;
-
-    var sheet = ss.getSheetByName(tabName);
-    if (!sheet) {
-      sheet = ss.insertSheet(tabName);
-    }
-
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(Object.keys(data));
-    }
-    sheet.appendRow(Object.values(data));
-
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: "ok" }))
-      .setMimeType(ContentService.MimeType.JSON);
-
-  } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-// Run this once manually to verify the script works
-function testConnection() {
-  var e = { postData: { contents: JSON.stringify({
-    tab: "test", timestamp: new Date().toISOString(), message: "connection OK"
-  })}};
-  Logger.log(doPost(e).getContent());
-}
-```
-
-3. Click **Save** (Ctrl+S)
-4. Run `testConnection` once to verify — check the Logs panel
+2. Delete all existing code
+3. Paste the entire contents of `docs/AppsScript_AutoApprove.js`
+4. Save (Ctrl+S)
 
 ---
 
-## Step 3 — Deploy as Web App
+## Step 3 — Add Script Properties (your secrets)
 
-1. Click **Deploy → New Deployment**
-2. Click the gear ⚙️ next to "Select type" → **Web app**
-3. Set:
-   - **Execute as:** Me
-   - **Who has access:** Anyone
-4. Click **Deploy** → **Authorise** (grant the permissions it asks for)
-5. Copy the **Web App URL** — it looks like:
-   `https://script.google.com/macros/s/AKfycb.../exec`
+1. In the Apps Script editor: **Project Settings** (gear ⚙️ in the left sidebar)
+2. Scroll to **Script Properties → Add script property** — add all four:
+
+| Property | Value |
+|---|---|
+| `GITHUB_TOKEN` | `ghp_xxxx...` (Personal Access Token, `repo` scope) |
+| `GITHUB_OWNER` | `gabrielmahia` |
+| `GITHUB_REPO` | `dagoretti-community-hub` |
+| `GITHUB_BRANCH` | `main` |
+
+**To create a GitHub token:**
+- github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)
+- Scopes: tick `repo` only
+- Copy the token immediately — it won't show again
 
 ---
 
-## Step 4 — Add to Streamlit Cloud secrets
+## Step 4 — Run setup once
 
-1. Go to [share.streamlit.io](https://share.streamlit.io)
-2. Find **dagoretti-community-hub** → **⋮ → Settings → Secrets**
-3. Paste:
+1. In the Apps Script editor, select function: `setupTriggerAndValidation`
+2. Click **Run**
+3. Grant the permissions it asks for (Google Drive + Sheets + UrlFetch)
+4. You should see: "✅ Setup complete."
+
+Then run `testGitHubConnection` to confirm GitHub access works.
+
+---
+
+## Step 5 — Deploy as Web App (for form submissions)
+
+1. **Deploy → New Deployment**
+2. Gear ⚙️ → **Web app**
+3. Set: Execute as **Me** · Who has access **Anyone**
+4. Click **Deploy** → copy the URL
+
+---
+
+## Step 6 — Add to Streamlit Cloud secrets
+
+1. [share.streamlit.io](https://share.streamlit.io) → your app → ⋮ → Settings → Secrets
+2. Paste:
 
 ```toml
 [sheets]
-webhook_url = "https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec"
+webhook_url = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
 ```
 
-4. Click **Save** — the app restarts automatically
+---
+
+## Admin workflow (ongoing)
+
+Submissions arrive in the Sheet with status `pending` (yellow).
+
+To approve:
+1. Open **Dagoretti Hub Submissions**
+2. Go to the relevant tab
+3. Click the status cell dropdown → select **approved** (green)
+4. Done — the row is automatically committed to GitHub and Streamlit redeploys in ~60 seconds
+
+To reject: select **rejected** (red) — row stays in Sheet, nothing written to GitHub.
+
+### Tab → CSV routing
+
+| Sheet tab | GitHub file | Notes |
+|---|---|---|
+| `alumni_submissions` | `data/alumni.csv` | lat/lon auto-geocoded by app |
+| `memory_submissions` | `data/memories.csv` | Appears on Memory Wall |
+| `event_proposals` | `data/events.csv` | Appears on Events board |
+| `corrections` | — | Marked done, no CSV write |
+| `feedback` | — | Marked done, no CSV write |
 
 ---
 
-## What gets created automatically
+## If something goes wrong
 
-| Tab name | Contents |
-|---|---|
-| `alumni_submissions` | Alumni profile forms |
-| `memory_submissions` | Memory Wall submissions |
-| `event_proposals` | Event proposals |
-| `event_proposals` | Event proposals from Submit form |
-| `corrections` | Data correction requests |
-| `feedback` | General feedback |
+- Status cell gets a **note** showing what happened (hover to read)
+- If GitHub write fails, you get an alert in the Sheet
+- Manual fallback: copy the row yourself into the CSV and push
 
-Each row has: `timestamp`, `status` (pending/approved/rejected), and all form fields.
+## Refresh dropdowns
 
----
-
-## Admin workflow
-
-1. Open **Dagoretti Hub Submissions** in Google Sheets
-2. Review each `pending` row
-3. Change `status` to `approved` or `rejected`
-4. For `alumni_submissions`: copy approved rows into `data/alumni.csv` in the repo
-5. For `memory_submissions`: approved rows appear live on the Memory Wall automatically
-   (the app re-reads the sheet every 5 minutes)
-
----
-
-## Redeployment note
-
-If you edit the Apps Script, you **must** create a **new deployment** — editing
-an existing deployment does not update the live URL behaviour.
+If dropdowns disappear on new rows, run `refreshAllValidation` from the editor.
