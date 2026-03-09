@@ -127,13 +127,15 @@ MEMORIES = [
         "tag": None,
     },
     {
-        "year": "Dec\n2001",
-        "icon": "🎉",
-        "title": "Graduation — December 2001",
+        "year": "Nov\n2001",
+        "icon": "🏁",
+        "title": "Last Paper — Clearing Out",
         "body": (
-            "The school field. Parents in their best. Teachers trying to look stern while "
-            "secretly proud. We were 18, we were ready, and the world was waiting. "
-            "That was 25 years ago."
+            "KCSE ended and that was it. You handed back your library books, "
+            "settled any lab or boarding dues, and walked out of the gate. "
+            "No ceremony, no stage — just clearance. "
+            "The actual results would come from KNEC months later, "
+            "around February 2002. Until then, you went home and waited."
         ),
         "tag": None,
     },
