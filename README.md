@@ -11,8 +11,8 @@ A free, open-source Streamlit web application for the Dagoretti High School comm
 - **Alumni Atlas** — World map and directory of Dagoretti graduates across 15+ countries
 - **KCSE Tracker** — 30 years of exam results with trend analysis
 - **Career Pathways** — Enter your KCSE subjects and grades; explore matching careers and universities
-- **Memory Wall** — Class of 2000 · 25th anniversary tribute
-- **Kenya: Then & Now** — 25 indicators comparing Kenya in 2000 and 2025
+- **Memory Wall** — Class of 2001 · 25th anniversary tribute
+- **Kenya: Then & Now** — 25 indicators comparing Kenya in 2001 and 2025
 - **Mentorship** — Directory of alumni open to guiding students
 - **Scholarships** — 25 curated opportunities including diaspora-accessible awards
 - **Submit Data** — Community data submission forms

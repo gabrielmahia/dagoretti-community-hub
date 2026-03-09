@@ -51,7 +51,7 @@ EVENTS = [
         "date": datetime.date(2025, 9, 20),
         "time": "9:00 AM – 3:00 PM EAT",
         "type": "Career",
-        "location": "Dagoretti High School, Ngong Road, Nairobi",
+        "location": "Dagoretti High School, Kikuyu Road, Nairobi",
         "is_virtual": False,
         "description": (
             "Alumni from medicine, tech, law, finance, and agriculture return to school "

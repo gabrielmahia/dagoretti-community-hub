@@ -25,7 +25,7 @@ def render():
       <h1>🦁 Dagoretti High School Community Hub</h1>
       <p>Alumni · Students · Parents · Teachers — one platform, one pride.</p>
       <p style='margin-top:0.5rem; font-size:0.9rem; color:#81c784;'>
-        Est. 1961 · Ngong Road, Nairobi · Class of 2001: 25th Reunion Year 🎉
+        Est. 1961 · Kikuyu Road, Nairobi · Class of 2001: 25th Reunion Year 🎉
       </p>
     </div>
     """, unsafe_allow_html=True)
@@ -135,7 +135,7 @@ def render():
         """, unsafe_allow_html=True)
 
         if not df.empty:
-            spotlight = df[df["year"] == 2000].head(6)
+            spotlight = df[df["year"] == 2001].head(6)
             if spotlight.empty:
                 spotlight = df.head(6)
 
