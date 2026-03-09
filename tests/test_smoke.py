@@ -28,9 +28,12 @@ def test_data_alumni_schema():
 def test_data_kcse_loads():
     path = os.path.join(os.path.dirname(__file__), "..", "data", "kcse_results.csv")
     df = pd.read_csv(path)
-    assert len(df) == 30, f"Expected 30 years, got {len(df)}"
+    assert len(df) >= 30, f"Expected at least 30 years, got {len(df)}"
     assert "year" in df.columns
     assert "mean_grade" in df.columns
+    assert "verified" in df.columns, "Missing verified column — data integrity requires it"
+    confirmed = df[df["verified"] == "confirmed"]
+    assert len(confirmed) >= 6, f"Expected at least 6 confirmed years, got {len(confirmed)}"
 
 
 def test_data_scholarships_loads():

@@ -67,30 +67,24 @@ def render():
     cols = st.columns(2)
     for i, (_, row) in enumerate(fdf.iterrows()):
         with cols[i % 2]:
-            linkedin_btn = ""
-            if pd.notna(row.get("linkedin")) and str(row.get("linkedin", "")).startswith("http"):
-                linkedin_btn = f'<a href="{row["linkedin"]}" target="_blank" style="display:inline-block; background:var(--green-dark); color:#fff; padding:0.25rem 0.75rem; border-radius:4px; font-size:0.8rem; text-decoration:none; margin-top:0.5rem;">LinkedIn →</a>'
+            li_url = str(row.get("linkedin", "") or "")
+            linkedin_html = (
+                f'<a href="{li_url}" target="_blank" style="display:inline-block; background:var(--green-dark); color:#fff; padding:0.25rem 0.75rem; border-radius:4px; font-size:0.8rem; text-decoration:none; margin-top:0.5rem;">LinkedIn &#8594;</a>'
+                if li_url.startswith("http") else ""
+            )
+            bio_val = str(row.get("bio_short", "") or "").strip()
+            bio_html = f'<p style="font-size:0.85rem; color:var(--text-muted); margin:0.4rem 0 0;">{bio_val}</p>' if bio_val else ""
 
-            bio = f'<p style="font-size:0.85rem; color:var(--text-muted); margin:0.4rem 0 0;">{row["bio_short"]}</p>' \
-                  if pd.notna(row.get("bio_short")) else ""
-
-            st.markdown(f"""
-            <div class="alumni-card" style='min-height:160px;'>
-              <h4>{row['name']}
-                <span style='font-weight:400; font-size:0.82rem; color:var(--text-muted);'>
-                  · Class of {int(row['year'])}
-                </span>
-              </h4>
-              <p style='margin:0.15rem 0;'>{row['role']}</p>
-              <p style='margin:0; font-size:0.85rem; color:var(--text-muted);'>{row['city']}, {row['country']}</p>
-              <div style='margin-top:0.4rem;'>
-                <span class="badge">{row['industry']}</span>
-                <span class="badge-gold">🤝 Mentor</span>
-              </div>
-              {bio}
-              {linkedin_btn}
-            </div>
-            """, unsafe_allow_html=True)
+            card = (
+                '<div class="alumni-card" style="min-height:160px;">'
+                f'<h4>{row["name"]} <span style="font-weight:400; font-size:0.82rem; color:var(--text-muted);">· Class of {int(row["year"])}</span></h4>'
+                f'<p style="margin:0.15rem 0;">{row["role"]}</p>'
+                f'<p style="margin:0; font-size:0.85rem; color:var(--text-muted);">{row["city"]}, {row["country"]}</p>'
+                f'<span class="badge">{row["industry"]}</span> <span class="badge-gold">&#129309; Mentor</span>'
+                f'{bio_html}{linkedin_html}'
+                '</div>'
+            )
+            st.markdown(card, unsafe_allow_html=True)
 
     st.markdown("---")
 

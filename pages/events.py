@@ -8,47 +8,50 @@ import streamlit as st
 import datetime
 
 # ── Seed events ───────────────────────────────────────────────────────────────
+# NOTE: These are proposed/planning dates for 2026. They are not confirmed by
+# any organising committee. Treat as illustrative until officially announced.
 EVENTS = [
     {
         "id": "e001",
         "title": "Class of 2001 — 25th Reunion Dinner",
-        "date": datetime.date(2025, 11, 29),
+        "date": datetime.date(2026, 11, 28),
         "time": "6:30 PM – 11:00 PM EAT",
         "type": "Reunion",
-        "location": "Nairobi Serena Hotel, Nyerere Road, Nairobi",
+        "location": "Nairobi — Venue TBC",
         "is_virtual": False,
         "description": (
-            "The big one. Twenty-five years since we sat KCSE in 2001. "
-            "Black-tie optional. All Class of 2001 alumni and their partners welcome. "
-            "Dinner, awards, and a live band. Tickets at the door or via the organising team."
+            "Twenty-five years since we sat KCSE in 2001. "
+            "This event is in the planning stages — the organising committee is yet to confirm "
+            "the venue, date and ticket details. Register your interest via email and you will "
+            "be the first to hear when it is confirmed."
         ),
         "organiser": "Class of 2001 Organising Committee",
-        "link": "mailto:alumni@dagoretti.ac.ke?subject=2001 Reunion RSVP",
+        "link": "mailto:alumni@dagoretti.ac.ke?subject=2001 Reunion Interest",
         "featured": True,
-        "gcal_dates": "20251129T183000/20251129T230000",
+        "gcal_dates": "20261128T183000/20261128T230000",
     },
     {
         "id": "e002",
         "title": "Class of 2001 — Diaspora Virtual Reunion",
-        "date": datetime.date(2025, 12, 6),
+        "date": datetime.date(2026, 12, 5),
         "time": "3:00 PM – 5:00 PM EAT (8:00 AM EST / 1:00 PM GMT)",
         "type": "Reunion",
         "location": "Zoom — link sent to registered attendees",
         "is_virtual": True,
         "description": (
-            "For classmates who cannot travel to Nairobi. Live stream of the reunion highlights, "
-            "breakout rooms by country, and a global roll-call. Free to attend. "
-            "Register via the Submit Data page."
+            "For classmates who cannot travel to Nairobi. Breakout rooms by country, "
+            "a global roll-call, and live connection to Nairobi if a physical event is confirmed. "
+            "Free to attend. Register your interest via the Submit Data page."
         ),
         "organiser": "Class of 2001 Organising Committee",
         "link": "mailto:alumni@dagoretti.ac.ke?subject=2001 Diaspora Reunion Register",
         "featured": True,
-        "gcal_dates": "20251206T150000/20251206T170000",
+        "gcal_dates": "20261205T150000/20261205T170000",
     },
     {
         "id": "e003",
         "title": "Alumni Careers Day — Form 3 & 4 Students",
-        "date": datetime.date(2025, 9, 20),
+        "date": datetime.date(2026, 9, 19),
         "time": "9:00 AM – 3:00 PM EAT",
         "type": "Career",
         "location": "Dagoretti High School, Kikuyu Road, Nairobi",
@@ -56,85 +59,86 @@ EVENTS = [
         "description": (
             "Alumni from medicine, tech, law, finance, and agriculture return to school "
             "to speak to current Form 3 and 4 students about career paths, university selection, "
-            "and the road from KCSE to professional life. If you are an alumnus and want to speak, "
-            "contact the organising team."
+            "and the road from KCSE to professional life. Proposed for Term 3 2026. "
+            "If you are an alumnus who wants to speak, register your interest via email."
         ),
         "organiser": "Alumni Relations Committee",
-        "link": "mailto:alumni@dagoretti.ac.ke?subject=Careers Day Speaker",
+        "link": "mailto:alumni@dagoretti.ac.ke?subject=Careers Day Speaker 2026",
         "featured": False,
-        "gcal_dates": "20250920T090000/20250920T150000",
+        "gcal_dates": "20260919T090000/20260919T150000",
     },
     {
         "id": "e004",
-        "title": "Dagoretti Bursary Fund Drive — 2025",
-        "date": datetime.date(2025, 8, 1),
-        "time": "All of August 2025",
+        "title": "Dagoretti Bursary Fund Drive — 2026",
+        "date": datetime.date(2026, 8, 1),
+        "time": "All of August 2026",
         "type": "Fundraising",
         "location": "Online / M-Pesa",
         "is_virtual": True,
         "description": (
             "Annual campaign to fund bursaries for bright but financially constrained "
             "current students at Dagoretti. Target: KSh 500,000 to fund 10 bursaries. "
-            "Every contribution counts — KSh 1,000 to KSh 100,000 all welcome."
+            "Every contribution counts — KSh 1,000 to KSh 100,000 all welcome. "
+            "M-Pesa details to be published when the campaign opens."
         ),
         "organiser": "Dagoretti Alumni Foundation",
-        "link": "mailto:alumni@dagoretti.ac.ke?subject=Bursary Fund Contribution",
+        "link": "mailto:alumni@dagoretti.ac.ke?subject=Bursary Fund 2026",
         "featured": False,
-        "gcal_dates": "20250801T000000/20250831T235900",
+        "gcal_dates": "20260801T000000/20260831T235900",
     },
     {
         "id": "e005",
         "title": "Alumni vs Current Students Football Match",
-        "date": datetime.date(2025, 10, 11),
+        "date": datetime.date(2026, 10, 10),
         "time": "10:00 AM – 1:00 PM EAT",
         "type": "Sports",
         "location": "Dagoretti High School Grounds, Nairobi",
         "is_virtual": False,
         "description": (
             "The annual pride-on-the-line football match. Alumni team vs current Form 4 students. "
-            "Class of 2001 alumni especially invited — 25th reunion warm-up event. "
-            "Spectators welcome. Bring family."
+            "Class of 2001 alumni especially invited. "
+            "Spectators welcome. Bring family. Date subject to school term calendar."
         ),
         "organiser": "Dagoretti Sports Committee",
-        "link": "mailto:alumni@dagoretti.ac.ke?subject=Football Match",
+        "link": "mailto:alumni@dagoretti.ac.ke?subject=Football Match 2026",
         "featured": False,
-        "gcal_dates": "20251011T100000/20251011T130000",
+        "gcal_dates": "20261010T100000/20261010T130000",
     },
     {
         "id": "e006",
         "title": "Nairobi Alumni Networking Evening",
-        "date": datetime.date(2025, 7, 17),
+        "date": datetime.date(2026, 7, 16),
         "time": "6:00 PM – 9:00 PM EAT",
         "type": "Networking",
-        "location": "Java House, Westlands, Nairobi",
+        "location": "Nairobi — Venue TBC",
         "is_virtual": False,
         "description": (
-            "Informal monthly drinks and networking for Nairobi-based alumni. "
+            "Informal evening drinks and networking for Nairobi-based alumni. "
             "No agenda, no speeches — just reconnecting. All years welcome. "
-            "The class of 2001 organising committee will be there from 6:30 PM."
+            "Venue confirmed closer to the date."
         ),
         "organiser": "Nairobi Alumni Chapter",
-        "link": "mailto:alumni@dagoretti.ac.ke?subject=Nairobi Networking July",
+        "link": "mailto:alumni@dagoretti.ac.ke?subject=Nairobi Networking 2026",
         "featured": False,
-        "gcal_dates": "20250717T180000/20250717T210000",
+        "gcal_dates": "20260716T180000/20260716T210000",
     },
     {
         "id": "e007",
         "title": "London Diaspora Gathering",
-        "date": datetime.date(2025, 9, 6),
+        "date": datetime.date(2026, 9, 5),
         "time": "4:00 PM – 8:00 PM GMT",
         "type": "Reunion",
         "location": "Venue TBC — Central London",
         "is_virtual": False,
         "description": (
-            "Dagoretti alumni based in the UK — London, Manchester, Edinburgh. "
-            "Come meet classmates, share stories, and plan the diaspora stream "
-            "for the November 2001 25th reunion."
+            "Dagoretti alumni based in the UK. "
+            "Come meet classmates and connect with the global community. "
+            "Venue and ticket details to follow — register interest via email."
         ),
         "organiser": "UK Dagoretti Alumni Chapter",
-        "link": "mailto:alumni@dagoretti.ac.ke?subject=London Diaspora Gathering",
+        "link": "mailto:alumni@dagoretti.ac.ke?subject=London Diaspora Gathering 2026",
         "featured": False,
-        "gcal_dates": "20250906T160000/20250906T200000",
+        "gcal_dates": "20260905T160000/20260905T200000",
     },
 ]
 

@@ -37,15 +37,18 @@ def render():
     st.markdown("""
     <div class="section-header">
       <h2>📊 KCSE Tracker</h2>
-      <p>30 years of Dagoretti academic performance · 1995–2024</p>
+      <p>Dagoretti academic performance · 1995–2025</p>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <div class="card-gold">
-      ⚠️ <strong>Data note:</strong> This dataset contains <em>illustrative estimated</em> historical
-      data for years 1995–2009. For a public launch, replace with verified KNEC data available at
-      <a href="https://knec.ac.ke" target="_blank">knec.ac.ke</a> or from the school records office.
+      <strong>Data sources:</strong>
+      <strong>Confirmed ✅</strong> — 2014, 2015 (official school Facebook page);
+      2022, 2023, 2024, 2025 (Rejnac Daily / KNEC grade distribution, updated Jan 2026).
+      <strong>Illustrative ⚠️</strong> — all other years are estimated trend data, not verified KNEC records.
+      Mean scores and grade distributions for 1995–2013 and 2016–2021 should be replaced with
+      official KNEC data before using this tool for any formal purpose.
     </div>
     """, unsafe_allow_html=True)
 
