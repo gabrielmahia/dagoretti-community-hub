@@ -2,9 +2,6 @@ streamlit>=1.32.0
 plotly>=5.18.0
 pandas>=2.0.0
 numpy>=1.26.0
-folium>=0.15.0
-streamlit-folium>=0.18.0
-openpyxl>=3.1.0
 # Google Sheets backend (optional — only needed when webhook is configured)
 # No service account or credentials file required — uses Apps Script webhook
 # gspread and google-auth are NOT required by the current implementation
