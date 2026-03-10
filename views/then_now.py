@@ -16,7 +16,7 @@ from utils import sheets
 def _load():
     path = os.path.join(os.path.dirname(__file__), "..", "data", "kenya_then_now.csv")
     try:
-        return pd.read_csv(path)
+        return pd.read_csv(path).fillna("")
     except FileNotFoundError:
         return pd.DataFrame()
 
