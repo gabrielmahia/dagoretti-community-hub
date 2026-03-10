@@ -7,7 +7,7 @@ import pandas as pd
 import os
 
 
-@st.cache_data
+@st.cache_data(ttl=60)
 def _load_alumni():
     path = os.path.join(os.path.dirname(__file__), "..", "data", "alumni.csv")
     try:
@@ -22,7 +22,7 @@ def render():
     try:
         import pandas as _pd_kcse
         _kcse_df = _pd_kcse.read_csv(os.path.join(os.path.dirname(__file__), "..", "data", "kcse_results.csv"))
-        _kcse_years = int(_kcse_df["year"].max()) - int(_kcse_df["year"].min()) + 1
+        _kcse_years = int(_kcse_df["year"].count())
     except Exception:
         _kcse_years = 0
 
