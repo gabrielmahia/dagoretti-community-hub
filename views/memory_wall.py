@@ -10,7 +10,7 @@ import os
 import sys
 
 
-@st.cache_data
+@st.cache_data(ttl=300)
 def _load_alumni():
     path = os.path.join(os.path.dirname(__file__), "..", "data", "alumni.csv")
     try:
