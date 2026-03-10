@@ -11,7 +11,7 @@ import os
 def _load():
     path = os.path.join(os.path.dirname(__file__), "..", "data", "alumni.csv")
     try:
-        df = pd.read_csv(path)
+        df = pd.read_csv(path).fillna("")
         return df[df["mentoring"] == "Yes"].reset_index(drop=True)
     except FileNotFoundError:
         return pd.DataFrame()
