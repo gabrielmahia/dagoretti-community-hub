@@ -21,7 +21,7 @@ from utils import sheets
 def _load():
     path = os.path.join(os.path.dirname(__file__), "..", "data", "kcse_results.csv")
     try:
-        df = pd.read_csv(path)
+        df = pd.read_csv(path).fillna("")
         df["year"]       = pd.to_numeric(df["year"], errors="coerce")
         df["mean_grade"] = pd.to_numeric(df["mean_grade"], errors="coerce")
         df["candidates"] = pd.to_numeric(df["candidates"], errors="coerce")
@@ -277,7 +277,7 @@ def _render_contribution_form(confirmed_years):
                 )
             elif not sheets.is_configured():
                 st.info(
-                    f"Email KCSE data to contact@aikungfu.dev — "
+                    f"Email KCSE data to contact@gabrielmahia.com — "
                     f"Subject: KCSE Data {year_sel} — include your source URL."
                 )
 
