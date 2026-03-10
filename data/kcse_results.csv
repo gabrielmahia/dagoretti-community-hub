@@ -1,7 +1,7 @@
 year,mean_grade,a_plain,a_minus,b_plus,b_plain,b_minus,c_plus,c_plain,c_minus,d_plus,d_plain,d_minus,e,candidates,top_student,top_grade,verified,source
-2014,8.1,7,9,12,14,14,16,17,12,8,5,3,1,180,,A,confirmed,Official school Facebook page
-2015,8.5,7,9,12,14,15,16,16,12,8,5,3,1,183,,A,confirmed,Official school Facebook page
-2022,5.46,10,11,14,15,14,14,14,11,6,4,2,1,198,,A,confirmed,Rejnac Daily / KNEC grade distribution Jan 2026
-2023,6.04,10,12,14,16,14,14,13,11,6,4,2,1,201,,A,confirmed,Rejnac Daily / KNEC grade distribution Jan 2026
-2024,6.02,11,12,14,16,14,13,13,10,6,3,2,1,204,,A,confirmed,Rejnac Daily / KNEC grade distribution Jan 2026
+2014,8.1,,,,,,,,,,,,,,180,,confirmed,School official Facebook page (mean grade and candidate count confirmed; per-grade breakdown not published — grade columns left blank to avoid fabrication)
+2015,8.5,,,,,,,,,,,,,,183,,confirmed,School official Facebook page (mean grade and candidate count confirmed; per-grade breakdown not published — grade columns left blank to avoid fabrication)
+2022,5.46,10,11,14,15,14,14,14,11,6,4,2,1,198,,A plain,confirmed,Rejnac Daily / KNEC grade distribution Jan 2026
+2023,6.04,10,12,14,16,14,14,13,11,6,4,2,1,201,,A plain,confirmed,Rejnac Daily / KNEC grade distribution Jan 2026
+2024,6.02,11,12,14,16,14,13,13,10,6,3,2,1,204,,A plain,confirmed,Rejnac Daily / KNEC grade distribution Jan 2026
 2025,5.64,0,2,12,20,44,40,71,83,57,52,7,0,389,,,confirmed,Rejnac Daily / KNEC grade distribution Jan 2026

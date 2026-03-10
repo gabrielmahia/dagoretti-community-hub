@@ -7,6 +7,7 @@ Memories marked [confirmed], [probable], or [illustrative] in code comments.
 import streamlit as st
 import pandas as pd
 import os
+import sys
 
 
 @st.cache_data
@@ -22,7 +23,7 @@ def _load_alumni():
 # ── Timeline ──────────────────────────────────────────────────────────────────
 # [C] = Confirmed (Wikipedia / The Standard / KRU / Kenya Music Festival records)
 # [P] = Probable (consistent with confirmed institutional record)
-# [I] = Illustrative (school context, not individually sourced)
+# [I] = Illustrative (school context / shared memory — not individually sourced)
 MEMORIES = [
     {
         "year": "Dec\n1997",
@@ -33,6 +34,7 @@ MEMORIES = [
             "carefully. Dagoretti High School — Kikuyu Road, Nairobi — was calling."
         ),
         "tag": None,
+        "confidence": "illustrative",  # [I] shared experience, not individually sourced
     },
     {
         "year": "Jan\n1998",
@@ -45,6 +47,7 @@ MEMORIES = [
             "The view from the school hill."
         ),
         "tag": None,
+        "confidence": "illustrative",  # [I] shared experience
     },
     {
         "year": "1998",
@@ -58,6 +61,7 @@ MEMORIES = [
             "We inherited that culture as Form 1s, and some of us were pulled straight into rehearsals."
         ),
         "tag": "🎵 Kenya Music Festival [Active]",
+        "confidence": "confirmed",  # [C] Kenya Music Festival institutional record
     },
     {
         "year": "1998–\n2001",
@@ -74,6 +78,7 @@ MEMORIES = [
             "generation to the next — and we were one of those generations."
         ),
         "tag": "🎭 Drama Festival [Confirmed — Wikipedia / The Standard 2011]",
+        "confidence": "confirmed",  # [C] Wikipedia + The Standard 2011
     },
     {
         "year": "1999",
@@ -88,6 +93,7 @@ MEMORIES = [
             "at the 2019 East Africa School Games in Arusha against Kakamega High."
         ),
         "tag": "🏉 Rugby [Confirmed — KRU / Citizen Digital]",
+        "confidence": "confirmed",  # [C] KRU + Citizen Digital
     },
     {
         "year": "2000",
@@ -102,6 +108,7 @@ MEMORIES = [
             "showbiz generation than Dagoretti. Talent Day was the school's unofficial fifth subject."
         ),
         "tag": "🎤 Arts Legacy [Confirmed — The Standard 2011]",
+        "confidence": "confirmed",  # [C] The Standard 2011 + Wikipedia biographies
     },
     {
         "year": "2001",
@@ -113,6 +120,7 @@ MEMORIES = [
             "All of us got through."
         ),
         "tag": None,
+        "confidence": "illustrative",  # [I] shared experience
     },
     {
         "year": "Oct–Nov\n2001",
@@ -125,6 +133,7 @@ MEMORIES = [
             "the rugby pitch, the debate stage. That was more than enough."
         ),
         "tag": None,
+        "confidence": "probable",  # [P] KCSE calendar is institutional — specific class experience is shared memory
     },
     {
         "year": "Nov\n2001",
@@ -138,6 +147,7 @@ MEMORIES = [
             "around February 2002. Until then, you went home and waited."
         ),
         "tag": None,
+        "confidence": "illustrative",  # [I] shared experience
     },
 ]
 
@@ -344,18 +354,19 @@ def render():
             "source": "Nation Africa · Giants of Africa (giantsofafrica.org)",
         },
     ]
-    p_cols = st.columns(4)
-    for col, p in zip(p_cols, pillars):
-        with col:
-            st.markdown(
-                f'<div class="card" style="text-align:center; padding:1.1rem 0.8rem; height:100%;">' +
-                f'<div style="font-size:2rem; margin-bottom:0.3rem;">{p["icon"]}</div>' +
-                f'<h4 style="color:var(--green-dark); margin:0 0 0.3rem; font-size:0.95rem;">{p["title"]}</h4>' +
-                f'<p style="font-size:0.82rem;">{p["body"]}</p>' +
-                f'<p style="font-size:0.68rem; color:#888; margin-top:0.4rem;">Source: {p["source"]}</p>' +
-                '</div>',
-                unsafe_allow_html=True,
-            )
+    p_html = '<div style="display:flex;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">'
+    for p in pillars:
+        p_html += (
+            f'<div style="flex:1 1 180px;min-width:160px;background:#fdf8f0;border-radius:10px;'
+            f'padding:1.1rem 0.8rem;text-align:center;">'
+            f'<div style="font-size:2rem;margin-bottom:0.3rem;">{p["icon"]}</div>'
+            f'<h4 style="color:var(--green-dark);margin:0 0 0.3rem;font-size:0.95rem;">{p["title"]}</h4>'
+            f'<p style="font-size:0.82rem;margin:0 0 0.3rem;">{p["body"]}</p>'
+            f'<p style="font-size:0.68rem;color:#888;margin:0;">Source: {p["source"]}</p>'
+            f'</div>'
+        )
+    p_html += '</div>'
+    st.markdown(p_html, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -367,7 +378,24 @@ def render():
     </div>
     """, unsafe_allow_html=True)
 
+    # Provenance legend
+    st.markdown("""
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;font-size:0.78rem;">
+      <span style="background:#e8f5e9;color:#1a5c2e;padding:2px 9px;border-radius:10px;font-weight:600;">✅ Confirmed — named primary source</span>
+      <span style="background:#e3f2fd;color:#1565c0;padding:2px 9px;border-radius:10px;font-weight:600;">🔵 Probable — consistent with institutional record</span>
+      <span style="background:#f3e5f5;color:#6a1b9a;padding:2px 9px;border-radius:10px;font-weight:600;">🟣 Shared memory — community experience, not individually sourced</span>
+    </div>
+    """, unsafe_allow_html=True)
+
     for mem in MEMORIES:
+        conf = mem.get("confidence", "illustrative")
+        if conf == "confirmed":
+            conf_html = '<span style="font-size:0.71rem;background:#e8f5e9;color:#1a5c2e;font-weight:600;padding:2px 7px;border-radius:10px;">✅ Confirmed</span>'
+        elif conf == "probable":
+            conf_html = '<span style="font-size:0.71rem;background:#e3f2fd;color:#1565c0;font-weight:600;padding:2px 7px;border-radius:10px;">🔵 Probable</span>'
+        else:
+            conf_html = '<span style="font-size:0.71rem;background:#f3e5f5;color:#6a1b9a;font-weight:600;padding:2px 7px;border-radius:10px;">🟣 Shared memory</span>'
+
         tag_html = ""
         if mem.get("tag"):
             is_confirmed = "Confirmed" in mem["tag"] or "Active" in mem["tag"]
@@ -384,8 +412,8 @@ def render():
             f'<div class="timeline-year">{mem["year"]}</div>'
             '<div class="timeline-content">'
             f'<h4>{mem["icon"]} {mem["title"]}</h4>'
-            f'{tag_html}'
-            f'<p style="margin-top:0.35rem;">{mem["body"]}</p>'
+            f'<div style="margin:0.3rem 0 0.4rem;display:flex;flex-wrap:wrap;gap:0.4rem;">{conf_html}{" " + tag_html if tag_html else ""}</div>'
+            f'<p style="margin-top:0.2rem;">{mem["body"]}</p>'
             '</div></div>'
         )
         st.markdown(card, unsafe_allow_html=True)
@@ -553,6 +581,51 @@ def render():
             f'</div>',
             unsafe_allow_html=True,
         )
+
+    # ── Add / correct a principal ──────────────────────────────────────────────
+    with st.expander("📥 Add or correct a principal entry", expanded=False):
+        st.markdown("""
+        <div style="font-size:0.87rem;background:#fdf3d9;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.75rem;">
+        <strong>What's needed most:</strong> Any principal who served between Mr. N.C. Bhatt (1962)
+        and Mr. J.K. Mburia (c. 1980s). Also: exact years for Mburia, Murengi, and Ngahu, and the
+        full first name / title for Dr. Nyakweba. Verified newspaper, school gazette, or transcript
+        references preferred.
+        </div>
+        """, unsafe_allow_html=True)
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from utils import sheets as _sheets_p
+        with st.form("principals_form"):
+            pc1, pc2 = st.columns(2)
+            with pc1:
+                p_name = st.text_input("Principal's name *")
+                p_era  = st.text_input("Approximate era / years *", placeholder="e.g. 1970–1978")
+            with pc2:
+                p_src  = st.text_input("Source / evidence *", placeholder="e.g. newspaper article, school gazette, personal memory + class year")
+                p_your = st.text_input("Your name (optional)")
+            p_note = st.text_area("Additional context (optional)", height=70,
+                                  placeholder="What do you remember about this principal? Any notable events during their tenure?")
+            if st.form_submit_button("Submit Principal Record", type="primary"):
+                if not p_name or not p_era or not p_src:
+                    st.warning("Please complete: Principal name, Era/years, and Source.")
+                else:
+                    ok = _sheets_p.append_row("corrections", {
+                        "page": "Memory Wall — Principals",
+                        "field": p_name,
+                        "current_value": f"Era: {p_era}",
+                        "correction": p_note,
+                        "source": p_src,
+                        "submitter": p_your,
+                    })
+                    if ok:
+                        _sheets_p.success_banner(
+                            p_your or "contributor",
+                            f"Principal record for {p_name} ({p_era}) received. Will be cross-checked and added.",
+                        )
+                    elif not _sheets_p.is_configured():
+                        st.info(
+                            f"Email to contact@aikungfu.dev — Subject: Dagoretti Principal Record — "
+                            f"{p_name} ({p_era}). Include your source."
+                        )
 
     st.markdown("<br>", unsafe_allow_html=True)
 

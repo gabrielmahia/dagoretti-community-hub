@@ -52,9 +52,14 @@ def render():
     <div class="card-gold">
       <strong>Data integrity:</strong> This tracker shows <strong>{n_confirmed} confirmed years</strong>
       with verified primary sources. <strong>{n_missing} years (1995–2021 except 2014–2015) have no
-      verified data</strong> and are intentionally left blank.
-      If you have KNEC records, school transcripts, or newspaper links for any missing year,
-      contribute below — every verified year added is permanent.
+      verified data</strong> and are intentionally left blank.<br>
+      <span style="font-size:0.85rem;">
+      📌 <strong>2014 &amp; 2015</strong> — mean grade and candidate count confirmed via school Facebook.
+      Per-grade breakdowns (A, A−, B+, …) were not in that source and previously contained
+      placeholder numbers that did not add up. Those have been removed.
+      </span><br>
+      If you have KNEC records, school transcripts, or newspaper links for any missing year or grade breakdown,
+      contribute below — every verified addition is permanent.
     </div>
     """, unsafe_allow_html=True)
 
@@ -155,7 +160,18 @@ def render():
         )
         st.plotly_chart(fig2, use_container_width=True)
     else:
-        st.info("Grade distribution not available for this year — mean score only.")
+        st.markdown(
+            '<div class="card-gold" style="font-size:0.88rem;">'
+            '⚠️ <strong>Grade distribution not displayed for this year.</strong><br>'
+            'The mean grade and candidate count were confirmed from the school\'s official Facebook page. '
+            'The per-grade breakdown (A, A−, B+, …) was not published in that source — so no distribution '
+            'is shown here. Previously, placeholder numbers were loaded that did not add up to the '
+            'confirmed candidate count. Those have been removed to preserve data integrity.<br>'
+            'If you have the KNEC certificate slip or a newspaper clipping with the full grade breakdown '
+            'for this year, please contribute it below.'
+            '</div>',
+            unsafe_allow_html=True,
+        )
 
     a_count = int(pd.to_numeric(yr_row.get("a_plain",0), errors="coerce") or 0)
     st.markdown(
