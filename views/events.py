@@ -141,7 +141,7 @@ def render():
                     f"Proposal for '{ev_title}' received — the admin team will be in touch.",
                 )
             elif not sheets.is_configured():
-                st.info(f"Email your proposal to contact@aikungfu.dev — Subject: Event Proposal — {ev_title}")
+                st.info(f"Email your proposal to contact@gabrielmahia.com — Subject: Event Proposal — {ev_title}")
 
     # ── Past events ────────────────────────────────────────────────────────────
     if not past.empty:
