@@ -1,14 +1,14 @@
 """
-KCSE Tracker — 30 years of exam results with trend analysis.
+KCSE Tracker — confirmed results only.
 
-DATA ACCURACY WARNING: The data/kcse_results.csv contains estimated/illustrative
-historical data for demonstration. Replace with verified KNEC data before public
-launch. Grade distribution columns (1995–2009) are particularly approximate.
+Only years with a verified primary source are shown.
+Every other year is an explicit gap waiting to be filled.
+
+Confirmed: 2014, 2015 (school Facebook page); 2022–2025 (Rejnac Daily/KNEC Jan 2026)
 """
 
 import streamlit as st
 import pandas as pd
-import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
 import os
@@ -25,188 +25,246 @@ def _load():
         df["year"]       = pd.to_numeric(df["year"], errors="coerce")
         df["mean_grade"] = pd.to_numeric(df["mean_grade"], errors="coerce")
         df["candidates"] = pd.to_numeric(df["candidates"], errors="coerce")
-        return df.dropna(subset=["year", "mean_grade"])
+        return df.dropna(subset=["year","mean_grade"]).sort_values("year")
     except FileNotFoundError:
         return pd.DataFrame()
 
 
-GRADE_LABELS = {
-    12: "A", 11: "A−", 10: "B+", 9: "B", 8: "B−",
-    7: "C+", 6: "C", 5: "C−", 4: "D+", 3: "D", 2: "D−", 1: "E"
-}
+GRADE_LABELS = {12:"A",11:"A−",10:"B+",9:"B",8:"B−",7:"C+",6:"C",5:"C−",4:"D+",3:"D",2:"D−",1:"E"}
+GRADE_COLS   = ["a_plain","a_minus","b_plus","b_plain","b_minus","c_plus","c_plain","c_minus","d_plus","d_plain","d_minus","e"]
+GRADE_NAMES  = ["A","A−","B+","B","B−","C+","C","C−","D+","D","D−","E"]
 
 
 def render():
     st.markdown("""
     <div class="section-header">
       <h2>📊 KCSE Tracker</h2>
-      <p>Dagoretti academic performance · 1995–2025</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="card-gold">
-      <strong>Data sources:</strong>
-      <strong>Confirmed ✅</strong> — 2014, 2015 (official school Facebook page);
-      2022, 2023, 2024, 2025 (Rejnac Daily / KNEC grade distribution, updated Jan 2026).
-      <strong>Illustrative ⚠️</strong> — all other years are estimated trend data, not verified KNEC records.
-      Mean scores and grade distributions for 1995–2013 and 2016–2021 should be replaced with
-      official KNEC data before using this tool for any formal purpose.
+      <p>Confirmed exam results only · Source-verified · No estimates</p>
     </div>
     """, unsafe_allow_html=True)
 
     df = _load()
+    confirmed_years = sorted(df["year"].dropna().astype(int).tolist()) if not df.empty else []
+    n_confirmed = len(confirmed_years)
+    n_missing   = len([y for y in range(1995, 2026) if y not in confirmed_years])
+
+    st.markdown(f"""
+    <div class="card-gold">
+      <strong>Data integrity:</strong> This tracker shows <strong>{n_confirmed} confirmed years</strong>
+      with verified primary sources. <strong>{n_missing} years (1995–2021 except 2014–2015) have no
+      verified data</strong> and are intentionally left blank.
+      If you have KNEC records, school transcripts, or newspaper links for any missing year,
+      contribute below — every verified year added is permanent.
+    </div>
+    """, unsafe_allow_html=True)
+
     if df.empty:
-        st.error("KCSE data could not be loaded. Please contact the admin team.")
+        st.info("No confirmed KCSE data loaded.")
+        _render_contribution_form([])
         return
 
-    # ── Summary metrics ───────────────────────────────────────────────────────
-    latest = df[df["year"] == df["year"].max()].iloc[0]
-    earliest = df[df["year"] == df["year"].min()].iloc[0]
-
-    m1, m2, m3, m4 = st.columns(4)
+    latest    = df[df["year"] == df["year"].max()].iloc[0]
     latest_yr = int(latest["year"])
-    m1.metric(f"Latest mean grade ({latest_yr})", f"{latest['mean_grade']:.1f}/12",
-              delta=f"+{latest['mean_grade'] - earliest['mean_grade']:.1f} since 1995")
-    m2.metric(f"Candidates ({latest_yr})", int(latest["candidates"]),
-              delta=f"+{int(latest['candidates'] - earliest['candidates'])} since 1995")
-    m3.metric("Grade equivalent", _grade_str(latest["mean_grade"]))
-    m4.metric(f"A grades ({latest_yr})", int(latest.get("a_plain", 0)))
+
+    # ── KPI pills ──────────────────────────────────────────────────────────────
+    pills_data = [
+        (str(n_confirmed), "Confirmed years"),
+        (f"{latest['mean_grade']:.2f}/12", f"Mean grade ({latest_yr})"),
+        (f"{int(latest['candidates'])}", f"Candidates ({latest_yr})"),
+        (str(n_missing), "Years still missing"),
+    ]
+    ph = '<div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:1rem;">'
+    for val, lbl in pills_data:
+        ph += (
+            f'<div style="flex:1 1 130px;min-width:110px;background:#fdf8f0;'
+            f'border-left:3px solid #1a5c2e;border-radius:6px;padding:0.7rem 0.9rem;">'
+            f'<div style="font-size:1.35rem;font-weight:800;color:#1a5c2e;">{val}</div>'
+            f'<div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;color:#4a5e4d;">{lbl}</div>'
+            f'</div>'
+        )
+    ph += '</div>'
+    st.markdown(ph, unsafe_allow_html=True)
 
     st.markdown("---")
 
-    # ── Trend chart ───────────────────────────────────────────────────────────
-    yr_min_val = int(df["year"].min())
-    yr_max_val = int(df["year"].max())
-    st.markdown(f"#### Mean Grade Trend · {yr_min_val}–{yr_max_val}")
-
-    # Polynomial trend line
-    x = df["year"].values
-    y = df["mean_grade"].values
-    z = np.polyfit(x, y, 1)
-    trend = np.poly1d(z)(x)
+    # ── Mean grade chart ───────────────────────────────────────────────────────
+    st.markdown("#### Mean Grade — Confirmed Years")
+    st.caption("Grey bands = years with no verified data. No interpolation shown.")
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(
-        x=x, y=y, mode="lines+markers",
-        name="Mean grade",
-        line=dict(color="#1a5c2e", width=2.5),
-        marker=dict(size=6, color="#1a5c2e"),
-        fill="tozeroy",
-        fillcolor="rgba(26,92,46,0.08)",
+        x=df["year"].astype(int), y=df["mean_grade"],
+        mode="markers+text", name="Confirmed",
+        marker=dict(size=16, color="#1a5c2e", line=dict(color="#c9a94e", width=2)),
+        text=[f"{v:.2f}" for v in df["mean_grade"]],
+        textposition="top center",
+        textfont=dict(size=11, color="#1a5c2e"),
     ))
-    fig.add_trace(go.Scatter(
-        x=x, y=trend, mode="lines",
-        name="Trend",
-        line=dict(color="#c9a94e", width=2, dash="dash"),
-    ))
+
+    # Gap bands
+    in_gap, gap_start = False, None
+    for y in range(1995, 2027):
+        if y not in confirmed_years:
+            if not in_gap: gap_start, in_gap = y, True
+        else:
+            if in_gap:
+                fig.add_vrect(x0=gap_start-0.4, x1=y-0.6,
+                    fillcolor="rgba(180,180,180,0.12)", line_width=0,
+                    annotation_text="no data" if (y-gap_start)>=4 else "",
+                    annotation_font_size=9, annotation_font_color="#bbb",
+                    annotation_position="top left")
+                in_gap = False
+    if in_gap:
+        fig.add_vrect(x0=gap_start-0.4, x1=2025.4,
+            fillcolor="rgba(180,180,180,0.12)", line_width=0)
+
     fig.update_layout(
         paper_bgcolor="#fdf8f0", plot_bgcolor="#fdf8f0",
-        margin=dict(l=0, r=0, t=10, b=0),
-        yaxis=dict(range=[4, 10], title="Mean grade (1–12 scale)", gridcolor="#e8f5e9"),
-        xaxis=dict(title="Year", gridcolor="#e8f5e9"),
-        legend=dict(orientation="h", y=1.05),
-        height=360,
+        margin=dict(l=0,r=0,t=10,b=0), height=340, showlegend=False,
+        yaxis=dict(range=[4,10], title="Mean grade (1–12)",
+                   gridcolor="#e8f5e9",
+                   tickvals=[5,6,7,8,9], ticktext=["C−","C","C+","B−","B"]),
+        xaxis=dict(title="Year", gridcolor="#e8f5e9",
+                   tickmode="array",
+                   tickvals=confirmed_years,
+                   ticktext=[str(y) for y in confirmed_years]),
     )
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("---")
 
-    # ── Grade distribution ────────────────────────────────────────────────────
+    # ── Grade distribution ─────────────────────────────────────────────────────
     st.markdown("#### Grade Distribution — Select Year")
-
-    grade_cols = ["a_plain", "a_minus", "b_plus", "b_plain", "b_minus",
-                  "c_plus", "c_plain", "c_minus", "d_plus", "d_plain", "d_minus", "e"]
-    grade_names = ["A", "A−", "B+", "B", "B−", "C+", "C", "C−", "D+", "D", "D−", "E"]
-
-    selected_year = st.selectbox(
-        "Year",
-        sorted(df["year"].unique(), reverse=True),
-        index=0,
-    )
-
+    selected_year = st.selectbox("Year", sorted(df["year"].unique().astype(int), reverse=True), key="kcse_yr_sel")
     yr_row = df[df["year"] == selected_year].iloc[0]
-    dist_vals = [pd.to_numeric(yr_row.get(c, 0), errors="coerce") or 0 for c in grade_cols]
+    dist_vals = [pd.to_numeric(yr_row.get(c,0), errors="coerce") or 0 for c in GRADE_COLS]
+    source_note = str(yr_row.get("source","Verified")).strip()
 
-    fig2 = px.bar(
-        x=grade_names,
-        y=dist_vals,
-        labels={"x": "Grade", "y": "Number of students"},
-        color=grade_names,
-        color_discrete_sequence=[
-            "#1a5c2e","#2e7d46","#43a059","#66bb6a","#a5d6a7",
-            "#c9a94e","#f0c040","#f9a825","#e57373","#ef5350","#d32f2f","#b71c1c"
-        ],
-    )
-    fig2.update_layout(
-        paper_bgcolor="#fdf8f0", plot_bgcolor="#fdf8f0",
-        margin=dict(l=0, r=0, t=10, b=0), height=300, showlegend=False,
-        yaxis=dict(gridcolor="#e8f5e9"),
-    )
-    st.plotly_chart(fig2, width="stretch")
+    if any(v > 0 for v in dist_vals):
+        fig2 = px.bar(x=GRADE_NAMES, y=dist_vals,
+            labels={"x":"Grade","y":"Students"},
+            color=GRADE_NAMES,
+            color_discrete_sequence=[
+                "#1a5c2e","#2e7d46","#43a059","#66bb6a","#a5d6a7",
+                "#c9a94e","#f0c040","#f9a825","#e57373","#ef5350","#d32f2f","#b71c1c"],
+        )
+        fig2.update_layout(
+            paper_bgcolor="#fdf8f0", plot_bgcolor="#fdf8f0",
+            margin=dict(l=0,r=0,t=10,b=0), height=270, showlegend=False,
+            yaxis=dict(gridcolor="#e8f5e9"),
+        )
+        st.plotly_chart(fig2, use_container_width=True)
+    else:
+        st.info("Grade distribution not available for this year — mean score only.")
 
-    total = yr_row["candidates"]
-    a_count = yr_row.get("a_plain", 0)
-    st.caption(
-        f"{selected_year}: {int(total)} candidates · "
-        f"Top student: {yr_row.get('top_student','—')} ({yr_row.get('top_grade','—')}) · "
-        f"A grades: {int(a_count)} ({100*int(a_count)/int(total):.1f}%)"
-    )
+    a_count = int(pd.to_numeric(yr_row.get("a_plain",0), errors="coerce") or 0)
+    st.markdown(
+        f'<div class="card" style="font-size:0.87rem;">'
+        f'<strong>{selected_year}</strong> · {int(yr_row["candidates"])} candidates · '
+        f'Mean <strong>{float(yr_row["mean_grade"]):.2f}</strong> ({_grade_str(float(yr_row["mean_grade"]))}) · '
+        f'A grades: {a_count}'
+        f'<br><span style="color:#4a5e4d;font-size:0.79rem;">✅ Source: {source_note}</span>'
+        f'</div>', unsafe_allow_html=True)
 
     st.markdown("---")
 
-    # ── Candidates growth ─────────────────────────────────────────────────────
-    st.markdown("#### Candidate Growth · School Size Over Time")
-    fig3 = px.area(
-        df, x="year", y="candidates",
-        labels={"candidates": "Candidates", "year": "Year"},
-        color_discrete_sequence=["#1a5c2e"],
-    )
-    fig3.update_layout(
-        paper_bgcolor="#fdf8f0", plot_bgcolor="#fdf8f0",
-        margin=dict(l=0, r=0, t=10, b=0), height=250,
-        yaxis=dict(gridcolor="#e8f5e9"),
-    )
-    st.plotly_chart(fig3, width="stretch")
+    # ── Gap visualisation ──────────────────────────────────────────────────────
+    st.markdown("#### Missing Years — Help Fill the Record")
+    st.caption("Grey = no verified data · Green = confirmed · 1995–2025 shown")
 
-    # ── Full table ────────────────────────────────────────────────────────────
-    with st.expander("📋 Full results table (all years)"):
-        show_df = df[["year", "mean_grade", "candidates", "verified"]].sort_values("year", ascending=False).copy()
-        show_df.columns = ["Year", "Mean Grade", "Candidates", "Data Status"]
-        st.dataframe(show_df, use_container_width=True, hide_index=True)
-        st.caption(
-            "✅ Confirmed = sourced from primary records. "
-            "⚠️ Illustrative = estimated for trend context only — not verified KNEC data."
-        )
+    grid_html = '<div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-bottom:1rem;">'
+    for y in range(1995, 2026):
+        if y in confirmed_years:
+            grid_html += (
+                f'<div style="padding:4px 9px;border-radius:4px;font-size:0.77rem;'
+                f'background:#e8f5e9;color:#1a5c2e;font-weight:700;">{y} ✓</div>'
+            )
+        else:
+            grid_html += (
+                f'<div style="padding:4px 9px;border-radius:4px;font-size:0.77rem;'
+                f'background:#f5f5f5;color:#aaa;border:1px dashed #ddd;">{y}</div>'
+            )
+    grid_html += '</div>'
+    st.markdown(grid_html, unsafe_allow_html=True)
 
+    # ── Full table ─────────────────────────────────────────────────────────────
+    with st.expander("📋 Full results table (confirmed years only)"):
+        show = df[["year","mean_grade","candidates","source"]].sort_values("year", ascending=False).copy()
+        show.columns = ["Year","Mean Grade","Candidates","Source"]
+        show["Year"] = show["Year"].astype(int)
+        st.dataframe(show, use_container_width=True, hide_index=True)
+        st.caption("Every row confirmed from primary source. No estimates, no interpolation.")
+
+    st.markdown("---")
+    _render_contribution_form(confirmed_years)
+
+
+def _render_contribution_form(confirmed_years):
     st.markdown("""
-    <div class="card-gold">
-      <strong>Know the correct figure for any year?</strong><br>
-      <span style='font-size:0.88rem;'>
-        Illustrative years (1995–2013, 2016–2021) need verified KNEC data.
-        If you have access to school records or official KNEC transcripts,
-        use the correction form below.
-      </span>
+    <div class="section-header">
+      <h2>📥 Contribute KCSE Data</h2>
+      <p>Add a verified year · Source URL required · Admin-reviewed before publishing</p>
     </div>
     """, unsafe_allow_html=True)
 
-    sheets.suggest_correction_button(
-        page="KCSE Tracker",
-        field="Mean score / grade distribution for a specific year",
-        current_value="See full table above",
-        key="kcse_main",
-    )
-
     st.markdown("""
-    <div class="footer">
-      Confirmed data: 2014 &amp; 2015 (official school Facebook page);
-      2022–2025 (Rejnac Daily / KNEC grade distribution Jan 2026).
-      All other years are illustrative estimates — not verified KNEC records.
+    <div class="card-green">
+      <strong>Valid sources:</strong> Official KNEC publications · School official social media ·
+      Named newspaper reports (Daily Nation, The Standard, The Star) ·
+      Your own certified KNEC transcript for a specific year.<br>
+      <strong>Not accepted:</strong> WhatsApp screenshots · Undated social media posts · Memory alone.
     </div>
     """, unsafe_allow_html=True)
+
+    missing = [str(y) for y in range(1995, 2026) if y not in confirmed_years]
+
+    c1, c2 = st.columns(2)
+    with c1:
+        year_sel   = st.selectbox("Year *", ["— select"]+missing+["Earlier than 1995","2026 and later"], key="kcsec_yr")
+        mean_score = st.text_input("Mean score *", placeholder="e.g. 7.83 or B plain", key="kcsec_mean")
+        n_cands    = st.text_input("Number of candidates (if known)", placeholder="e.g. 164", key="kcsec_cands")
+    with c2:
+        source_url  = st.text_input("Source URL * (must be a verifiable link)", placeholder="https://...", key="kcsec_src")
+        top_student = st.text_input("Top student name (optional — public record only)", key="kcsec_top")
+        top_grade   = st.text_input("Top student grade (optional)", placeholder="e.g. A plain", key="kcsec_topg")
+
+    grade_dist = st.text_area(
+        "Grade distribution (optional — paste as: A=12, A-=8, B+=10, ...)",
+        key="kcsec_dist", height=70,
+        placeholder="A=12, A-=8, B+=10, B=14, B-=16, C+=22, C=31, C-=28, D+=15, D=9, D-=5, E=1",
+    )
+    c1b, c2b = st.columns(2)
+    with c1b:
+        sub_name  = st.text_input("Your name (optional)", key="kcsec_name")
+    with c2b:
+        sub_email = st.text_input("Email (optional — for source follow-up)", key="kcsec_email")
+
+    if st.button("Submit KCSE Data", type="primary", key="kcsec_btn"):
+        errs = []
+        if not year_sel or year_sel == "— select": errs.append("Year")
+        if not mean_score:   errs.append("Mean score")
+        if not source_url or not source_url.startswith("http"): errs.append("Valid source URL (must start https://)")
+        if errs:
+            st.warning(f"Please complete: {', '.join(errs)}")
+        else:
+            ok = sheets.append_row("kcse_submissions", {
+                "year": year_sel, "mean_score": mean_score,
+                "candidates": n_cands, "grade_distribution": grade_dist,
+                "top_student": top_student, "top_grade": top_grade,
+                "source_url": source_url,
+                "submitter_name": sub_name, "submitter_email": sub_email,
+            })
+            if ok:
+                sheets.success_banner(
+                    sub_name or "contributor",
+                    f"Data for {year_sel} received. Cross-checked against source and added within 5–7 days if verified.",
+                )
+            elif not sheets.is_configured():
+                st.info(
+                    f"Email KCSE data to contact@aikungfu.dev — "
+                    f"Subject: KCSE Data {year_sel} — include your source URL."
+                )
 
 
 def _grade_str(mean: float) -> str:
-    """Convert numeric mean grade to letter grade string."""
-    rounded = round(mean)
-    return GRADE_LABELS.get(rounded, "C")
+    return GRADE_LABELS.get(round(mean), "C")

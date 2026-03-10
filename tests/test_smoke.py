@@ -26,14 +26,28 @@ def test_data_alumni_schema():
 
 
 def test_data_kcse_loads():
+    """KCSE tracker shows confirmed years only — no fabricated or illustrative rows."""
     path = os.path.join(os.path.dirname(__file__), "..", "data", "kcse_results.csv")
     df = pd.read_csv(path)
-    assert len(df) >= 30, f"Expected at least 30 years, got {len(df)}"
     assert "year" in df.columns
     assert "mean_grade" in df.columns
     assert "verified" in df.columns, "Missing verified column — data integrity requires it"
+    assert "source" in df.columns, "Missing source column — every row must cite a primary source"
+
+    # ALL rows must be confirmed — no illustrative data allowed
+    unconfirmed = df[df["verified"] != "confirmed"]
+    assert len(unconfirmed) == 0, (
+        f"{len(unconfirmed)} rows are not confirmed — remove or verify: "
+        f"{unconfirmed['year'].tolist()}"
+    )
+
+    # Must have at least the 6 known verified years
     confirmed = df[df["verified"] == "confirmed"]
     assert len(confirmed) >= 6, f"Expected at least 6 confirmed years, got {len(confirmed)}"
+
+    # All confirmed rows must have a source string
+    no_source = confirmed[confirmed["source"].isna() | (confirmed["source"].str.strip() == "")]
+    assert len(no_source) == 0, f"{len(no_source)} confirmed rows have no source citation"
 
 
 def test_data_scholarships_loads():
