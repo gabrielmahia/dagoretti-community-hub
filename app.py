@@ -268,7 +268,7 @@ with st.sidebar:
     <div style='margin-top:2rem; padding-top:1rem; border-top:1px solid #2e7d46; font-size:0.75rem; color:#81c784; text-align:center;'>
       Built by alumni · For the community<br>
       <a href='https://github.com/gabrielmahia/dagoretti-community-hub' style='color:#c9a94e;'>GitHub</a> ·
-      <a href='mailto:contact@aikungfu.dev' style='color:#c9a94e;'>Contact</a>
+      <a href='mailto:contact@gabrielmahia.com' style='color:#c9a94e;'>Contact</a>
     </div>
     """, unsafe_allow_html=True)
 
