@@ -260,7 +260,7 @@ def render():
                 f'<a href="{li_url}" target="_blank" style="color:var(--green-mid); font-size:0.8rem; display:inline-block; margin-top:0.3rem;">LinkedIn &#8594;</a>'
                 if li_url.startswith("http") else ""
             )
-            bio_val = str(row.get("bio_short", "") or "").strip()
+            bio_val = "" if pd.isna(row.get("bio_short", "")) else str(row.get("bio_short", "") or "").strip()
             bio_html = f'<p style="margin:0.3rem 0 0; font-size:0.85rem; color:var(--text-muted);">{bio_val}</p>' if bio_val else ""
             card = (
                 '<div class="alumni-card">'
