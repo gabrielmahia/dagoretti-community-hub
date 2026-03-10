@@ -260,7 +260,7 @@ def render():
 
     st.markdown("""
     <div class="card-gold">
-      <strong>🎉 Class of 2001 — 25th Anniversary, 2025</strong>
+      <strong>🎉 Class of 2001 — 25th Anniversary, 2026</strong>
       <p style='margin:0.4rem 0 0;'>
         A tribute to everyone who sat KCSE at Dagoretti High School in 2001 and spent
         the next 25 years building lives across Kenya and the world.
