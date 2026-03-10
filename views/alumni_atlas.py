@@ -260,13 +260,15 @@ def render():
                 f'<a href="{li_url}" target="_blank" style="color:var(--green-mid); font-size:0.8rem; display:inline-block; margin-top:0.3rem;">LinkedIn &#8594;</a>'
                 if li_url.startswith("http") else ""
             )
-            bio_val = "" if pd.isna(row.get("bio_short", "")) else str(row.get("bio_short", "") or "").strip()
-            bio_html = f'<p style="margin:0.3rem 0 0; font-size:0.85rem; color:var(--text-muted);">{bio_val}</p>' if bio_val else ""
+            bio_val  = "" if pd.isna(row.get("bio_short", "")) else str(row.get("bio_short", "") or "").strip()
+            dorm_val = "" if pd.isna(row.get("dorm", "")) else str(row.get("dorm", "") or "").strip()
+            bio_html  = f'<p style="margin:0.3rem 0 0; font-size:0.85rem; color:var(--text-muted);">{bio_val}</p>' if bio_val else ""
+            dorm_html = f'<span style="font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem; display:inline-block;">🏠 {dorm_val}</span>' if dorm_val else ""
             card = (
                 '<div class="alumni-card">'
                 f'<h4>{row["name"]} <span style="font-weight:400; color:var(--text-muted); font-size:0.85rem;">· Class of {int(row["year"])}</span></h4>'
                 f'<p>{row["role"]} · {row["city"]}, {row["country"]}</p>'
-                f'<span class="badge">{row["industry"]}</span> {mentor_badge}'
+                f'<span class="badge">{row["industry"]}</span> {mentor_badge} {dorm_html}'
                 f'{linkedin_html}{bio_html}'
                 '</div>'
             )
