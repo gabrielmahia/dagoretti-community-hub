@@ -94,12 +94,22 @@ def test_all_page_modules_importable():
 
 
 def test_alumni_lat_lon_are_numeric():
-    """Any alumni rows that exist must have valid coordinates."""
+    """Alumni rows must have coordinates OR city+country for geocoding.
+    Rows without lat/lon are auto-geocoded at runtime by alumni_atlas.py.
+    We only fail if both coordinates AND location fields are empty.
+    """
     path = os.path.join(os.path.dirname(__file__), "..", "data", "alumni.csv")
-    df = pd.read_csv(path)
+    df = pd.read_csv(path).fillna("")
     if df.empty:
         return  # Empty at launch is valid — alumni self-register
     df["lat"] = pd.to_numeric(df["lat"], errors="coerce")
     df["lon"] = pd.to_numeric(df["lon"], errors="coerce")
-    invalid = df[df["lat"].isna() | df["lon"].isna()]
-    assert len(invalid) == 0, f"{len(invalid)} alumni rows have missing coordinates"
+    missing_coords = df[df["lat"].isna() | df["lon"].isna()]
+    # Rows with missing coords are OK if city+country present (will be geocoded at runtime)
+    truly_invalid = missing_coords[
+        (missing_coords["city"].str.strip() == "") |
+        (missing_coords["country"].str.strip() == "")
+    ]
+    assert len(truly_invalid) == 0, (
+        f"{len(truly_invalid)} alumni rows have missing coordinates AND no city/country to geocode"
+    )
