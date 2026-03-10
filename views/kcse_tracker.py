@@ -59,7 +59,13 @@ def render():
       placeholder numbers that did not add up. Those have been removed.
       </span><br>
       If you have KNEC records, school transcripts, or newspaper links for any missing year or grade breakdown,
-      contribute below — every verified addition is permanent.
+      contribute below — every verified addition is permanent.<br>
+      <span style="font-size:0.85rem;">
+      📌 <strong>2025:</strong> 389 candidates — nearly double the ~200 average in prior confirmed years.
+      This likely reflects real school growth and/or expanded cohort registration.
+      The figure comes from Rejnac Daily/KNEC (Jan 2026) and is marked confirmed, but
+      if you have the official KNEC abstract to cross-check, please contribute it below.
+      </span>
     </div>
     """, unsafe_allow_html=True)
 
