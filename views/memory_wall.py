@@ -14,7 +14,7 @@ import sys
 def _load_alumni():
     path = os.path.join(os.path.dirname(__file__), "..", "data", "alumni.csv")
     try:
-        df = pd.read_csv(path)
+        df = pd.read_csv(path).fillna("")
         return df[df["year"] == 2001].reset_index(drop=True)
     except FileNotFoundError:
         return pd.DataFrame()
@@ -623,7 +623,7 @@ def render():
                         )
                     elif not _sheets_p.is_configured():
                         st.info(
-                            f"Email to contact@aikungfu.dev — Subject: Dagoretti Principal Record — "
+                            f"Email to contact@gabrielmahia.com — Subject: Dagoretti Principal Record — "
                             f"{p_name} ({p_era}). Include your source."
                         )
 
@@ -871,7 +871,7 @@ def render():
     st.markdown("""
     <div class="footer">
       Memory Wall · Class of 2001 · 25th Reunion 2026 ·
-      <a href='mailto:contact@aikungfu.dev'>Contact the alumni team</a><br>
+      <a href='mailto:contact@gabrielmahia.com'>Contact the alumni team</a><br>
       <span style='font-size:0.75rem; color:#aaa;'>
         Co-curricular facts: Wikipedia, The Standard (Nov 2011), Kenya Rugby Union,
         Kenya Music Festival records. Class memories are illustrative unless tagged [Confirmed].
