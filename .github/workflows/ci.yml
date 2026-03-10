@@ -23,7 +23,7 @@ jobs:
           pip install ruff pytest
 
       - name: Lint with ruff
-        run: ruff check app.py pages/ --ignore E501
+        run: ruff check app.py views/ utils/ --ignore E501
 
       - name: Smoke test — import all pages
         run: python -m pytest tests/test_smoke.py -v
