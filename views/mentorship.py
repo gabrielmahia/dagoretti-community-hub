@@ -7,7 +7,7 @@ import pandas as pd
 import os
 
 
-@st.cache_data
+@st.cache_data(ttl=300)
 def _load():
     path = os.path.join(os.path.dirname(__file__), "..", "data", "alumni.csv")
     try:
