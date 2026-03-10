@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from utils import sheets
 
 
-@st.cache_data
+@st.cache_data(ttl=300)
 def _load():
     path = os.path.join(os.path.dirname(__file__), "..", "data", "kenya_then_now.csv")
     try:
