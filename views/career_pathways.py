@@ -210,6 +210,15 @@ def render():
     </div>
     """, unsafe_allow_html=True)
 
+    st.markdown("""
+    <div class="card-gold">
+      <strong>⚠️ Salary ranges are indicative only.</strong>
+      Figures are broad market estimates compiled from job boards and publicly reported ranges —
+      they are <em>not</em> verified pay data. Actual salaries vary widely by employer, experience,
+      location, and negotiation. Use them for rough career orientation only — not for financial planning.
+    </div>
+    """, unsafe_allow_html=True)
+
     # ── Subject input ─────────────────────────────────────────────────────────
     st.markdown("#### Your KCSE Subjects & Grades")
 
@@ -286,9 +295,11 @@ def render():
             with col2:
                 st.markdown(f"""
                 <div class="card">
-                  <strong>💰 Salary Range (Kenya)</strong><br>
+                  <strong>💰 Salary Range (Kenya)</strong>
+                  <span style='font-size:0.72rem;color:#888;'> — indicative estimate</span><br>
                   <span style='font-size:0.9rem;'>{cluster['salary_ke']}</span><br><br>
-                  <strong>✈️ Diaspora Earning</strong><br>
+                  <strong>✈️ Diaspora Earning</strong>
+                  <span style='font-size:0.72rem;color:#888;'> — indicative estimate</span><br>
                   <span style='font-size:0.9rem;'>{cluster['salary_diaspora']}</span>
                 </div>
                 """, unsafe_allow_html=True)
@@ -302,8 +313,9 @@ def render():
 
     st.markdown("""
     <div class="footer">
-      Career data is indicative. For official cut-off points and cluster requirements, use
+      Career matching is indicative only. For official KUCCPS cluster weights and cut-off points, use
       <a href='https://kuccps.ac.ke'>kuccps.ac.ke</a>.
-      Salary ranges are approximate 2024 figures.
+      Salary ranges are broad estimates from public job boards and reported ranges — not verified pay data.
+      They should not be used for financial planning or salary negotiation.
     </div>
     """, unsafe_allow_html=True)

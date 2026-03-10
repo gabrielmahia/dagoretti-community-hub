@@ -207,6 +207,29 @@ st.markdown("""
   }
   .stButton button:hover { background-color: var(--green-mid); }
   h1, h2, h3 { color: var(--green-dark); }
+
+  /* ── Mobile responsive ──────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    [data-testid="column"] {
+      width: 100% !important;
+      flex: 1 1 100% !important;
+      min-width: 100% !important;
+    }
+    [data-testid="stMetricValue"] { font-size: 1.3rem !important; }
+    [data-testid="stDataFrame"] { overflow-x: auto !important; }
+    [data-testid="stPlotlyChart"] > div { width: 100% !important; }
+    iframe { width: 100% !important; max-width: 100% !important; }
+    section[data-testid="stSidebar"] { min-width: 200px !important; }
+    .stButton > button {
+      width: 100% !important;
+      min-height: 48px !important;
+      font-size: 1rem !important;
+    }
+    .hero-banner h1 { font-size: 1.5rem !important; }
+    .hero-banner p  { font-size: 0.9rem !important; }
+    .stat-pill { min-width: 90px !important; }
+    .timeline-content { padding: 0.6rem 0.8rem !important; }
+  }
 </style>
 """, unsafe_allow_html=True)
 

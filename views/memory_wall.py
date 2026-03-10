@@ -797,7 +797,7 @@ def render():
 
     st.markdown("""
     <div class="footer">
-      Memory Wall · Class of 2001 · 25th Reunion 2025 ·
+      Memory Wall · Class of 2001 · 25th Reunion 2026 ·
       <a href='mailto:contact@aikungfu.dev'>Contact the alumni team</a><br>
       <span style='font-size:0.75rem; color:#aaa;'>
         Co-curricular facts: Wikipedia, The Standard (Nov 2011), Kenya Rugby Union,

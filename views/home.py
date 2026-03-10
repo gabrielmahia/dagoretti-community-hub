@@ -55,7 +55,7 @@ def render():
         (n_mentors,      "Mentors available"),
         (n_classes,      "Classes registered"),
         (n_scholarships, "Scholarships listed"),
-        (_kcse_years,    "Years of KCSE data"),
+        (_kcse_years,    "Confirmed KCSE years"),
     ]
     pills = "".join(
         f'<div class="stat-pill" style="flex:1 1 140px; min-width:120px;">' +
@@ -118,7 +118,7 @@ def render():
         features = [
             ("🌍", "Alumni Atlas", "See where Dagoretti graduates live and work — plotted on a world map."),
             ("📅", "Events", "Upcoming reunions, career days, networking events — and the Class of 2001 25th reunion."),
-            ("📊", "KCSE Tracker", f"{_kcse_years} years of exam results. Track the school's academic trajectory."),
+            ("📊", "KCSE Tracker", f"{_kcse_years} confirmed years of verified exam results. More years added as alumni contribute sources."),
             ("🧭", "Career Pathways", "Enter your KCSE subjects and grades. Explore matching careers and universities."),
             ("🎓", "Scholarships", "Curated scholarships — including diaspora-accessible international awards."),
             ("🤝", "Mentorship", "Connect with alumni open to guiding students and early-career graduates."),

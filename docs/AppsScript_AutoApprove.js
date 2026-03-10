@@ -80,6 +80,31 @@ var ROUTING = {
     },
   },
 
+  kcse_submissions: {
+    csvPath: "data/kcse_results.csv",
+    columnMap: {
+      year:        "year",
+      mean_grade:  "mean_score",
+      a_plain:     null,   // parsed from grade_distribution by admin
+      a_minus:     null,
+      b_plus:      null,
+      b_plain:     null,
+      b_minus:     null,
+      c_plus:      null,
+      c_plain:     null,
+      c_minus:     null,
+      d_plus:      null,
+      d_plain:     null,
+      d_minus:     null,
+      e:           null,
+      candidates:  "candidates",
+      top_student: "top_student",
+      top_grade:   "top_grade",
+      verified:    null,   // always "confirmed" on approve
+      source:      "source_url",
+    },
+  },
+
   event_proposals: {
     csvPath: "data/events.csv",
     columnMap: {
