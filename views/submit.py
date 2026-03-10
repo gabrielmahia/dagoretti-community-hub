@@ -126,7 +126,7 @@ def render():
                     )
                     st.balloons()
                 elif not sheets.is_configured():
-                    st.info(f"Email your details to contact@aikungfu.dev — Subject: Alumni Profile — {full_name}")
+                    st.info(f"Email your details to contact@gabrielmahia.com — Subject: Alumni Profile — {full_name}")
 
     # ── Tab 2: Memory / Message ────────────────────────────────────────────────
     with tab2:
@@ -170,7 +170,7 @@ def render():
                         "Your submission will be reviewed and added to the Memory Wall.",
                     )
                 elif not sheets.is_configured():
-                    st.info(f"Email your memory to contact@aikungfu.dev — Subject: Memory Wall — {mem_name}")
+                    st.info(f"Email your memory to contact@gabrielmahia.com — Subject: Memory Wall — {mem_name}")
 
     # ── Tab 3: Event Proposal ──────────────────────────────────────────────────
     with tab3:
@@ -231,7 +231,7 @@ def render():
                         f"Your proposal for '{ev_title}' is under review. The admin team will be in touch.",
                     )
                 elif not sheets.is_configured():
-                    st.info(f"Email your event proposal to contact@aikungfu.dev — Subject: Event Proposal — {ev_title}")
+                    st.info(f"Email your event proposal to contact@gabrielmahia.com — Subject: Event Proposal — {ev_title}")
 
     # ── Tab 4: Data Correction ─────────────────────────────────────────────────
     with tab4:
@@ -294,7 +294,7 @@ def render():
                         "Your correction will be reviewed against the source within 48 hours.",
                     )
                 elif not sheets.is_configured():
-                    st.info("Email your correction to contact@aikungfu.dev — Subject: Data Correction")
+                    st.info("Email your correction to contact@gabrielmahia.com — Subject: Data Correction")
 
     # ── Tab 5: General Feedback ────────────────────────────────────────────────
     with tab5:
@@ -323,7 +323,7 @@ def render():
                 if ok:
                     sheets.success_banner(fb_name or "contributor")
                 elif not sheets.is_configured():
-                    st.info("Email your feedback to contact@aikungfu.dev")
+                    st.info("Email your feedback to contact@gabrielmahia.com")
 
     # ── Footer ────────────────────────────────────────────────────────────────
     st.markdown("---")
@@ -331,7 +331,7 @@ def render():
     <div class="card">
       <strong>Direct contact</strong><br>
       <span style='font-size:0.9rem;'>
-        For urgent matters: <a href='mailto:contact@aikungfu.dev'>contact@aikungfu.dev</a>
+        For urgent matters: <a href='mailto:contact@gabrielmahia.com'>contact@gabrielmahia.com</a>
       </span><br>
       <span style='font-size:0.9rem; color:#888; margin-top:0.3rem; display:block;'>
         All submissions are reviewed before appearing on the platform.
