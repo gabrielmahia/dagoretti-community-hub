@@ -1,7 +1,7 @@
 /**
  * Dagoretti Community Hub — Google Sheets Auto-Approve Script
  * ============================================================
- * VERSION: 2.0
+ * VERSION: 2.1  (2026-03 — fix doPost column alignment; add repairDormAlignment)
  *
  * WHAT THIS DOES:
  *   1. Adds a status dropdown (pending / approved / rejected) to every
@@ -30,7 +30,10 @@
  *   5. Run setupTriggerAndValidation() ONCE from the editor
  *      (Run menu → Run function → setupTriggerAndValidation)
  *      Grant permissions when prompted.
- *   6. Done. Never need to touch this script again.
+ *   6. IF your sheet has rows submitted before the dorm field existed, run
+ *      repairDormAlignment() ONCE to fix any misaligned values in the sheet.
+ *      Check the execution log to confirm which rows were corrected.
+ *   7. Done. Never need to touch this script again.
  *
  * SECURITY:
  *   - GitHub token lives in Script Properties only — never in code
@@ -366,7 +369,16 @@ function setupTriggerAndValidation() {
 }
 
 
-// ─── Existing doPost (unchanged — keeps form submissions working) ─────────────
+// ─── doPost — receives Streamlit form submissions ─────────────────────────────
+//
+// BUG FIXED (v2.1): Previous version used appendRow(Object.values(data)) which
+// writes values in payload key order. If the sheet was created before a new field
+// (e.g. "dorm") was added to the form, or if the sheet column order differed from
+// the payload key order, values landed in the wrong columns. "dorm" appeared in
+// the "bio" column and vice versa.
+//
+// Fix: always read existing sheet headers, add any missing columns, then write
+// each value into its correct column by name — not by position.
 
 function doPost(e) {
   try {
@@ -381,12 +393,35 @@ function doPost(e) {
       sheet = ss.insertSheet(tabName);
     }
 
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(Object.keys(data));
-    }
-    sheet.appendRow(Object.values(data));
+    var keys = Object.keys(data);
+    var headers;
 
-    // Apply dropdown to the new row
+    if (sheet.getLastRow() === 0) {
+      // Empty sheet — write headers from payload keys
+      sheet.appendRow(keys);
+      headers = keys;
+    } else {
+      // Sheet already has headers — read them
+      var headerRange = sheet.getRange(1, 1, 1, sheet.getLastColumn());
+      headers = headerRange.getValues()[0];
+
+      // Add any payload keys missing from the sheet header
+      keys.forEach(function(key) {
+        if (headers.indexOf(key) === -1) {
+          var newCol = headers.length + 1;
+          sheet.getRange(1, newCol).setValue(key);
+          headers.push(key);
+        }
+      });
+    }
+
+    // Write the row — each value goes into the correct named column
+    var row = headers.map(function(h) {
+      return data.hasOwnProperty(h) ? data[h] : "";
+    });
+    sheet.appendRow(row);
+
+    // Apply status dropdown to the new row
     _applyStatusValidation(sheet);
 
     return ContentService
@@ -429,4 +464,91 @@ function testGitHubConnection() {
     SpreadsheetApp.getUi().alert("❌ GitHub connection failed (" + resp.getResponseCode() + "):\n" +
       resp.getContentText().substring(0, 300));
   }
+}
+
+
+/**
+ * REPAIR UTILITY — run once to fix any misaligned rows caused by the old doPost bug.
+ *
+ * The old doPost wrote values in payload order. If "dorm" was added to the sheet
+ * header AFTER some rows were already written, those rows have their values shifted:
+ *   - the cell under "dorm"    contains the bio text
+ *   - the cell under "bio"     contains the email
+ *   - the cell under "email_admin" is empty
+ *
+ * This function inspects every data row in alumni_submissions. If a row's "dorm"
+ * cell contains text longer than 30 chars (likely a bio, not a dorm name), it
+ * shifts the values right from the dorm column to fix the alignment.
+ *
+ * HOW TO RUN:
+ *   1. Open Extensions → Apps Script
+ *   2. Select repairDormAlignment from the function dropdown
+ *   3. Click Run
+ *   4. Review the execution log — it will list every row it touched
+ *   5. Spot-check 2–3 rows in the sheet to confirm they look right
+ *
+ * SAFE TO RE-RUN: it checks before shifting and won't double-shift.
+ */
+function repairDormAlignment() {
+  var ss    = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("alumni_submissions");
+  if (!sheet) {
+    Logger.log("alumni_submissions tab not found — nothing to repair.");
+    return;
+  }
+
+  var lastRow = sheet.getLastRow();
+  var lastCol = sheet.getLastColumn();
+  if (lastRow < 2) {
+    Logger.log("No data rows found.");
+    return;
+  }
+
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  var dormIdx     = headers.indexOf("dorm");
+  var bioIdx      = headers.indexOf("bio");
+  var emailIdx    = headers.indexOf("email_admin");
+
+  if (dormIdx === -1 || bioIdx === -1) {
+    Logger.log("Could not find dorm or bio column. Headers: " + headers.join(", "));
+    return;
+  }
+
+  var repaired = 0;
+
+  for (var r = 2; r <= lastRow; r++) {
+    var row     = sheet.getRange(r, 1, 1, lastCol).getValues()[0];
+    var dormVal = String(row[dormIdx] || "").trim();
+    var bioVal  = String(row[bioIdx]  || "").trim();
+
+    // If dorm cell looks like a bio (long text, not a dorm name), the row is misaligned
+    var looksLikeBio = dormVal.length > 30 ||
+                       (dormVal.length > 0 && dormVal.indexOf("Senior Dorm") === -1 &&
+                        dormVal.indexOf("Siberia") === -1 && dormVal.indexOf("Constra") === -1 &&
+                        dormVal.indexOf("Mara") === -1 && dormVal.indexOf("Day") === -1 &&
+                        dormVal.indexOf("Other") === -1 && bioVal === "");
+
+    if (looksLikeBio) {
+      // Shift values from dormIdx onwards one position to the right
+      // dorm slot → "", old-dorm-slot-value (bio text) → bio slot, etc.
+      var bioFromDorm    = row[dormIdx];
+      var emailFromBio   = row[bioIdx];
+      var excessFromEmail = (emailIdx !== -1) ? row[emailIdx] : "";
+
+      row[dormIdx]  = "";               // dorm was not submitted
+      row[bioIdx]   = bioFromDorm;      // bio text belongs in bio column
+      if (emailIdx !== -1) {
+        row[emailIdx] = emailFromBio;   // email belongs in email_admin column
+      }
+
+      sheet.getRange(r, 1, 1, lastCol).setValues([row]);
+      Logger.log("Repaired row " + r + ": moved '" + bioFromDorm.substring(0, 40) + "...' to bio column");
+      repaired++;
+    }
+  }
+
+  Logger.log("Done. " + repaired + " row(s) repaired out of " + (lastRow - 1) + " data rows.");
+  SpreadsheetApp.getUi().alert(
+    "Repair complete.\n" + repaired + " row(s) corrected.\nCheck the Apps Script execution log for details."
+  );
 }

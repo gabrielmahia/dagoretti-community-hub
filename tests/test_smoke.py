@@ -16,7 +16,10 @@ def test_data_alumni_schema():
     """alumni.csv must exist with correct schema. Empty is valid — no fabricated data."""
     path = os.path.join(os.path.dirname(__file__), "..", "data", "alumni.csv")
     df = pd.read_csv(path)
-    required_cols = ["name", "year", "industry", "role", "city", "country", "lat", "lon", "mentoring"]
+    required_cols = [
+        "name", "year", "industry", "role", "city", "country",
+        "lat", "lon", "mentoring", "dorm", "bio_short",
+    ]
     for col in required_cols:
         assert col in df.columns, f"Missing column: {col}"
     # Row count may be 0 at launch — alumni self-register via Submit Data page
