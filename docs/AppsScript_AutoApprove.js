@@ -1,7 +1,7 @@
 /**
  * Dagoretti Community Hub — Google Sheets Auto-Approve Script
  * ============================================================
- * VERSION: 2.1  (2026-03 — fix doPost column alignment; add repairDormAlignment)
+ * VERSION: 2.2  (2026-03 — wrap all getUi() calls in try/catch for editor compat)
  *
  * WHAT THIS DOES:
  *   1. Adds a status dropdown (pending / approved / rejected) to every
@@ -30,9 +30,10 @@
  *   5. Run setupTriggerAndValidation() ONCE from the editor
  *      (Run menu → Run function → setupTriggerAndValidation)
  *      Grant permissions when prompted.
+ *      Success message appears in View → Logs (not a popup — this is normal).
  *   6. IF your sheet has rows submitted before the dorm field existed, run
  *      repairDormAlignment() ONCE to fix any misaligned values in the sheet.
- *      Check the execution log to confirm which rows were corrected.
+ *      Check View → Logs to confirm which rows were corrected.
  *   7. Done. Never need to touch this script again.
  *
  * SECURITY:
@@ -42,11 +43,27 @@
  */
 
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Safe alert: shows a popup when triggered from the sheet UI,
+ * falls back to Logger.log when run directly from the editor.
+ * getUi() throws outside a UI context — this prevents that crash.
+ */
+function _alert(msg) {
+  try {
+    SpreadsheetApp.getUi().alert(msg);
+  } catch (e) {
+    Logger.log(msg);
+  }
+}
+
+
 // ─── Configuration ────────────────────────────────────────────────────────────
 
-var STATUS_COL_NAME   = "status";
-var STATUS_OPTIONS    = ["pending", "approved", "rejected"];
-var STATUS_COLORS     = { pending: "#fff9c4", approved: "#c8e6c9", rejected: "#ffcdd2" };
+var STATUS_COL_NAME = "status";
+var STATUS_OPTIONS  = ["pending", "approved", "rejected"];
+var STATUS_COLORS   = { pending: "#fff9c4", approved: "#c8e6c9", rejected: "#ffcdd2" };
 
 // Sheet tab → { csvPath, columnMap }
 // columnMap: { csv_column: sheet_column_header }
@@ -56,30 +73,30 @@ var ROUTING = {
   alumni_submissions: {
     csvPath: "data/alumni.csv",
     columnMap: {
-      name:        "full_name",
-      year:        "year_left",
-      industry:    "industry",
-      role:        "role",
-      city:        "city",
-      country:     "country",
-      lat:         null,          // left blank — app geocodes automatically
-      lon:         null,          // left blank — app geocodes automatically
-      email_public: null,         // never public
-      linkedin:    "linkedin_url",
-      mentoring:   "mentoring",
-      dorm:        "dorm",
-      bio_short:   "bio",
+      name:         "full_name",
+      year:         "year_left",
+      industry:     "industry",
+      role:         "role",
+      city:         "city",
+      country:      "country",
+      lat:          null,          // left blank — app geocodes automatically
+      lon:          null,          // left blank — app geocodes automatically
+      email_public: null,          // never public
+      linkedin:     "linkedin_url",
+      mentoring:    "mentoring",
+      dorm:         "dorm",
+      bio_short:    "bio",
     },
   },
 
   memory_submissions: {
     csvPath: "data/memories.csv",
     columnMap: {
-      name:               "name",
-      year_at_dagoretti:  "year_at_dagoretti",
-      submission_type:    "submission_type",
-      body:               "body",
-      status:             null,   // filled with "approved"
+      name:              "name",
+      year_at_dagoretti: "year_at_dagoretti",
+      submission_type:   "submission_type",
+      body:              "body",
+      status:            null,     // filled with "approved"
     },
   },
 
@@ -88,7 +105,7 @@ var ROUTING = {
     columnMap: {
       year:        "year",
       mean_grade:  "mean_score",
-      a_plain:     null,   // parsed from grade_distribution by admin
+      a_plain:     null,
       a_minus:     null,
       b_plus:      null,
       b_plain:     null,
@@ -103,7 +120,7 @@ var ROUTING = {
       candidates:  "candidates",
       top_student: "top_student",
       top_grade:   "top_grade",
-      verified:    null,   // always "confirmed" on approve
+      verified:    null,           // always "confirmed" on approve
       source:      "source_url",
     },
   },
@@ -111,18 +128,18 @@ var ROUTING = {
   event_proposals: {
     csvPath: "data/events.csv",
     columnMap: {
-      id:          null,          // auto-generated (timestamp-based)
+      id:          null,           // auto-generated (timestamp-based)
       title:       "event_title",
       date:        "proposed_date",
-      time:        null,          // not collected in form — leave blank
+      time:        null,           // not collected in form — leave blank
       type:        "event_type",
       location:    "location",
-      is_virtual:  null,          // not collected — leave blank
+      is_virtual:  null,           // not collected — leave blank
       description: "description",
       organiser:   "proposer_name",
-      link:        null,          // admin can add later
-      featured:    null,          // admin decision
-      status:      null,          // filled with "approved"
+      link:        null,           // admin can add later
+      featured:    null,           // admin decision
+      status:      null,           // filled with "approved"
     },
   },
 
@@ -137,7 +154,7 @@ var ROUTING = {
  */
 function onEditTrigger(e) {
   try {
-    var sheet = e.range.getSheet();
+    var sheet   = e.range.getSheet();
     var tabName = sheet.getName();
 
     // Only act on known submission tabs
@@ -148,11 +165,11 @@ function onEditTrigger(e) {
     var newValue  = e.value;
 
     // Find which column is "status"
-    var headers    = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var headers      = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     var statusColIdx = headers.indexOf(STATUS_COL_NAME);
     if (statusColIdx === -1) return;
 
-    // Only proceed if this edit is in the status column and value is "approved"
+    // Only proceed if this edit is in the status column
     if (editedCol !== statusColIdx + 1) return;
     if (newValue !== "approved") {
       _colorStatusCell(e.range, newValue);
@@ -167,7 +184,7 @@ function onEditTrigger(e) {
       return;
     }
 
-    // Get the full row data
+    // Get the full row data as a named object
     var rowData = sheet.getRange(editedRow, 1, 1, sheet.getLastColumn()).getValues()[0];
     var rowObj  = {};
     headers.forEach(function(h, i) { rowObj[h] = rowData[i]; });
@@ -182,9 +199,7 @@ function onEditTrigger(e) {
       sheet.getRange(editedRow, editedCol).setNote(
         "⚠️ GitHub write failed: " + result.error + "\n" + new Date().toISOString()
       );
-      SpreadsheetApp.getUi().alert(
-        "GitHub write failed for row " + editedRow + ":\n" + result.error
-      );
+      _alert("GitHub write failed for row " + editedRow + ":\n" + result.error);
     }
 
   } catch (err) {
@@ -222,33 +237,27 @@ function _writeToGitHub(tabName, rowObj) {
     return { success: false, error: "GitHub GET failed: " + getResp.getContentText().substring(0, 200) };
   }
 
-  var fileData    = JSON.parse(getResp.getContentText());
-  var sha         = fileData.sha;
-  var currentCsv  = Utilities.newBlob(Utilities.base64Decode(fileData.content.replace(/\n/g, ""))).getDataAsString();
+  var fileData   = JSON.parse(getResp.getContentText());
+  var sha        = fileData.sha;
+  var currentCsv = Utilities.newBlob(
+    Utilities.base64Decode(fileData.content.replace(/\n/g, ""))
+  ).getDataAsString();
 
   // ── 2. Build new CSV row ───────────────────────────────────────────────────
   var csvLines  = currentCsv.trimEnd().split("\n");
-  var csvHeader = csvLines[0].replace(/"/g, "").split(",");  // strip quotes from header
+  var csvHeader = csvLines[0].replace(/"/g, "").split(",");
 
-  // Build the new row using columnMap
   var newRow = csvHeader.map(function(col) {
     var sheetCol = colMap[col];
 
-    // Explicit null in map → computed or blank
     if (sheetCol === null) {
-      if (col === "id") {
-        return '"event_' + new Date().getTime() + '"';
-      }
-      if (col === "status") {
-        return '"approved"';
-      }
+      if (col === "id")     return '"event_' + new Date().getTime() + '"';
+      if (col === "status") return '"approved"';
       return '""';
     }
 
-    // Look up value from row object
     var val = rowObj[sheetCol] !== undefined ? rowObj[sheetCol] : "";
     if (val === null || val === undefined) val = "";
-    // Escape quotes and wrap in quotes
     return '"' + String(val).replace(/"/g, '""') + '"';
   });
 
@@ -256,8 +265,10 @@ function _writeToGitHub(tabName, rowObj) {
   var newCsv = csvLines.join("\n") + "\n";
 
   // ── 3. PUT updated file ────────────────────────────────────────────────────
-  var commitMsg = "auto: approve " + tabName.replace("_submissions","").replace("_"," ") +
-    " — " + (rowObj["full_name"] || rowObj["name"] || rowObj["event_title"] || "entry") +
+  var commitMsg = "auto: approve " +
+    tabName.replace("_submissions", "").replace("_", " ") +
+    " — " +
+    (rowObj["full_name"] || rowObj["name"] || rowObj["event_title"] || "entry") +
     " [via Sheets]";
 
   var putPayload = JSON.stringify({
@@ -269,9 +280,12 @@ function _writeToGitHub(tabName, rowObj) {
 
   var putResp = UrlFetchApp.fetch(apiBase, {
     method:  "PUT",
-    headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json",
-               "Content-Type": "application/json" },
-    payload: putPayload,
+    headers: {
+      Authorization:  "token " + token,
+      Accept:         "application/vnd.github.v3+json",
+      "Content-Type": "application/json",
+    },
+    payload:            putPayload,
     muteHttpExceptions: true,
   });
 
@@ -288,13 +302,9 @@ function _writeToGitHub(tabName, rowObj) {
 
 // ─── Dropdown validation ──────────────────────────────────────────────────────
 
-/**
- * Apply status dropdown to the status column of a given sheet.
- * Called once per tab on setup, and again whenever a new row is added.
- */
 function _applyStatusValidation(sheet) {
-  if (sheet.getLastColumn() === 0) return;  // empty sheet — no columns yet
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  if (sheet.getLastColumn() === 0) return;
+  var headers      = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   var statusColIdx = headers.indexOf(STATUS_COL_NAME);
   if (statusColIdx === -1) return;
 
@@ -308,7 +318,6 @@ function _applyStatusValidation(sheet) {
 
   range.setDataValidation(rule);
 
-  // Color existing cells
   for (var r = 2; r <= lastRow; r++) {
     var cell = sheet.getRange(r, statusColIdx + 1);
     _colorStatusCell(cell, cell.getValue());
@@ -316,14 +325,9 @@ function _applyStatusValidation(sheet) {
 }
 
 function _colorStatusCell(cell, value) {
-  var color = STATUS_COLORS[value] || "#ffffff";
-  cell.setBackground(color);
+  cell.setBackground(STATUS_COLORS[value] || "#ffffff");
 }
 
-/**
- * Re-apply dropdowns to all known tabs.
- * Run this manually if you add new rows and want dropdowns extended.
- */
 function refreshAllValidation() {
   var ss   = SpreadsheetApp.getActiveSpreadsheet();
   var tabs = Object.keys(ROUTING).concat(["corrections", "feedback"]);
@@ -331,7 +335,7 @@ function refreshAllValidation() {
     var sheet = ss.getSheetByName(name);
     if (sheet) _applyStatusValidation(sheet);
   });
-  SpreadsheetApp.getUi().alert("Dropdowns refreshed on all tabs.");
+  _alert("Dropdowns refreshed on all tabs.");
 }
 
 
@@ -340,14 +344,12 @@ function refreshAllValidation() {
 /**
  * RUN THIS ONCE after pasting the script.
  * Sets up the onEdit installable trigger and applies dropdowns to all tabs.
+ * Success message appears in View → Logs when run from the editor.
  */
 function setupTriggerAndValidation() {
   // Remove any existing onEdit triggers to avoid duplicates
-  var triggers = ScriptApp.getProjectTriggers();
-  triggers.forEach(function(t) {
-    if (t.getHandlerFunction() === "onEditTrigger") {
-      ScriptApp.deleteTrigger(t);
-    }
+  ScriptApp.getProjectTriggers().forEach(function(t) {
+    if (t.getHandlerFunction() === "onEditTrigger") ScriptApp.deleteTrigger(t);
   });
 
   // Install fresh trigger
@@ -359,11 +361,11 @@ function setupTriggerAndValidation() {
   // Apply dropdowns to all existing tabs
   refreshAllValidation();
 
-  SpreadsheetApp.getUi().alert(
+  _alert(
     "✅ Setup complete.\n\n" +
     "onEdit trigger installed.\n" +
     "Status dropdowns applied to all tabs.\n\n" +
-    "Make sure you have added these Script Properties:\n" +
+    "Make sure Script Properties are set:\n" +
     "  GITHUB_TOKEN\n  GITHUB_OWNER\n  GITHUB_REPO\n  GITHUB_BRANCH"
   );
 }
@@ -371,57 +373,46 @@ function setupTriggerAndValidation() {
 
 // ─── doPost — receives Streamlit form submissions ─────────────────────────────
 //
-// BUG FIXED (v2.1): Previous version used appendRow(Object.values(data)) which
-// writes values in payload key order. If the sheet was created before a new field
-// (e.g. "dorm") was added to the form, or if the sheet column order differed from
-// the payload key order, values landed in the wrong columns. "dorm" appeared in
-// the "bio" column and vice versa.
+// BUG FIXED (v2.1): old version used appendRow(Object.values(data)) which wrote
+// values in payload key order. If the sheet existed before a new field (e.g. "dorm")
+// was added to the form, values landed in wrong columns.
 //
-// Fix: always read existing sheet headers, add any missing columns, then write
-// each value into its correct column by name — not by position.
+// Fix: read existing headers, auto-add missing columns, write each value by name.
 
 function doPost(e) {
   try {
-    var data = JSON.parse(e.postData.contents);
-    var ss   = SpreadsheetApp.getActiveSpreadsheet();
-
+    var data    = JSON.parse(e.postData.contents);
+    var ss      = SpreadsheetApp.getActiveSpreadsheet();
     var tabName = data.tab || "submissions";
     delete data.tab;
 
     var sheet = ss.getSheetByName(tabName);
-    if (!sheet) {
-      sheet = ss.insertSheet(tabName);
-    }
+    if (!sheet) sheet = ss.insertSheet(tabName);
 
-    var keys = Object.keys(data);
+    var keys    = Object.keys(data);
     var headers;
 
     if (sheet.getLastRow() === 0) {
-      // Empty sheet — write headers from payload keys
       sheet.appendRow(keys);
       headers = keys;
     } else {
-      // Sheet already has headers — read them
-      var headerRange = sheet.getRange(1, 1, 1, sheet.getLastColumn());
-      headers = headerRange.getValues()[0];
+      headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
-      // Add any payload keys missing from the sheet header
+      // Auto-add any payload keys missing from the header row
       keys.forEach(function(key) {
         if (headers.indexOf(key) === -1) {
-          var newCol = headers.length + 1;
-          sheet.getRange(1, newCol).setValue(key);
+          sheet.getRange(1, headers.length + 1).setValue(key);
           headers.push(key);
         }
       });
     }
 
-    // Write the row — each value goes into the correct named column
+    // Write values into their correct named columns
     var row = headers.map(function(h) {
       return data.hasOwnProperty(h) ? data[h] : "";
     });
     sheet.appendRow(row);
 
-    // Apply status dropdown to the new row
     _applyStatusValidation(sheet);
 
     return ContentService
@@ -439,8 +430,8 @@ function doPost(e) {
 // ─── Test helpers ─────────────────────────────────────────────────────────────
 
 /**
- * Test GitHub connectivity without touching real data.
- * Run from the editor to verify your token and repo are configured correctly.
+ * Verify GitHub token and repo access without touching any data.
+ * Run from the editor — result appears in View → Logs.
  */
 function testGitHubConnection() {
   var props = PropertiesService.getScriptProperties();
@@ -449,7 +440,7 @@ function testGitHubConnection() {
   var repo  = props.getProperty("GITHUB_REPO");
 
   if (!token || !owner || !repo) {
-    SpreadsheetApp.getUi().alert("❌ Script Properties missing. Add GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO.");
+    _alert("❌ Script Properties missing. Add GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO.");
     return;
   }
 
@@ -459,39 +450,33 @@ function testGitHubConnection() {
   );
 
   if (resp.getResponseCode() === 200) {
-    SpreadsheetApp.getUi().alert("✅ GitHub connection OK — repo accessible.");
+    _alert("✅ GitHub connection OK — repo accessible.");
   } else {
-    SpreadsheetApp.getUi().alert("❌ GitHub connection failed (" + resp.getResponseCode() + "):\n" +
+    _alert("❌ GitHub connection failed (" + resp.getResponseCode() + "):\n" +
       resp.getContentText().substring(0, 300));
   }
 }
 
 
 /**
- * REPAIR UTILITY — run once to fix any misaligned rows caused by the old doPost bug.
+ * REPAIR UTILITY — run once to fix rows misaligned by the old doPost bug.
  *
- * The old doPost wrote values in payload order. If "dorm" was added to the sheet
- * header AFTER some rows were already written, those rows have their values shifted:
- *   - the cell under "dorm"    contains the bio text
- *   - the cell under "bio"     contains the email
- *   - the cell under "email_admin" is empty
- *
- * This function inspects every data row in alumni_submissions. If a row's "dorm"
- * cell contains text longer than 30 chars (likely a bio, not a dorm name), it
- * shifts the values right from the dorm column to fix the alignment.
+ * Symptoms: dorm column contains bio text, bio column contains email,
+ * email_admin column is blank. Caused by old positional appendRow() call
+ * on sheets that existed before the dorm field was added to the form.
  *
  * HOW TO RUN:
- *   1. Open Extensions → Apps Script
- *   2. Select repairDormAlignment from the function dropdown
- *   3. Click Run
- *   4. Review the execution log — it will list every row it touched
- *   5. Spot-check 2–3 rows in the sheet to confirm they look right
+ *   1. Select repairDormAlignment from the function dropdown
+ *   2. Click Run
+ *   3. View → Logs — lists every row touched
+ *   4. Spot-check 2–3 rows in the sheet to confirm dorm and bio are correct
  *
- * SAFE TO RE-RUN: it checks before shifting and won't double-shift.
+ * SAFE TO RE-RUN: checks before shifting, won't double-shift.
  */
 function repairDormAlignment() {
   var ss    = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName("alumni_submissions");
+
   if (!sheet) {
     Logger.log("alumni_submissions tab not found — nothing to repair.");
     return;
@@ -499,15 +484,16 @@ function repairDormAlignment() {
 
   var lastRow = sheet.getLastRow();
   var lastCol = sheet.getLastColumn();
+
   if (lastRow < 2) {
     Logger.log("No data rows found.");
     return;
   }
 
-  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-  var dormIdx     = headers.indexOf("dorm");
-  var bioIdx      = headers.indexOf("bio");
-  var emailIdx    = headers.indexOf("email_admin");
+  var headers  = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  var dormIdx  = headers.indexOf("dorm");
+  var bioIdx   = headers.indexOf("bio");
+  var emailIdx = headers.indexOf("email_admin");
 
   if (dormIdx === -1 || bioIdx === -1) {
     Logger.log("Could not find dorm or bio column. Headers: " + headers.join(", "));
@@ -521,25 +507,25 @@ function repairDormAlignment() {
     var dormVal = String(row[dormIdx] || "").trim();
     var bioVal  = String(row[bioIdx]  || "").trim();
 
-    // If dorm cell looks like a bio (long text, not a dorm name), the row is misaligned
-    var looksLikeBio = dormVal.length > 30 ||
-                       (dormVal.length > 0 && dormVal.indexOf("Senior Dorm") === -1 &&
-                        dormVal.indexOf("Siberia") === -1 && dormVal.indexOf("Constra") === -1 &&
-                        dormVal.indexOf("Mara") === -1 && dormVal.indexOf("Day") === -1 &&
-                        dormVal.indexOf("Other") === -1 && bioVal === "");
+    // Flag rows where the dorm cell looks like bio text (too long / not a known dorm name)
+    var looksLikeBio =
+      dormVal.length > 30 ||
+      (dormVal.length > 0 &&
+       dormVal.indexOf("Senior Dorm") === -1 &&
+       dormVal.indexOf("Siberia")     === -1 &&
+       dormVal.indexOf("Constra")     === -1 &&
+       dormVal.indexOf("Mara")        === -1 &&
+       dormVal.indexOf("Day")         === -1 &&
+       dormVal.indexOf("Other")       === -1 &&
+       bioVal === "");
 
     if (looksLikeBio) {
-      // Shift values from dormIdx onwards one position to the right
-      // dorm slot → "", old-dorm-slot-value (bio text) → bio slot, etc.
-      var bioFromDorm    = row[dormIdx];
-      var emailFromBio   = row[bioIdx];
-      var excessFromEmail = (emailIdx !== -1) ? row[emailIdx] : "";
+      var bioFromDorm  = row[dormIdx];
+      var emailFromBio = row[bioIdx];
 
-      row[dormIdx]  = "";               // dorm was not submitted
-      row[bioIdx]   = bioFromDorm;      // bio text belongs in bio column
-      if (emailIdx !== -1) {
-        row[emailIdx] = emailFromBio;   // email belongs in email_admin column
-      }
+      row[dormIdx] = "";           // dorm was not submitted with this row
+      row[bioIdx]  = bioFromDorm; // bio text belongs in bio column
+      if (emailIdx !== -1) row[emailIdx] = emailFromBio;
 
       sheet.getRange(r, 1, 1, lastCol).setValues([row]);
       Logger.log("Repaired row " + r + ": moved '" + bioFromDorm.substring(0, 40) + "...' to bio column");
@@ -548,7 +534,5 @@ function repairDormAlignment() {
   }
 
   Logger.log("Done. " + repaired + " row(s) repaired out of " + (lastRow - 1) + " data rows.");
-  SpreadsheetApp.getUi().alert(
-    "Repair complete.\n" + repaired + " row(s) corrected.\nCheck the Apps Script execution log for details."
-  );
+  _alert("Repair complete.\n" + repaired + " row(s) corrected.\nSee View → Logs for details.");
 }
