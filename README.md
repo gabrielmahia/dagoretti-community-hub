@@ -1,4 +1,4 @@
-# 🦁 Dagoretti High School Community Hub
+-e # 🦁 Dagoretti High School Community Hub
 
 A free, open-source Streamlit web application for the Dagoretti High School community — alumni, students, parents, and teachers.
 
@@ -26,7 +26,7 @@ cd hub
 
 # 2. Virtual environment
 python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
+source venv/bin/activate   # Windows: venv\Scriptsctivate
 
 # 3. Install
 pip install -r requirements.txt
@@ -113,3 +113,24 @@ If you adapt this for another Kenyan school — Mang'u, Alliance, Starehe, Lenan
 ---
 
 Built by alumni. For the community. Nairobi, Kenya 🇰🇪
+---
+
+## Portfolio
+
+Part of a suite of civic and community tools built by [Gabriel Mahia](https://github.com/gabrielmahia):
+
+| App | What it does |
+|-----|-------------|
+| [🌊 Mafuriko](https://floodwatch-kenya.streamlit.app) | Flood risk & policy enforcement tracker — Kenya |
+| [💧 WapiMaji](https://wapimaji.streamlit.app) | Water stress & drought intelligence — 47 counties |
+| [🏛️ Macho ya Wananchi](https://civic-decoder.streamlit.app) | MP voting records, CDF spending, bill tracker |
+| [🌾 JuaMazao](https://mazao-intel.streamlit.app) | Live food price intelligence for smallholders |
+| [🏦 ChaguaSacco](https://sacco-scout.streamlit.app) | Compare Kenya SACCOs on dividends & loan rates |
+| [🛡️ Hesabu](https://budget-sentinel.streamlit.app) | County budget absorption tracker |
+| [🗺️ Hifadhi](https://hifadhi.streamlit.app) | Riparian encroachment & Water Act compliance map |
+| [💰 Hela](https://hela.streamlit.app) | Chama management for the 21st century |
+| [💸 Peleka](https://remit-lens.streamlit.app) | True cost remittance comparison — diaspora to Kenya |
+| [📊 Msimamo](https://quantum-maestro.streamlit.app) | Macro risk & trade intelligence terminal |
+| [🦁 Dagoretti](https://dagoretti-community-hub.streamlit.app) | Alumni atlas & community hub for Dagoretti High |
+| [⛪ Jumuia](https://catholicparishsteward.streamlit.app) | Catholic parish tools — church finder, pastoral care |
+
