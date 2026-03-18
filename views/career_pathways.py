@@ -235,6 +235,16 @@ def render():
     </div>
     """, unsafe_allow_html=True)
 
+    # ── Live Kenya education context ─────────────────────────────────────────
+    _wb = fetch_kenya_education_data()
+    if _wb:
+        _wb_cols = st.columns(len(_wb))
+        for _col, (_code, _d) in zip(_wb_cols, _wb.items()):
+            _val = f"{_d['value']}{'%' if '%' in _d['label'] else ' USD'}"
+            _col.metric(_d["label"].split("(")[0].strip(), _val, help=f"World Bank {_d['year']}")
+        st.caption("📡 World Bank Open Data · api.worldbank.org · refreshed daily")
+        st.divider()
+
     st.markdown("""
     <div class="card-green">
       <strong>How it works:</strong> Enter up to 8 KCSE subjects and your grades (or expected grades).
