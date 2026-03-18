@@ -7,6 +7,40 @@ Extension: integrate actual KUCCPS cluster weights (kuccps.ac.ke).
 """
 
 import streamlit as st
+import urllib.request, json
+
+@st.cache_data(ttl=86400)
+def fetch_kenya_education_data():
+    """World Bank Kenya education + labour indicators (free, no key)."""
+    indicators = {
+        "SE.SEC.ENRR":   "Secondary school enrolment rate (%)",
+        "SE.TER.ENRR":   "Tertiary enrolment rate (%)",
+        "SL.UEM.1524.ZS":"Youth unemployment rate (15-24, %)",
+        "NY.GDP.PCAP.CD": "GDP per capita (USD)",
+    }
+    results = {}
+    for code, label in indicators.items():
+        try:
+            url = (
+                f"https://api.worldbank.org/v2/country/KE/indicator/{code}"
+                f"?format=json&mrv=3&per_page=3"
+            )
+            with urllib.request.urlopen(url, timeout=8) as r:
+                data = json.loads(r.read())
+            entries = [e for e in (data[1] if len(data) > 1 else []) if e.get("value")]
+            if entries:
+                latest = entries[0]
+                results[code] = {
+                    "label": label,
+                    "value": round(latest["value"], 1),
+                    "year":  latest.get("date", "?"),
+                    "live":  True,
+                }
+        except Exception:
+            pass
+    return results
+
+
 import pandas as pd
 
 # ── Grade hierarchy ───────────────────────────────────────────────────────────
