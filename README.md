@@ -1,5 +1,7 @@
 -e # 🦁 Dagoretti High School Community Hub
 
+[![Live Data](https://img.shields.io/badge/Live%20Data-World%20Bank-00b4d8)](https://dagoretti-community-hub.streamlit.app)
+
 A free, open-source Streamlit web application for the Dagoretti High School community — alumni, students, parents, and teachers.
 
 **Live demo:** https://[your-username]-dagoretti-hub.streamlit.app
