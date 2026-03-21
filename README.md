@@ -1,6 +1,6 @@
 -e # 🦁 Dagoretti High School Community Hub
 
-[![Live Data](https://img.shields.io/badge/Live%20Data-World%20Bank-00b4d8)](https://dagoretti-community-hub.streamlit.app)
+[![Live Data](https://img.shields.io/badge/Live%20Data-World%20Bank-00b4d8)](https://dagoretti-high-school-community-app.streamlit.app)
 
 A free, open-source Streamlit web application for the Dagoretti High School community — alumni, students, parents, and teachers.
 
@@ -125,14 +125,14 @@ Part of a suite of civic and community tools built by [Gabriel Mahia](https://gi
 |-----|-------------|
 | [🌊 Mafuriko](https://floodwatch-kenya.streamlit.app) | Flood risk & policy enforcement tracker — Kenya |
 | [💧 WapiMaji](https://wapimaji.streamlit.app) | Water stress & drought intelligence — 47 counties |
-| [🏛️ Macho ya Wananchi](https://civic-decoder.streamlit.app) | MP voting records, CDF spending, bill tracker |
-| [🌾 JuaMazao](https://mazao-intel.streamlit.app) | Live food price intelligence for smallholders |
-| [🏦 ChaguaSacco](https://sacco-scout.streamlit.app) | Compare Kenya SACCOs on dividends & loan rates |
-| [🛡️ Hesabu](https://budget-sentinel.streamlit.app) | County budget absorption tracker |
+| [🏛️ Macho ya Wananchi](https://macho-ya-wananchi.streamlit.app) | MP voting records, CDF spending, bill tracker |
+| [🌾 JuaMazao](https://juamazao.streamlit.app) | Live food price intelligence for smallholders |
+| [🏦 ChaguaSacco](https://chaguasacco.streamlit.app) | Compare Kenya SACCOs on dividends & loan rates |
+| [🛡️ Hesabu](https://hesabu.streamlit.app) | County budget absorption tracker |
 | [🗺️ Hifadhi](https://hifadhi.streamlit.app) | Riparian encroachment & Water Act compliance map |
-| [💰 Hela](https://hela.streamlit.app) | Chama management for the 21st century |
-| [💸 Peleka](https://remit-lens.streamlit.app) | True cost remittance comparison — diaspora to Kenya |
-| [📊 Msimamo](https://quantum-maestro.streamlit.app) | Macro risk & trade intelligence terminal |
-| [🦁 Dagoretti](https://dagoretti-community-hub.streamlit.app) | Alumni atlas & community hub for Dagoretti High |
-| [⛪ Jumuia](https://catholicparishsteward.streamlit.app) | Catholic parish tools — church finder, pastoral care |
+| [💰 Hela](https://helaismoney.streamlit.app) | Chama management for the 21st century |
+| [💸 Peleka](https://tumapesa.streamlit.app) | True cost remittance comparison — diaspora to Kenya |
+| [📊 Msimamo](https://easystocktrader.streamlit.app) | Macro risk & trade intelligence terminal |
+| [🦁 Dagoretti](https://dagoretti-high-school-community-app.streamlit.app) | Alumni atlas & community hub for Dagoretti High |
+| [⛪ Jumuia](https://jumuia.streamlit.app) | Catholic parish tools — church finder, pastoral care |
 
