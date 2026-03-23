@@ -58,7 +58,7 @@ def render():
         (_kcse_years,    "Confirmed KCSE years"),
     ]
     pills = "".join(
-        f'<div class="stat-pill" style="flex:1 1 140px; min-width:120px;">' +
+        '<div class="stat-pill" style="flex:1 1 140px; min-width:120px;">' +
         f'<span class="stat-n">{n}</span>' +
         f'<span class="stat-lbl">{lbl}</span>' +
         '</div>'

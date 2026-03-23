@@ -7,7 +7,8 @@ Extension: integrate actual KUCCPS cluster weights (kuccps.ac.ke).
 """
 
 import streamlit as st
-import urllib.request, json
+import urllib.request
+import json
 
 @st.cache_data(ttl=86400)
 def fetch_kenya_education_data():
@@ -41,7 +42,6 @@ def fetch_kenya_education_data():
     return results
 
 
-import pandas as pd
 
 # ── Grade hierarchy ───────────────────────────────────────────────────────────
 GRADE_ORDER = ["A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "E"]
@@ -281,7 +281,7 @@ def render():
         with cols[i % 2]:
             subj = st.selectbox(f"Subject {i+1}", common_subjects, key=f"subj_{i}",
                                 index=i if i < len(common_subjects) else 0)
-            grade = st.selectbox(f"Grade", GRADE_ORDER, key=f"grade_{i}", index=5)
+            grade = st.selectbox("Grade", GRADE_ORDER, key=f"grade_{i}", index=5)
             student_subjects[subj] = grade
 
     # ── Match and display ─────────────────────────────────────────────────────

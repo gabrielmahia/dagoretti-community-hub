@@ -218,9 +218,8 @@ NOTABLE_ALUMNI = [
 # No messages are hardcoded — every quote shown was submitted by a real person
 # and reviewed by an admin before appearing here.
 
-import sys, os as _os
+import os as _os
 sys.path.insert(0, _os.path.dirname(_os.path.dirname(__file__)))
-from utils import sheets as _sheets
 
 @st.cache_data(ttl=300)
 def _load_approved_memories():
@@ -482,7 +481,7 @@ def render():
     for i, dorm in enumerate(dorm_lore):
         with dorm_cols[i % 2]:
             st.markdown(
-                f'<div class="card" style="border-left:3px solid var(--green-mid); padding:1rem;">' +
+                '<div class="card" style="border-left:3px solid var(--green-mid); padding:1rem;">' +
                 f'<h4 style="color:var(--green-dark); margin:0 0 0.2rem;">{dorm["icon"]} {dorm["name"]}</h4>' +
                 f'<p style="font-size:0.78rem; font-weight:700; color:#aaa; margin:0 0 0.4rem; text-transform:uppercase; letter-spacing:0.5px;">{dorm["who"]}</p>' +
                 f'<p style="font-size:0.88rem; margin:0;">{dorm["body"]}</p>' +

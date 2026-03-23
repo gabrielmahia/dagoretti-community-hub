@@ -5,7 +5,6 @@ Kenya: Then & Now — 25 indicators comparing 2000 and 2025.
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 import os
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
