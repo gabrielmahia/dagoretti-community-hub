@@ -247,6 +247,20 @@ st.markdown("""
     [data-theme="dark"] [data-testid="stMetricDelta"],
     .stApp[data-theme="dark"] [data-testid="stMetricDelta"] { color: #cccccc !important; }
 
+
+    @media (prefers-color-scheme: dark) {
+        .alumni-card     { background: #1e2127 !important; border-color: #30333d !important; color: #f0f0f0 !important; }
+        .card            { background: #1e2127 !important; border-color: #30333d !important; color: #f0f0f0 !important; }
+        .card-green      { background: #1e2127 !important; color: #7dcea0 !important; }
+        .scholarship-card { background: #1e2127 !important; border-color: #30333d !important; color: #f0f0f0 !important; }
+        .badge-blue      { background: #0d1f35 !important; color: #7ab8f5 !important; border-color: #4a7aaa !important; }
+    }
+    [data-theme="dark"] .alumni-card,      .stApp[data-theme="dark"] .alumni-card      { background: #1e2127 !important; border-color: #30333d !important; color: #f0f0f0 !important; }
+    [data-theme="dark"] .card,             .stApp[data-theme="dark"] .card             { background: #1e2127 !important; border-color: #30333d !important; color: #f0f0f0 !important; }
+    [data-theme="dark"] .card-green,       .stApp[data-theme="dark"] .card-green       { background: #1e2127 !important; color: #7dcea0 !important; }
+    [data-theme="dark"] .scholarship-card, .stApp[data-theme="dark"] .scholarship-card { background: #1e2127 !important; border-color: #30333d !important; color: #f0f0f0 !important; }
+    [data-theme="dark"] .badge-blue,       .stApp[data-theme="dark"] .badge-blue       { background: #0d1f35 !important; color: #7ab8f5 !important; border-color: #4a7aaa !important; }
+
 </style>
 """, unsafe_allow_html=True)
 
