@@ -12,3 +12,6 @@ font = 'sans serif'
 [ui]
 # Disable Streamlit's automatic multi-page navigation — app.py manages routing
 hideTopBar = false
+
+[client]
+toolbarMode = "minimal"
