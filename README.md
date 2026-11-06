@@ -23,8 +23,8 @@ A free, open-source Streamlit web application for the Dagoretti High School comm
 
 ```bash
 # 1. Clone
-git clone https://github.com/dagoretti-community/hub.git
-cd hub
+git clone https://github.com/gabrielmahia/dagoretti-community-hub.git
+cd dagoretti-community-hub
 
 # 2. Virtual environment
 python -m venv venv
