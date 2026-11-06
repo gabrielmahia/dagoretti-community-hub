@@ -11,6 +11,7 @@ Streamlit Cloud secrets:
 import datetime
 import json
 import urllib.request
+
 import streamlit as st
 
 
@@ -18,7 +19,7 @@ def is_configured() -> bool:
     try:
         url = st.secrets.get("sheets", {}).get("webhook_url", "")
         return bool(url and url.startswith("https://script.google.com"))
-    except Exception:
+    except Exception:  # noqa: BLE001 - graceful fallback: the page keeps working when an outside source or optional file is unavailable
         return False
 
 
@@ -31,7 +32,7 @@ def append_row(tab_name: str, row_data: dict) -> bool:
         return False
     payload = {
         "tab": tab_name,
-        "timestamp": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
+        "timestamp": datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M UTC"),
         "status": "pending",
         **{k: str(v) for k, v in row_data.items()},
     }
@@ -47,7 +48,7 @@ def append_row(tab_name: str, row_data: dict) -> bool:
             if body.get("status") != "ok":
                 raise ValueError(f"Script returned: {body}")
         return True
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - graceful fallback: the page keeps working when an outside source or optional file is unavailable
         st.error(
             f"Submission could not be saved ({e}). "
             "Please email [contact@gabrielmahia.com](mailto:contact@gabrielmahia.com) directly."

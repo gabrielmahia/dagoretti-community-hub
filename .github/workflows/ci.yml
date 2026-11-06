@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install ruff pytest
+          pip install ruff==0.16.4 pytest
 
       - name: Lint with ruff
         run: ruff check app.py views/ utils/ --ignore E501,E701,E402

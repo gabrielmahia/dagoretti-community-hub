@@ -6,11 +6,11 @@ proposed via the Submit Data form and confirmed by an admin.
 Empty at launch — grows as the community submits real proposals.
 """
 
-import streamlit as st
 import datetime
 import os
-import pandas as pd
 
+import pandas as pd
+import streamlit as st
 
 EVENTS_CSV = os.path.join(os.path.dirname(__file__), "..", "data", "events.csv")
 EVENTS_SCHEMA = ["id", "title", "date", "time", "type", "location",
@@ -38,7 +38,7 @@ def _load_events():
             df = df[df["status"].str.lower() == "approved"]
         df["date"] = pd.to_datetime(df["date"], errors="coerce")
         return df.dropna(subset=["date"]).sort_values("date")
-    except Exception:
+    except Exception:  # noqa: BLE001 - graceful fallback: the page keeps working when an outside source or optional file is unavailable
         return pd.DataFrame(columns=EVENTS_SCHEMA)
 
 
@@ -54,7 +54,7 @@ def render():
     """, unsafe_allow_html=True)
 
     df = _load_events()
-    today = datetime.date.today()
+    today = datetime.date.today()  # noqa: DTZ011 - the local calendar date is intended here (form defaults and filters)
 
     upcoming = df[df["date"].dt.date >= today] if not df.empty else pd.DataFrame()
     past     = df[df["date"].dt.date <  today] if not df.empty else pd.DataFrame()

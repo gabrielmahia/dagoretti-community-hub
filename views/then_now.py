@@ -2,11 +2,13 @@
 Kenya: Then & Now — 25 indicators comparing 2000 and 2025.
 """
 
-import streamlit as st
-import pandas as pd
-import plotly.express as px
 import os
 import sys
+
+import pandas as pd
+import plotly.express as px
+import streamlit as st
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from utils import sheets
 
@@ -136,9 +138,9 @@ def render():
         )
         fig.update_layout(
             paper_bgcolor="#fdf8f0", plot_bgcolor="#fdf8f0",
-            margin=dict(l=0, r=0, t=10, b=0),
+            margin={"l": 0, "r": 0, "t": 10, "b": 0},
             coloraxis_showscale=False,
-            yaxis=dict(tickfont=dict(size=11)),
+            yaxis={"tickfont": {"size": 11}},
         )
         st.plotly_chart(fig, width="stretch")
 

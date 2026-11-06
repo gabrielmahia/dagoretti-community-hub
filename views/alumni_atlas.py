@@ -3,14 +3,15 @@ Alumni Atlas — world map + filterable directory.
 Pattern: data → filter → render. Runs on every interaction.
 """
 
-import streamlit as st
-import pandas as pd
-import plotly.express as px
+import json
 import os
 import time
-import urllib.request
 import urllib.parse
-import json
+import urllib.request
+
+import pandas as pd
+import plotly.express as px
+import streamlit as st
 
 
 @st.cache_data(ttl=3600)
@@ -28,7 +29,7 @@ def _geocode(city: str, country: str):
             results = json.loads(resp.read())
         if results:
             return float(results[0]["lat"]), float(results[0]["lon"])
-    except Exception:
+    except Exception:  # noqa: BLE001, S110 - graceful fallback: the page keeps working when an outside source or optional file is unavailable
         pass
     return None, None
 
@@ -57,7 +58,7 @@ def _load():
             # Persist geocoded values back to CSV so next load is instant
             try:
                 df.to_csv(path, index=False)
-            except Exception:
+            except Exception:  # noqa: BLE001, S110 - graceful fallback: the page keeps working when an outside source or optional file is unavailable
                 pass
 
         return df.dropna(subset=["lat", "lon"])
@@ -87,16 +88,16 @@ def _render_school_pin_only():
         hover_data={"role": True, "lat": False, "lon": False, "industry": False},
         projection="natural earth", height=420,
     )
-    fig.update_traces(marker=dict(size=14, color="#c9a94e", symbol="star",
-                                  line=dict(width=1, color="#1a5c2e")))
+    fig.update_traces(marker={"size": 14, "color": "#c9a94e", "symbol": "star",
+                                  "line": {"width": 1, "color": "#1a5c2e"}})
     fig.update_layout(
-        margin=dict(l=0, r=0, t=0, b=0),
+        margin={"l": 0, "r": 0, "t": 0, "b": 0},
         paper_bgcolor="#fdf8f0",
-        geo=dict(showframe=False, showcoastlines=True, coastlinecolor="#c8e6c9",
-                 showland=True, landcolor="#e8f5e9", showocean=True, oceancolor="#e3f2fd",
-                 showlakes=True, lakecolor="#e3f2fd", showcountries=True,
-                 countrycolor="#a5d6a7", bgcolor="#fdf8f0",
-                 center=dict(lat=-1.25, lon=36.69), projection_scale=8),
+        geo={"showframe": False, "showcoastlines": True, "coastlinecolor": "#c8e6c9",
+                 "showland": True, "landcolor": "#e8f5e9", "showocean": True, "oceancolor": "#e3f2fd",
+                 "showlakes": True, "lakecolor": "#e3f2fd", "showcountries": True,
+                 "countrycolor": "#a5d6a7", "bgcolor": "#fdf8f0",
+                 "center": {"lat": -1.25, "lon": 36.69}, "projection_scale": 8},
     )
     st.plotly_chart(fig, width="stretch")
 
@@ -212,22 +213,22 @@ def render():
             height=480,
         )
         # Style alumni pins
-        fig.update_traces(marker=dict(size=9, opacity=0.85, line=dict(width=0.5, color="white")))
+        fig.update_traces(marker={"size": 9, "opacity": 0.85, "line": {"width": 0.5, "color": "white"}})
         # Style school pin differently (gold star, larger)
         for trace in fig.data:
             if trace.name == "📍 Origin":
                 trace.marker.update(size=14, color="#c9a94e", symbol="star",
-                                    line=dict(width=1.5, color="#1a5c2e"), opacity=1.0)
+                                    line={"width": 1.5, "color": "#1a5c2e"}, opacity=1.0)
         fig.update_layout(
-            margin=dict(l=0, r=0, t=0, b=0),
+            margin={"l": 0, "r": 0, "t": 0, "b": 0},
             paper_bgcolor="#fdf8f0",
-            geo=dict(
-                showframe=False, showcoastlines=True, coastlinecolor="#c8e6c9",
-                showland=True, landcolor="#e8f5e9", showocean=True, oceancolor="#e3f2fd",
-                showlakes=True, lakecolor="#e3f2fd", showcountries=True,
-                countrycolor="#a5d6a7", bgcolor="#fdf8f0",
-            ),
-            legend=dict(orientation="h", y=-0.05, x=0, font=dict(size=11)),
+            geo={
+                "showframe": False, "showcoastlines": True, "coastlinecolor": "#c8e6c9",
+                "showland": True, "landcolor": "#e8f5e9", "showocean": True, "oceancolor": "#e3f2fd",
+                "showlakes": True, "lakecolor": "#e3f2fd", "showcountries": True,
+                "countrycolor": "#a5d6a7", "bgcolor": "#fdf8f0",
+            },
+            legend={"orientation": "h", "y": -0.05, "x": 0, "font": {"size": 11}},
         )
         st.plotly_chart(fig, width="stretch")
     else:

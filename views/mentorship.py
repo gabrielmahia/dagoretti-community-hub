@@ -2,9 +2,10 @@
 Mentorship — directory of alumni open to mentoring, with guidance on how to connect.
 """
 
-import streamlit as st
-import pandas as pd
 import os
+
+import pandas as pd
+import streamlit as st
 
 
 @st.cache_data(ttl=300)

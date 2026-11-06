@@ -2,9 +2,10 @@
 Home page — landing stats, alumni spotlight, welcome content.
 """
 
-import streamlit as st
-import pandas as pd
 import os
+
+import pandas as pd
+import streamlit as st
 
 
 @st.cache_data(ttl=60)
@@ -23,7 +24,7 @@ def render():
         import pandas as _pd_kcse
         _kcse_df = _pd_kcse.read_csv(os.path.join(os.path.dirname(__file__), "..", "data", "kcse_results.csv"))
         _kcse_years = int(_kcse_df["year"].count())
-    except Exception:
+    except Exception:  # noqa: BLE001 - graceful fallback: the page keeps working when an outside source or optional file is unavailable
         _kcse_years = 0
 
     # ── Hero ─────────────────────────────────────────────────────────────────
@@ -46,7 +47,7 @@ def render():
         import pandas as _pds
         _sch = _pds.read_csv(os.path.join(os.path.dirname(__file__), "..", "data", "scholarships.csv"))
         n_scholarships = len(_sch)
-    except Exception:
+    except Exception:  # noqa: BLE001 - graceful fallback: the page keeps working when an outside source or optional file is unavailable
         n_scholarships = 22  # known baseline
 
     stats = [
