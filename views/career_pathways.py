@@ -6,9 +6,11 @@ Grade matching uses keyword-based subject matching — intentionally simple.
 Extension: integrate actual KUCCPS cluster weights (kuccps.ac.ke).
 """
 
-import streamlit as st
-import urllib.request
 import json
+import urllib.request
+
+import streamlit as st
+
 
 @st.cache_data(ttl=86400)
 def fetch_kenya_education_data():
@@ -37,7 +39,7 @@ def fetch_kenya_education_data():
                     "year":  latest.get("date", "?"),
                     "live":  True,
                 }
-        except Exception:
+        except Exception:  # noqa: BLE001, S110 - graceful fallback: the page keeps working when an outside source or optional file is unavailable
             pass
     return results
 
@@ -212,9 +214,8 @@ def match_career(student_subjects: dict, cluster: dict) -> dict:
     best_grade = "E"
     for subj, grade in student_subjects.items():
         for req in req_subjects:
-            if req.lower() in subj.lower():
-                if GRADE_ORDER.index(grade) < GRADE_ORDER.index(best_grade):
-                    best_grade = grade
+            if req.lower() in subj.lower() and GRADE_ORDER.index(grade) < GRADE_ORDER.index(best_grade):
+                best_grade = grade
 
     meets_grade = grade_meets_minimum(best_grade, min_grade)
 

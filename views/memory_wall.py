@@ -4,10 +4,11 @@ Co-curricular facts sourced from Wikipedia, The Standard (2011), KRU, and Kenya 
 Memories marked [confirmed], [probable], or [illustrative] in code comments.
 """
 
-import streamlit as st
-import pandas as pd
 import os
 import sys
+
+import pandas as pd
+import streamlit as st
 
 
 @st.cache_data(ttl=300)
@@ -219,6 +220,7 @@ NOTABLE_ALUMNI = [
 # and reviewed by an admin before appearing here.
 
 import os as _os
+
 sys.path.insert(0, _os.path.dirname(_os.path.dirname(__file__)))
 
 @st.cache_data(ttl=300)
@@ -241,7 +243,7 @@ def _load_approved_memories():
             df = pd.read_csv(local_path)
             approved = df[df["status"].str.lower() == "approved"] if "status" in df.columns else df
             return approved.to_dict("records")
-        except Exception:
+        except Exception:  # noqa: BLE001, S110 - graceful fallback: the page keeps working when an outside source or optional file is unavailable
             pass
     return []
 

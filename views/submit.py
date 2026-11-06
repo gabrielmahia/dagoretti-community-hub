@@ -12,10 +12,11 @@ Backend: Google Sheets via utils/sheets.py
 Fallback: visible warning + email instructions when not configured
 """
 
-import streamlit as st
 import datetime
-import sys
 import os
+import sys
+
+import streamlit as st
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from utils import sheets
@@ -55,7 +56,7 @@ def render():
             full_name = st.text_input("Full name *", key="al_name")
             year_left = st.number_input(
                 "Year you sat Form 4 KCSE *",
-                min_value=1962, max_value=datetime.date.today().year,
+                min_value=1962, max_value=datetime.date.today().year,  # noqa: DTZ011 - the local calendar date is intended here (form defaults and filters)
                 value=2001, key="al_year",
             )
             industry = st.selectbox("Industry *", [
@@ -140,7 +141,7 @@ def render():
         mem_name = st.text_input("Your name *", key="mem_name")
         mem_year = st.number_input(
             "Year you sat Form 4 at Dagoretti *",
-            min_value=1962, max_value=datetime.date.today().year,
+            min_value=1962, max_value=datetime.date.today().year,  # noqa: DTZ011 - the local calendar date is intended here (form defaults and filters)
             value=2001, key="mem_year",
         )
         mem_type = st.radio("Type of submission", [
@@ -190,7 +191,7 @@ def render():
             ], key="ev_type")
             ev_date = st.date_input(
                 "Proposed date *",
-                min_value=datetime.date.today(), key="ev_date",
+                min_value=datetime.date.today(), key="ev_date",  # noqa: DTZ011 - the local calendar date is intended here (form defaults and filters)
             )
         with c2:
             ev_location = st.text_input(

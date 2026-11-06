@@ -7,12 +7,14 @@ Every other year is an explicit gap waiting to be filled.
 Confirmed: 2014, 2015 (school Facebook page); 2022–2025 (Rejnac Daily/KNEC Jan 2026)
 """
 
-import streamlit as st
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.express as px
 import os
 import sys
+
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import streamlit as st
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from utils import sheets
 
@@ -106,10 +108,10 @@ def render():
     fig.add_trace(go.Scatter(
         x=df["year"].astype(int), y=df["mean_grade"],
         mode="markers+text", name="Confirmed",
-        marker=dict(size=16, color="#1a5c2e", line=dict(color="#c9a94e", width=2)),
+        marker={"size": 16, "color": "#1a5c2e", "line": {"color": "#c9a94e", "width": 2}},
         text=[f"{v:.2f}" for v in df["mean_grade"]],
         textposition="top center",
-        textfont=dict(size=11, color="#1a5c2e"),
+        textfont={"size": 11, "color": "#1a5c2e"},
     ))
 
     # Gap bands
@@ -131,14 +133,14 @@ def render():
 
     fig.update_layout(
         paper_bgcolor="#fdf8f0", plot_bgcolor="#fdf8f0",
-        margin=dict(l=0,r=0,t=10,b=0), height=340, showlegend=False,
-        yaxis=dict(range=[4,10], title="Mean grade (1–12)",
-                   gridcolor="#e8f5e9",
-                   tickvals=[5,6,7,8,9], ticktext=["C−","C","C+","B−","B"]),
-        xaxis=dict(title="Year", gridcolor="#e8f5e9",
-                   tickmode="array",
-                   tickvals=confirmed_years,
-                   ticktext=[str(y) for y in confirmed_years]),
+        margin={"l": 0,"r": 0,"t": 10,"b": 0}, height=340, showlegend=False,
+        yaxis={"range": [4,10], "title": "Mean grade (1–12)",
+                   "gridcolor": "#e8f5e9",
+                   "tickvals": [5,6,7,8,9], "ticktext": ["C−","C","C+","B−","B"]},
+        xaxis={"title": "Year", "gridcolor": "#e8f5e9",
+                   "tickmode": "array",
+                   "tickvals": confirmed_years,
+                   "ticktext": [str(y) for y in confirmed_years]},
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -161,8 +163,8 @@ def render():
         )
         fig2.update_layout(
             paper_bgcolor="#fdf8f0", plot_bgcolor="#fdf8f0",
-            margin=dict(l=0,r=0,t=10,b=0), height=270, showlegend=False,
-            yaxis=dict(gridcolor="#e8f5e9"),
+            margin={"l": 0,"r": 0,"t": 10,"b": 0}, height=270, showlegend=False,
+            yaxis={"gridcolor": "#e8f5e9"},
         )
         st.plotly_chart(fig2, use_container_width=True)
     else:
